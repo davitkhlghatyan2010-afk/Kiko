@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<script src="./pixel.js"></script>
+<style>
+body{margin:0;background:#DDE3DA}
+a{color:#1E2E28}a:hover{color:#E4695E}
+canvas{display:block}
+</style>
+</helmet>
+<div style="font-family:'Noto Sans Armenian',system-ui,sans-serif;color:#1E2E28;padding:56px 48px 96px;display:flex;flex-direction:column;gap:64px;align-items:center">
+
+  <div style="width:100%;max-width:920px;display:flex;flex-direction:column;gap:28px">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;color:#5A7A6C">301AD · PILOT BUILD</div>
+      <div style="font-size:32px;font-weight:600;line-height:1.15">Component set and working prototype</div>
+      <div style="font-size:15px;line-height:1.6;color:#3E5C50;max-width:640px;text-wrap:pretty">Everything here is drawn as real pixel data on a 220-wide grid and scaled 2x. No vectors, no anti-aliasing, no fractional scaling.</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px;background:rgba(30,46,40,.14);border:1px solid rgba(30,46,40,.14)">
+      <div style="background:#EDEFE4;padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">DECIDED FOR YOU</div>
+        <div style="font-size:14px;line-height:1.55">The world is 380px wide, the screen shows 220px of it. The camera pans to follow the character, so the lake and the house are never both fully in frame.</div>
+      </div>
+      <div style="background:#EDEFE4;padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">DECIDED FOR YOU</div>
+        <div style="font-size:14px;line-height:1.55">The lockout is reachable two ways: from the state jumper, and by tapping an undeclared app on a stand-in Android launcher.</div>
+      </div>
+      <div style="background:#EDEFE4;padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">NEEDS YOUR REVIEW</div>
+        <div style="font-size:14px;line-height:1.55">All Armenian copy is my draft. A native speaker should read the cutoff-missed line and the lockout line before the pilot — the voice rules leave no room for a softened translation.</div>
+      </div>
+      <div style="background:#EDEFE4;padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">PLACEHOLDER</div>
+        <div style="font-size:14px;line-height:1.55">The isometric room is a dithered footprint, as you asked. Its fire is real and dims with the session.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width:100%;max-width:920px;display:flex;flex-direction:column;gap:20px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;color:#5A7A6C">01 · TOKENS</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#CBDFD6"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">sky-day<br>CBDFD6</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#EDEFE4"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">sky-cloud<br>EDEFE4</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#93B5B0"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">water<br>93B5B0</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#6E9691"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">water-deep<br>6E9691</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#A8C0AC"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">foliage-light<br>A8C0AC</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#7C9A8A"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">foliage-mid<br>7C9A8A</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#5A7A6C"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">foliage-dark<br>5A7A6C</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#9A6156"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">trunk<br>9A6156</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#1E2E28"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">ink<br>1E2E28</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#C89457"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">wood-light<br>C89457</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#9A6634"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">wood-mid<br>9A6634</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#5E3D24"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">wood-dark<br>5E3D24</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#EAE2D4"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">wall<br>EAE2D4</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#C4BFB8"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">stone<br>C4BFB8</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#E88A3C"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">fire<br>E88A3C</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#F3C24C"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">fire-hot<br>F3C24C</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#E4695E"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">alert<br>E4695E</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#C97F3D"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">autumn<br>C97F3D</div></div>
+      <div style="display:flex;flex-direction:column;gap:0"><div style="height:56px;background:#A88B4A"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 0 0">dead<br>A88B4A</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2px;background:rgba(30,46,40,.14);border:1px solid rgba(30,46,40,.14)">
+      <div style="background:#EDEFE4;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">TYPE · WORDS</div>
+        <div style="font-size:32px;line-height:1.15">Հայտարարիր օրը</div>
+        <div style="font-size:24px;line-height:1.2">Declare the day</div>
+        <div style="font-size:18px">Noto Sans Armenian</div>
+        <div style="font-size:15px">32 / 24 / 18 / 15 / 13 · sentence case only</div>
+        <div style="font-size:13px;color:#5A7A6C">Never letterspaced. Never all-caps.</div>
+      </div>
+      <div style="background:#EDEFE4;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">TYPE · NUMERALS</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:56px;line-height:1;font-weight:500">1:23:07</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:15px;color:#5A7A6C">JetBrains Mono · tabular by default</div>
+      </div>
+      <div style="background:#EDEFE4;padding:18px 20px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">GRID</div>
+        <div style="font-size:14px;line-height:1.55">World buffer 380 × 210, extended to 380 × 478 on Home. Viewport 220 wide. Display scale 2x, integer only.</div>
+        <div style="font-size:14px;line-height:1.55">Character 16 × 24 → 48px on screen. Tier tile 16 × 16 → 32px.</div>
+        <div style="font-size:14px;line-height:1.55">Spacing steps: 4 · 8 · 12 · 16 · 24 · 32.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width:100%;max-width:920px;display:flex;flex-direction:column;gap:20px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;color:#5A7A6C">02 · CHARACTER</div>
+    <div style="background:#EDEFE4;border:1px solid rgba(30,46,40,.14);padding:24px;display:flex;flex-wrap:wrap;gap:32px">
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><canvas data-px="sprite" data-pose="idle" data-who="boy" data-scale="3"></canvas><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5A7A6C">idle</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><canvas data-px="sprite" data-pose="walk" data-who="boy" data-scale="3"></canvas><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5A7A6C">walk</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><canvas data-px="sprite" data-pose="sit" data-who="boy" data-scale="3"></canvas><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5A7A6C">sit</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><canvas data-px="sprite" data-pose="back" data-who="boy" data-scale="3"></canvas><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5A7A6C">turned away</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><canvas data-px="sprite" data-pose="idle" data-who="girl" data-scale="3"></canvas><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5A7A6C">idle · b</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><canvas data-px="sprite" data-pose="walk" data-who="girl" data-scale="3"></canvas><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5A7A6C">walk · b</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><canvas data-px="sprite" data-pose="sit" data-who="girl" data-scale="3"></canvas><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5A7A6C">sit · b</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:center"><canvas data-px="sprite" data-pose="back" data-who="girl" data-scale="3"></canvas><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5A7A6C">turned away · b</div></div>
+    </div>
+    <div style="font-size:13px;color:#3E5C50;max-width:640px;text-wrap:pretty">16 × 24 at 1x. The four interior work loops and three outdoor idle loops are not drawn yet — they need the room art to sit against.</div>
+  </div>
+
+  <div style="width:100%;max-width:920px;display:flex;flex-direction:column;gap:20px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;color:#5A7A6C">03 · GARDEN TIERS</div>
+    <div style="display:flex;flex-direction:column;gap:2px;background:rgba(30,46,40,.14);border:1px solid rgba(30,46,40,.14)">
+      <div style="background:#EDEFE4;padding:16px 20px;display:flex;gap:20px;align-items:center">
+        <canvas data-px="tile" data-tier="bloom" data-scale="3"></canvas>
+        <div style="flex:1"><div style="font-size:18px">Bloom</div><div style="font-size:13px;color:#5A7A6C">5+ clean days · flowers open, canopy dense, lake bright</div></div>
+        <canvas data-px="world" data-tier="bloom" data-cam="90" data-view="200" data-scale="1" data-char="0" data-smoke="1" style="border:1px solid rgba(30,46,40,.12)"></canvas>
+      </div>
+      <div style="background:#EDEFE4;padding:16px 20px;display:flex;gap:20px;align-items:center">
+        <canvas data-px="tile" data-tier="green" data-scale="3"></canvas>
+        <div style="flex:1"><div style="font-size:18px">Green</div><div style="font-size:13px;color:#5A7A6C">2–4 clean days · healthy, no flowers</div></div>
+        <canvas data-px="world" data-tier="green" data-cam="90" data-view="200" data-scale="1" data-char="0" data-smoke="1" style="border:1px solid rgba(30,46,40,.12)"></canvas>
+      </div>
+      <div style="background:#EDEFE4;padding:16px 20px;display:flex;gap:20px;align-items:center">
+        <canvas data-px="tile" data-tier="autumn" data-scale="3"></canvas>
+        <div style="flex:1"><div style="font-size:18px">Autumn</div><div style="font-size:13px;color:#5A7A6C">1 miss · canopy turns, leaves on the ground, sky grayer</div></div>
+        <canvas data-px="world" data-tier="autumn" data-cam="90" data-view="200" data-scale="1" data-char="0" data-smoke="1" style="border:1px solid rgba(30,46,40,.12)"></canvas>
+      </div>
+      <div style="background:#EDEFE4;padding:16px 20px;display:flex;gap:20px;align-items:center">
+        <canvas data-px="tile" data-tier="dead" data-scale="3"></canvas>
+        <div style="flex:1"><div style="font-size:18px">Dead</div><div style="font-size:13px;color:#5A7A6C">2+ consecutive misses · bare branches, dulled lake, cracked ground</div></div>
+        <canvas data-px="world" data-tier="dead" data-cam="90" data-view="200" data-scale="1" data-char="0" style="border:1px solid rgba(30,46,40,.12)"></canvas>
+      </div>
+    </div>
+    <div style="font-size:13px;color:#3E5C50;max-width:640px;text-wrap:pretty">Two clean days to climb one tier. Falling is one day. Tiers cut at midnight, never crossfade.</div>
+  </div>
+
+  <div style="width:100%;max-width:920px;display:flex;flex-direction:column;gap:20px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;color:#5A7A6C">04 · COMPONENTS</div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px;background:rgba(30,46,40,.14);border:1px solid rgba(30,46,40,.14)">
+
+      <div style="background:#EDEFE4;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">BUTTONS</div>
+        <div style="background:#E4695E;color:#EDEFE4;padding:16px;text-align:center;border-radius:12px;font-size:18px;font-weight:500;cursor:pointer" style-hover="background:#D85A4F">Start<div style="font-size:13px;opacity:.85;font-weight:400">Սկսել</div></div>
+        <div style="border:2px solid #1E2E28;color:#1E2E28;padding:15px;text-align:center;border-radius:12px;font-size:18px;cursor:pointer" style-hover="background:rgba(30,46,40,.06)">End session<div style="font-size:13px;color:#5A7A6C">Ավարտել նիստը</div></div>
+        <div style="background:#D5D9CE;color:#8B968F;padding:16px;text-align:center;border-radius:12px;font-size:18px">Start<div style="font-size:13px;font-weight:400">Սկսել</div></div>
+        <div style="font-size:13px;color:#5A7A6C;text-wrap:pretty">One alert button per screen. Everything else is quiet or disabled.</div>
+      </div>
+
+      <div style="background:#EDEFE4;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">TASK ROWS</div>
+        <div style="display:flex;flex-direction:column;gap:0">
+          <div style="display:flex;gap:12px;align-items:baseline;padding:12px 0;border-bottom:1px solid rgba(30,46,40,.14)"><div style="width:8px;height:8px;background:#1E2E28;flex:none"></div><div style="font-size:18px">Read 60 pages</div></div>
+          <div style="display:flex;gap:12px;align-items:baseline;padding:12px 0;border-bottom:1px solid rgba(30,46,40,.14)"><div style="width:8px;height:8px;background:#1E2E28;flex:none"></div><div style="font-size:18px">Notes on ch. 4</div></div>
+          <div style="display:flex;gap:12px;align-items:baseline;padding:12px 0;border-bottom:1px solid rgba(30,46,40,.14)"><div style="width:8px;height:8px;border:2px solid #1E2E28;box-sizing:border-box;flex:none"></div><div style="font-size:18px;color:#5A7A6C">Empty line, tap to add</div></div>
+        </div>
+        <div style="font-size:13px;color:#5A7A6C;text-wrap:pretty">A line, not a card. No checkbox — nothing here is completable one at a time.</div>
+      </div>
+
+      <div style="background:#EDEFE4;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">APP CHIPS</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 16px 8px 10px;border-radius:999px;border:2px solid #1E2E28;background:#1E2E28;color:#EDEFE4"><canvas data-px="app" data-kind="book" data-on="1" data-scale="2"></canvas><span style="font-size:15px">Books</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 16px 8px 10px;border-radius:999px;border:2px solid #1E2E28;background:#1E2E28;color:#EDEFE4"><canvas data-px="app" data-kind="note" data-on="1" data-scale="2"></canvas><span style="font-size:15px">Notes</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 16px 8px 10px;border-radius:999px;border:2px solid rgba(30,46,40,.35);color:#5A7A6C"><canvas data-px="app" data-kind="calc" data-scale="2"></canvas><span style="font-size:15px">Calculator</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 16px 8px 10px;border-radius:999px;border:2px solid rgba(30,46,40,.35);color:#5A7A6C"><canvas data-px="app" data-kind="browser" data-scale="2"></canvas><span style="font-size:15px">Browser</span></div>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:15px">2 / 3</div>
+      </div>
+
+      <div style="background:#EDEFE4;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">TIMER READOUTS</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:56px;line-height:1;font-weight:500">1:23:07</div>
+        <div style="display:flex;gap:8px;align-items:baseline"><span style="font-size:15px;color:#5A7A6C">Cutoff</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px">14:00</span><span style="color:#5A7A6C">·</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px">3:42</span></div>
+        <div style="display:flex;gap:8px;align-items:baseline"><span style="font-size:15px;color:#5A7A6C">Cutoff</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;color:#E4695E">passed</span></div>
+      </div>
+
+      <div style="background:#EDEFE4;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">LEADERBOARD ROWS</div>
+        <div style="display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(30,46,40,.12)"><span style="font-family:'JetBrains Mono',monospace;font-size:15px;width:20px;color:#5A7A6C">1</span><canvas data-px="tile" data-tier="bloom" data-scale="2"></canvas><span style="font-size:18px;flex:1">Ani</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px">12</span></div>
+          <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(30,46,40,.12);background:rgba(30,46,40,.05);margin:0 -8px;padding-left:8px;padding-right:8px"><span style="font-family:'JetBrains Mono',monospace;font-size:15px;width:20px;color:#5A7A6C">4</span><canvas data-px="tile" data-tier="green" data-scale="2"></canvas><span style="font-size:18px;flex:1;font-weight:600">You</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px">4</span></div>
+          <div style="display:flex;align-items:center;gap:14px;padding:10px 0"><span style="font-family:'JetBrains Mono',monospace;font-size:15px;width:20px;color:#5A7A6C">7</span><canvas data-px="tile" data-tier="dead" data-scale="2"></canvas><span style="font-size:18px;flex:1">Tigran</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px">0</span></div>
+        </div>
+        <div style="font-size:13px;color:#5A7A6C;text-wrap:pretty">Same row treatment at every position. Only the user's own row is marked, and only so they can find themselves.</div>
+      </div>
+
+      <div style="background:#EDEFE4;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">STATISTIC BLOCKS</div>
+        <div style="display:flex;flex-direction:column;gap:2px"><div style="font-family:'JetBrains Mono',monospace;font-size:56px;line-height:1;font-weight:500">2:14</div><div style="font-size:15px">Time left when you began</div><div style="font-size:13px;color:#5A7A6C">Որքան ժամանակ էր մնացել, երբ սկսեցիր</div></div>
+        <div style="display:flex;gap:32px">
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:24px">14</div><div style="font-size:13px;color:#5A7A6C">Days clean</div></div>
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:24px">4</div><div style="font-size:13px;color:#5A7A6C">Current run</div></div>
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:24px">9</div><div style="font-size:13px;color:#5A7A6C">Longest run</div></div>
+        </div>
+      </div>
+
+      <div style="background:#EDEFE4;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">TAB BAR</div>
+        <div style="display:flex;border-top:1px solid rgba(30,46,40,.18);background:#EDEFE4">
+          <div style="flex:1;padding:14px 0;text-align:center;font-size:15px;border-bottom:3px solid #1E2E28">Home</div>
+          <div style="flex:1;padding:14px 0;text-align:center;border-radius:12px;font-size:15px;color:#5A7A6C;border-bottom:3px solid transparent">Leaderboard</div>
+          <div style="flex:1;padding:14px 0;text-align:center;border-radius:12px;font-size:15px;color:#5A7A6C;border-bottom:3px solid transparent">Me</div>
+        </div>
+      </div>
+
+      <div style="background:#EDEFE4;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">DIALOG</div>
+        <div style="border:2px solid #1E2E28;border-radius:14px;background:#EDEFE4;padding:20px;display:flex;flex-direction:column;gap:16px">
+          <div style="font-size:18px;line-height:1.4">The cutoff locks for one week once you set it.</div>
+          <div style="font-size:15px;color:#5A7A6C;line-height:1.4">Սահմանը փակվում է մեկ շաբաթով, երբ որոշում ես այն։</div>
+          <div style="display:flex;gap:10px">
+            <div style="flex:1;border:2px solid #1E2E28;padding:11px;text-align:center;border-radius:12px;font-size:15px;cursor:pointer">Back</div>
+            <div style="flex:1;background:#E4695E;color:#EDEFE4;padding:13px;text-align:center;border-radius:12px;font-size:15px;cursor:pointer">Set 14:00</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#EDEFE4;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">SMALL-DAY NOTICE</div>
+        <div style="border-left:none;background:rgba(30,46,40,.05);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:15px;line-height:1.45">This is smaller than your usual day. Your median is three tasks.</div>
+          <div style="font-size:13px;color:#5A7A6C;line-height:1.45">Սա սովորականից փոքր է։ Քո միջինը երեք առաջադրանք է։</div>
+        </div>
+        <div style="font-size:13px;color:#5A7A6C;text-wrap:pretty">Inline at step 3. No icon, no dialog, no button to dismiss it.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="width:100%;max-width:1180px;display:flex;flex-direction:column;gap:20px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;color:#5A7A6C">05 · PROTOTYPE</div>
+    <div style="display:flex;gap:36px;align-items:flex-start;flex-wrap:wrap">
+
+      <div style="width:260px;display:flex;flex-direction:column;gap:18px;position:sticky;top:24px">
+        <div style="background:#EDEFE4;border:1px solid rgba(30,46,40,.16);padding:18px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">STATE JUMPER</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div onClick="{{ jEmpty }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Nothing declared</div>
+            <div onClick="{{ jDeclared }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Declared</div>
+            <div onClick="{{ jRoom }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">In session</div>
+            <div onClick="{{ jDone }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Day done</div>
+            <div onClick="{{ jMissed }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Cutoff missed</div>
+            <div onClick="{{ jLauncher }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Launcher</div>
+            <div onClick="{{ jLockout }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer;grid-column:span 2" style-hover="background:rgba(30,46,40,.08)">Lockout overlay</div>
+          </div>
+        </div>
+        <div style="background:#EDEFE4;border:1px solid rgba(30,46,40,.16);padding:18px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">GARDEN TIER</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div onClick="{{ setBloom }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Bloom</div>
+            <div onClick="{{ setGreen }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Green</div>
+            <div onClick="{{ setAutumn }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Autumn</div>
+            <div onClick="{{ setDead }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Dead</div>
+          </div>
+        </div>
+        <div style="background:#EDEFE4;border:1px solid rgba(30,46,40,.16);padding:18px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">CLOCK · {{ speedLabel }}</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:24px">{{ nowLabel }}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+            <div onClick="{{ speedReal }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 4px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">1x</div>
+            <div onClick="{{ speedFast }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 4px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">60x</div>
+            <div onClick="{{ speedTurbo }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 4px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">600x</div>
+          </div>
+          <div onClick="{{ togglePlay }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">{{ playLabel }}</div>
+          <div style="font-size:13px;color:#5A7A6C;line-height:1.45">Cutoff is {{ cutoffLabel }}. Let the clock run past it to reach the missed state on its own.</div>
+        </div>
+      </div>
+
+      <x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" width="{{ 440 }}" height="{{ 956 }}" hint-size="440px,956px">
+        <div style="height:100%;background:#EDEFE4;display:flex;flex-direction:column;font-family:'Noto Sans Armenian',system-ui,sans-serif;color:#1E2E28;overflow:hidden">
+
+          <sc-if value="{{ onHome }}" hint-placeholder-val="{{ true }}">
+            <div style="position:relative;height:100%;overflow:hidden;background:{{ skyColor }}">
+              <canvas data-px="world" data-tier="{{ tier }}" data-cam="{{ camX }}" data-charx="{{ charX }}" data-pose="{{ pose }}" data-who="{{ who }}" data-view="220" data-scale="2" data-sky="150" data-ground="118" data-smoke="1" style="position: absolute; left: -2px; top: -137px"></canvas>
+
+              <div style="position:absolute;left:0;right:0;top:52px;display:flex;flex-direction:column;align-items:center;gap:22px;padding:0 32px">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.08em;color:rgba(30,46,40,.45)">{{ nowLabel }}</div>
+
+                <sc-if value="{{ isDeclared }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+                    <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="2">
+                      <div style="font-size:24px;line-height:1.3;color:#1E2E28;text-align:center">{{ t.text }}</div>
+                    </sc-for>
+                    <div style="display:flex;gap:10px;align-items:baseline;margin-top:8px">
+                      <span style="font-family:'JetBrains Mono',monospace;font-size:15px;color:rgba(30,46,40,.5)">{{ cutoffLabel }}</span>
+                      <span style="font-family:'JetBrains Mono',monospace;font-size:15px;color:{{ countdownColor }}">{{ countdown }}</span>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+                    <div style="font-size:24px;color:rgba(30,46,40,.55)">Nothing declared</div>
+                    <div style="font-size:15px;color:rgba(30,46,40,.4)">Ոչինչ հայտարարված չէ</div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ isDone }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+                    <div style="font-size:24px;color:#1E2E28">The day is done.</div>
+                    <div style="font-size:15px;color:rgba(30,46,40,.5)">Օրն ավարտված է։</div>
+                  </div>
+                </sc-if>
+              </div>
+
+              <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}">
+                <div onClick="{{ declare }}" style="position: absolute; left: 50%; transform: translateX(-50%); background: #E4695E; color: #EDEFE4; border-radius: 999px; padding: 15px 38px; text-align: center; cursor: pointer; display: flex; flex-direction: column; gap: 2px; top: 688px; align-items: center; justify-content: flex-start" style-hover="background:#D85A4F">
+                  <div style="font-size:18px;font-weight:500;line-height:1.15">Declare</div>
+                  <div style="font-size:13px;line-height:1.15;opacity:.85">Հայտարարել</div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isDeclared }}" hint-placeholder-val="{{ true }}">
+                <div onClick="{{ doStart }}" style="position: absolute; left: 215px; transform: translateX(-50%); background: #E4695E; color: #EDEFE4; border-radius: 999px; padding: 15px 44px; text-align: center; cursor: pointer; display: flex; flex-direction: column; gap: 2px; top: 682px" style-hover="background:#D85A4F">
+                  <div style="font-size:18px;font-weight:500;line-height:1.15">Start</div>
+                  <div style="font-size:13px;line-height:1.15;opacity:.85">Սկսել</div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isWalk }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;display:flex;flex-direction:column;background:#EDEFE4">
+              <canvas data-px="world" data-tier="{{ tier }}" data-cam="{{ camX }}" data-charx="{{ charX }}" data-pose="{{ pose }}" data-who="{{ who }}" data-view="220" data-scale="2" data-smoke="1" data-door="{{ doorOpen }}" style="flex:none"></canvas>
+              <div style="flex:1;display:flex;align-items:center;justify-content:center">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.1em;color:#5A7A6C">{{ walkLabel }}</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isD1 }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;display:flex;flex-direction:column">
+              <div style="height:132px;overflow:hidden;flex:none"><canvas data-px="world" data-tier="{{ tier }}" data-cam="{{ camX }}" data-charx="{{ charX }}" data-pose="idle" data-who="{{ who }}" data-view="220" data-scale="2" data-smoke="1" style="margin-top:-288px"></canvas></div>
+              <div style="flex:1;padding:28px 24px;display:flex;flex-direction:column;gap:24px;min-height:0">
+                <div>
+                  <div style="font-size:24px;line-height:1.25">What are you doing today?</div>
+                  <div style="font-size:15px;color:#5A7A6C">Ի՞նչ ես անելու այսօր</div>
+                </div>
+                <div style="display:flex;flex-direction:column;border-top:1px solid rgba(30,46,40,.14)">
+                  <sc-for list="{{ draftRows }}" as="row" hint-placeholder-count="3">
+                    <div style="display:flex;gap:12px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(30,46,40,.14)">
+                      <div style="width:8px;height:8px;border:2px solid rgba(30,46,40,.4);box-sizing:border-box;flex:none"></div>
+                      <input value="{{ row.value }}" onChange="{{ row.onChange }}" placeholder="{{ row.ph }}" style="flex:1;border:none;background:transparent;font-family:'Noto Sans Armenian',system-ui,sans-serif;font-size:18px;color:#1E2E28;padding:12px 0;outline:none">
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="font-size:13px;color:#5A7A6C">Up to three. The day scores only if all of them are done.</div>
+                <div style="flex:1"></div>
+                <div onClick="{{ toD2 }}" style="border:2px solid #1E2E28;padding:15px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.06)">
+                  <div style="font-size:18px">Next</div>
+                  <div style="font-size:13px;color:#5A7A6C">Հաջորդը</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isD2 }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;display:flex;flex-direction:column">
+              <div style="height:132px;overflow:hidden;flex:none"><canvas data-px="world" data-tier="{{ tier }}" data-cam="{{ camX }}" data-charx="{{ charX }}" data-pose="idle" data-who="{{ who }}" data-view="220" data-scale="2" data-smoke="1" style="margin-top:-288px"></canvas></div>
+              <div style="flex:1;padding:28px 24px;display:flex;flex-direction:column;gap:20px;min-height:0">
+                <div>
+                  <div style="font-size:24px;line-height:1.25">Which apps do you need?</div>
+                  <div style="font-size:15px;color:#5A7A6C">Ո՞ր հավելվածներն են պետք</div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px">
+                  <sc-for list="{{ appRows }}" as="a" hint-placeholder-count="9">
+                    <div onClick="{{ a.onClick }}" style="display:flex;align-items:center;gap:10px;padding:8px 16px 8px 10px;border-radius:999px;border:2px solid {{ a.bd }};background:{{ a.bg }};color:{{ a.fg }};cursor:pointer">
+                      <canvas data-px="app" data-kind="{{ a.kind }}" data-on="{{ a.on }}" data-scale="2"></canvas>
+                      <span style="font-size:15px">{{ a.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:18px">{{ appCount }}</div>
+                <div style="font-size:15px;line-height:1.5">Everything else goes dark at the cutoff.<br><span style="font-size:13px;color:#5A7A6C">Մնացած ամեն ինչ մարում է սահմանին։</span></div>
+                <div style="flex:1"></div>
+                <div style="display:flex;gap:10px">
+                  <div onClick="{{ backD1 }}" style="border:2px solid rgba(30,46,40,.3);padding:15px 22px;text-align:center;border-radius:12px;cursor:pointer;font-size:18px" style-hover="background:rgba(30,46,40,.06)">Back</div>
+                  <div onClick="{{ toD3 }}" style="flex:1;border:2px solid #1E2E28;padding:15px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.06)">
+                    <div style="font-size:18px">Next</div>
+                    <div style="font-size:13px;color:#5A7A6C">Հաջորդը</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isD3 }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;display:flex;flex-direction:column">
+              <div style="height:132px;overflow:hidden;flex:none"><canvas data-px="world" data-tier="{{ tier }}" data-cam="{{ camX }}" data-charx="{{ charX }}" data-pose="idle" data-who="{{ who }}" data-view="220" data-scale="2" data-smoke="1" style="margin-top:-288px"></canvas></div>
+              <div style="flex:1;padding:28px 24px;display:flex;flex-direction:column;gap:20px;min-height:0;overflow:auto">
+                <div>
+                  <div style="font-size:24px;line-height:1.25">This is the day.</div>
+                  <div style="font-size:15px;color:#5A7A6C">Սա օրն է։</div>
+                </div>
+                <div style="display:flex;flex-direction:column;border-top:1px solid rgba(30,46,40,.14)">
+                  <sc-for list="{{ confirmTasks }}" as="t" hint-placeholder-count="2">
+                    <div style="display:flex;gap:12px;align-items:baseline;padding:12px 0;border-bottom:1px solid rgba(30,46,40,.14)">
+                      <div style="width:8px;height:8px;background:#1E2E28;flex:none"></div>
+                      <div style="font-size:18px">{{ t.text }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px">
+                  <sc-for list="{{ declaredApps }}" as="a" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;gap:10px;padding:8px 16px 8px 10px;border-radius:999px;border:2px solid #1E2E28;background:#1E2E28;color:#EDEFE4">
+                      <canvas data-px="app" data-kind="{{ a.kind }}" data-on="1" data-scale="2"></canvas>
+                      <span style="font-size:15px">{{ a.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;gap:8px;align-items:baseline">
+                  <span style="font-size:15px;color:#5A7A6C">Cutoff</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:24px">{{ cutoffLabel }}</span>
+                  <span style="font-size:13px;color:#5A7A6C">locked for a week</span>
+                </div>
+                <sc-if value="{{ smallDay }}" hint-placeholder-val="{{ true }}">
+                  <div style="background:rgba(30,46,40,.05);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:4px">
+                    <div style="font-size:15px;line-height:1.45">This is smaller than your usual day. Your median is three tasks.</div>
+                    <div style="font-size:13px;color:#5A7A6C;line-height:1.45">Սա սովորականից փոքր է։ Քո միջինը երեք առաջադրանք է։</div>
+                  </div>
+                </sc-if>
+                <div style="flex:1;min-height:12px"></div>
+                <div style="display:flex;gap:10px">
+                  <div onClick="{{ backD2 }}" style="border:2px solid rgba(30,46,40,.3);padding:19px 22px;text-align:center;border-radius:12px;cursor:pointer;font-size:18px" style-hover="background:rgba(30,46,40,.06)">Back</div>
+                  <div onClick="{{ doConfirm }}" style="flex:1;background:#E4695E;color:#EDEFE4;border:3px solid #1E2E28;padding:22px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:#D85A4F">
+                    <div style="font-size:24px;font-weight:600">Commit</div>
+                    <div style="font-size:13px;opacity:.85">Հաստատել</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isRoom }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;display:flex;flex-direction:column;background:#EAE2D4">
+              <div style="background:#EAE2D4;padding:36px 24px 24px;text-align:center;border-radius:12px">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:56px;line-height:1;font-weight:500;color:#1E2E28">{{ sessionClock }}</div>
+              </div>
+              <div style="display:flex;justify-content:center;background:#EAE2D4">
+                <div style="position:relative">
+                  <canvas data-px="room" data-w="176" data-h="132" data-frame="{{ fireFrame }}" data-dim="{{ dim }}" data-scale="2"></canvas>
+                  <div style="position:absolute;left:0;right:0;bottom:8px;text-align:center;border-radius:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(237,239,228,.62)">ROOM ART GOES HERE</div>
+                </div>
+              </div>
+              <div style="flex:1;background:#EDEFE4;padding:24px;display:flex;flex-direction:column;justify-content:space-between;gap:16px;min-height:0">
+                <div>
+                  <div style="font-size:18px">{{ taskLine }}</div>
+                  <div style="font-size:13px;color:#5A7A6C">Cutoff {{ cutoffLabel }} · {{ countdown }}</div>
+                </div>
+                <div onClick="{{ doEnd }}" style="border:2px solid #1E2E28;padding:15px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.06)">
+                  <div style="font-size:18px">End session</div>
+                  <div style="font-size:13px;color:#5A7A6C">Ավարտել նիստը</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ onBoard }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;display:flex;flex-direction:column;background:#EDEFE4">
+              <div style="padding:28px 24px 16px">
+                <div style="font-size:24px">Leaderboard</div>
+                <div style="font-size:15px;color:#5A7A6C">Աղյուսակ</div>
+              </div>
+              <div style="flex:1;overflow:auto;padding:0 24px 24px">
+                <sc-for list="{{ leaders }}" as="r" hint-placeholder-count="8">
+                  <div style="display:flex;align-items:center;gap:16px;padding:14px 8px;margin:0 -8px;border-bottom:1px solid rgba(30,46,40,.12);background:{{ r.bg }}">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:18px;width:22px;color:#5A7A6C">{{ r.rank }}</span>
+                    <canvas data-px="tile" data-tier="{{ r.tier }}" data-scale="2"></canvas>
+                    <span style="font-size:18px;flex:1;font-weight:{{ r.weight }}">{{ r.name }}</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:18px">{{ r.streak }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ onProfile }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;display:flex;flex-direction:column;background:#EDEFE4">
+              <div style="padding:28px 24px 8px;display:flex;align-items:flex-start;justify-content:space-between">
+                <div>
+                  <div style="font-size:24px">Me</div>
+                  <div style="font-size:15px;color:#5A7A6C">Ես</div>
+                </div>
+                <div onClick="{{ toggleGear }}" style="cursor:pointer;padding:4px"><canvas data-px="app" data-kind="gear" data-on="1" data-scale="2"></canvas></div>
+              </div>
+              <div style="flex:1;overflow:auto;padding:16px 24px 24px;display:flex;flex-direction:column;gap:28px">
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:56px;line-height:1;font-weight:500">2:14</div>
+                  <div style="font-size:18px">Time left when you began</div>
+                  <div style="font-size:13px;color:#5A7A6C">Որքան ժամանակ էր մնացել, երբ սկսեցիր</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+                  <div><div style="font-family:'JetBrains Mono',monospace;font-size:24px">14</div><div style="font-size:15px">Days clean</div><div style="font-size:13px;color:#5A7A6C">Մաքուր օրեր</div></div>
+                  <div><div style="font-family:'JetBrains Mono',monospace;font-size:24px">{{ s.streak }}</div><div style="font-size:15px">Current run</div><div style="font-size:13px;color:#5A7A6C">Ընթացիկ շարք</div></div>
+                  <div><div style="font-family:'JetBrains Mono',monospace;font-size:24px">9</div><div style="font-size:15px">Longest run</div><div style="font-size:13px;color:#5A7A6C">Ամենաերկար շարք</div></div>
+                  <div><div style="font-family:'JetBrains Mono',monospace;font-size:24px">31</div><div style="font-size:15px">Sessions</div><div style="font-size:13px;color:#5A7A6C">Նիստեր</div></div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <div style="font-size:15px;color:#5A7A6C">Last fourteen days</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:4px">
+                    <sc-for list="{{ history }}" as="d" hint-placeholder-count="14">
+                      <canvas data-px="tile" data-tier="{{ d.tier }}" data-scale="2"></canvas>
+                    </sc-for>
+                  </div>
+                </div>
+                <sc-if value="{{ s.gear }}" hint-placeholder-val="{{ false }}">
+                  <div style="border:2px solid #1E2E28;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px">
+                    <div style="font-size:18px">Settings</div>
+                    <div style="display:flex;justify-content:space-between;font-size:15px"><span>Cutoff</span><span style="font-family:'JetBrains Mono',monospace">{{ cutoffLabel }} · locked 4 more days</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:15px"><span>Group</span><span style="color:#5A7A6C">301AD pilot</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:15px"><span>Character</span><span style="color:#5A7A6C">a</span></div>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isMissed }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;display:flex;flex-direction:column;background:#8A8060">
+              <canvas data-px="world" data-tier="{{ tier }}" data-cam="{{ camX }}" data-charx="{{ charX }}" data-pose="back" data-who="{{ who }}" data-view="220" data-scale="2" style="flex:none"></canvas>
+              <div style="flex:1;background:#1E2E28;color:#EDEFE4;padding:32px 24px;display:flex;flex-direction:column;justify-content:space-between;gap:24px">
+                <div style="display:flex;flex-direction:column;gap:14px">
+                  <div style="font-size:24px;line-height:1.4">Cutoff passed. Rank lost. Your phone is limited to {{ allowedList }} until midnight.</div>
+                  <div style="font-size:15px;line-height:1.5;color:rgba(237,239,228,.6)">Սահմանն անցավ։ Դիրքը կորավ։ Հեռախոսդ սահմանափակ է {{ allowedList }} հավելվածներով մինչև կեսգիշեր։</div>
+                </div>
+                <div onClick="{{ closeMissed }}" style="border: 2px solid #EDEFE4; padding: 15px; text-align: center; cursor: pointer; border-radius: 20px" style-hover="background:rgba(237,239,228,.1)">
+                  <div style="font-size:18px">Close</div>
+                  <div style="font-size:13px;color:rgba(237,239,228,.6)">Փակել</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isLauncher }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;position:relative;background:#3A4A42;overflow:hidden">
+              <canvas data-px="world" data-tier="dead" data-cam="60" data-view="220" data-scale="2" data-char="0" style="position:absolute;left:0;top:0;filter:saturate(.4) brightness(.55)"></canvas>
+              <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,46,40,.35),rgba(30,46,40,.86))"></div>
+              <div style="position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:32px 24px 40px;gap:28px">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.1em;color:rgba(237,239,228,.5)">STAND-IN LAUNCHER · TAP ANYTHING</div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px 12px">
+                  <sc-for list="{{ launcherApps }}" as="a" hint-placeholder-count="9">
+                    <div onClick="{{ a.onClick }}" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer">
+                      <canvas data-px="app" data-kind="{{ a.kind }}" data-on="{{ a.on }}" data-scale="3"></canvas>
+                      <span style="font-size:13px;color:{{ a.fg }};text-align:center;border-radius:12px">{{ a.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isLockout }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;position:relative;background:#1E2E28;overflow:hidden">
+              <canvas data-px="world" data-tier="dead" data-cam="60" data-view="220" data-scale="2" data-char="0" style="position:absolute;left:0;top:0;filter:saturate(.25) brightness(.4)"></canvas>
+              <div style="position:absolute;inset:0;background:rgba(30,46,40,.8)"></div>
+              <div style="position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:48px 28px 44px;color:#EDEFE4">
+                <div style="display:flex;flex-direction:column;gap:22px">
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:56px;line-height:1;font-weight:500">{{ midnightClock }}</div>
+                  <div style="font-size:15px;color:rgba(237,239,228,.55)">until midnight · մինչև կեսգիշեր</div>
+                  <div style="display:flex;flex-direction:column;border-top:1px solid rgba(237,239,228,.2);margin-top:8px">
+                    <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="2">
+                      <div style="display:flex;gap:12px;align-items:baseline;padding:12px 0;border-bottom:1px solid rgba(237,239,228,.2)">
+                        <div style="width:8px;height:8px;background:#EDEFE4;flex:none"></div>
+                        <div style="font-size:18px">{{ t.text }}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="display:flex;gap:16px">
+                  <sc-for list="{{ declaredApps }}" as="a" hint-placeholder-count="2">
+                    <div style="flex:1;border:2px solid #EDEFE4;padding:20px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer" style-hover="background:rgba(237,239,228,.1)">
+                      <canvas data-px="app" data-kind="{{ a.kind }}" data-on="1" data-scale="3"></canvas>
+                      <span style="font-size:18px">{{ a.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;border-top:1px solid rgba(30,46,40,.18);background:#EDEFE4;flex:none">
+              <div onClick="{{ goHome }}" style="flex:1;padding:16px 0;text-align:center;font-size:15px;border-bottom:3px solid {{ tabHome }};cursor:pointer">Home</div>
+              <div onClick="{{ goBoard }}" style="flex:1;padding:16px 0;text-align:center;font-size:15px;border-bottom:3px solid {{ tabBoard }};cursor:pointer">Leaderboard</div>
+              <div onClick="{{ goProfile }}" style="flex:1;padding:16px 0;text-align:center;font-size:15px;border-bottom:3px solid {{ tabMe }};cursor:pointer">Me</div>
+            </div>
+          </sc-if>
+
+        </div>
+      </x-import>
+
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const APPS = [
+  {kind:'book', label:'Books'}, {kind:'note', label:'Notes'}, {kind:'calc', label:'Calculator'},
+  {kind:'docs', label:'Docs'}, {kind:'browser', label:'Browser'}, {kind:'camera', label:'Camera'},
+  {kind:'music', label:'Music'}, {kind:'maps', label:'Maps'}, {kind:'video', label:'Video'}
+];
+const HOUSE_X = 316, LAKE_X = 40, YARD_X = 200;
+const pad2 = n => (n < 10 ? '0' : '') + n;
+const clock = s => { s = Math.max(0, Math.round(s)); return Math.floor(s/3600) + ':' + pad2(Math.floor(s/60)%60) + ':' + pad2(s%60); };
+const hhmm = m => Math.floor(m/60) + ':' + pad2(m%60);
+
+class Component extends DCLogic {
+  state = {
+    screen: 'home', day: 'empty',
+    tasks: [], draft: ['', '', ''], apps: ['book','note'],
+    cutoffMin: 840, nowSec: 10*3600 + 18*60, sessionSec: 0,
+    tier: 'green', streak: 4, who: 'boy',
+    charX: 60, pose: 'idle', frame: 0, speed: 60, playing: true, gear: false
+  };
+
+  componentDidMount(){
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.timer = setInterval(() => this.tick(), 250);
+    this.boot(0);
+  }
+  componentWillUnmount(){ clearInterval(this.timer); clearTimeout(this.walkT); }
+
+  tick(){
+    const s = this.state;
+    if (!s.playing) { if (!this.reduced && s.screen === 'room') this.setState({frame: s.frame + 1}); return; }
+    const nowSec = s.nowSec + s.speed * 0.25;
+    const patch = {nowSec, frame: this.reduced ? s.frame : s.frame + 1};
+    if (s.screen === 'room') patch.sessionSec = s.sessionSec + s.speed * 0.25;
+    if (nowSec >= s.cutoffMin * 60 && s.day !== 'done' && s.day !== 'missed') {
+      patch.day = 'missed'; patch.screen = 'missed'; patch.tier = s.tier === 'dead' ? 'dead' : (s.tier === 'autumn' ? 'dead' : 'autumn');
+      patch.charX = HOUSE_X - 26; patch.pose = 'back';
+    }
+    this.setState(patch);
+  }
+
+  camFor(x){ return Math.max(0, Math.min(160, Math.round(x - 110))); }
+
+  walkTo(target, then){
+    const step = () => {
+      const x = this.state.charX;
+      const d = target - x;
+      if (Math.abs(d) < 5) { this.setState({charX: target, pose: 'idle'}); then && then(); return; }
+      this.setState({charX: x + Math.sign(d) * 5, pose: this.state.pose === 'walk' ? 'idle' : 'walk'});
+      this.walkT = setTimeout(step, this.reduced ? 0 : 90);
+    };
+    step();
+  }
+
+  boot(n){
+    if (!window.PixelWorld) { if (n < 80) setTimeout(() => this.boot(n+1), 60); return; }
+    this.paint();
+  }
+  componentDidUpdate(){ this.paint(); }
+  boot(n){
+    if (!window.PixelWorld) { if (n < 80) setTimeout(() => this.boot(n+1), 60); return; }
+    this.paint();
+  }
+  paint(){
+    const PW = window.PixelWorld; if (!PW) return;
+    document.querySelectorAll('canvas[data-px]').forEach(cv => {
+      const k = cv.getAttribute('data-px'), s = +(cv.getAttribute('data-scale') || 2);
+      let sig = k; for (const a of cv.attributes) if (a.name.indexOf('data-') === 0) sig += '|' + a.name + '=' + a.value;
+      if (cv.__sig === sig) return; cv.__sig = sig;
+      if (k === 'tile') PW.drawTile(cv, cv.getAttribute('data-tier') || 'green', s);
+      else if (k === 'sprite') PW.drawSprite(cv, {pose: cv.getAttribute('data-pose') || 'idle', who: cv.getAttribute('data-who') || 'boy', scale: s});
+      else if (k === 'world') PW.drawWorld(cv, {
+        tier: cv.getAttribute('data-tier') || 'green',
+        camX: +(cv.getAttribute('data-cam') || 0),
+        viewW: +(cv.getAttribute('data-view') || 220),
+        charX: +(cv.getAttribute('data-charx') || 60),
+        pose: cv.getAttribute('data-pose') || 'idle',
+        who: cv.getAttribute('data-who') || 'boy',
+        smoke: cv.getAttribute('data-smoke') === '1',
+        doorOpen: cv.getAttribute('data-door') === '1',
+        character: cv.getAttribute('data-char') !== '0',
+        frame: +(cv.getAttribute('data-frame') || 0),
+        skyAdd: +(cv.getAttribute('data-sky') || 0),
+        groundAdd: +(cv.getAttribute('data-ground') || 0),
+        scale: s
+      });
+      else if (k === 'app') PW.drawAppTile(cv, {kind: cv.getAttribute('data-kind') || 'book', on: cv.getAttribute('data-on') === '1', scale: s});
+      else if (k === 'room') PW.drawRoomSlot(cv, {W: +(cv.getAttribute('data-w')||176), H: +(cv.getAttribute('data-h')||132), dim: +(cv.getAttribute('data-dim')||0), frame: +(cv.getAttribute('data-frame')||0), scale: s});
+    });
+  }
+  go(screen){ this.setState({screen}); }
+
+  startDeclare(){ this.setState({screen:'d1', draft:['','','']}); }
+  setDraft(i, v){ const d = this.state.draft.slice(); d[i] = v; this.setState({draft: d}); }
+  toggleApp(kind){
+    const a = this.state.apps.slice(), i = a.indexOf(kind);
+    if (i >= 0) a.splice(i, 1); else if (a.length < 3) a.push(kind);
+    this.setState({apps: a});
+  }
+  confirm(){
+    const tasks = this.state.draft.map(t => t.trim()).filter(Boolean);
+    this.setState({tasks: tasks.length ? tasks : ['Read 60 pages'], day:'declared', screen:'home', charX: YARD_X, pose:'idle'});
+  }
+  start(){
+    this.setState({screen:'walk'});
+    this.walkTo(HOUSE_X - 28, () => setTimeout(() => this.setState({screen:'room', day:'running', sessionSec: 0}), this.reduced ? 0 : 240));
+  }
+  endSession(){
+    this.setState({screen:'walk', charX: HOUSE_X - 28, pose:'idle', day:'done'});
+    this.walkTo(LAKE_X, () => this.setState({screen:'home', pose:'sit', tier: this.state.tier === 'green' ? 'bloom' : 'green', streak: this.state.streak + 1}));
+  }
+  jump(kind){
+    const base = {gear:false, frame:0};
+    if (kind === 'empty') this.setState({...base, screen:'home', day:'empty', tasks:[], charX:HOUSE_X-44, pose:'idle', nowSec:10*3600+18*60, tier:'green'});
+    if (kind === 'declared') this.setState({...base, screen:'home', day:'declared', tasks:['Read 60 pages','Notes on ch. 4'], apps:['book','note'], charX:YARD_X, pose:'idle', nowSec:10*3600+18*60});
+    if (kind === 'room') this.setState({...base, screen:'room', day:'running', nowSec:11*3600+37*60, tier:'green', tasks: this.state.tasks.length ? this.state.tasks : ['Read 60 pages','Notes on ch. 4'], sessionSec: 4987});
+    if (kind === 'done') this.setState({...base, screen:'home', day:'done', nowSec:13*3600+12*60, tasks:['Read 60 pages','Notes on ch. 4'], charX:LAKE_X, pose:'sit', tier:'bloom'});
+    if (kind === 'missed') this.setState({...base, screen:'missed', day:'missed', tasks:['Read 60 pages','Notes on ch. 4'], apps:['book','note'], tier:'autumn', charX:HOUSE_X-30, pose:'back', nowSec:14*3600+2*60});
+    if (kind === 'lockout') this.setState({...base, screen:'lockout', day:'missed', tasks:['Read 60 pages','Notes on ch. 4'], apps:['book','note'], tier:'dead', nowSec:14*3600+2*60});
+    if (kind === 'launcher') this.setState({...base, screen:'launcher', day:'missed', apps:['book','note'], tier:'dead', nowSec:14*3600+2*60});
+  }
+
+  paintSig(cv, sig){ if (cv.__sig === sig) return true; cv.__sig = sig; return false; }
+
+  renderVals(){
+    const s = this.state, PW = window.PixelWorld;
+    const remain = s.cutoffMin * 60 - s.nowSec;
+    const midnight = 24*3600 - s.nowSec;
+    const declaredApps = s.apps.map(k => APPS.find(a => a.kind === k)).filter(Boolean);
+
+    const leaders = [
+      {rank:1, name:'Ani', streak:12, tier:'bloom'},
+      {rank:2, name:'Davit', streak:9, tier:'bloom'},
+      {rank:3, name:'Narek', streak:6, tier:'green'},
+      {rank:4, name:'You', streak:s.streak, tier:s.tier, me:true},
+      {rank:5, name:'Sona', streak:4, tier:'green'},
+      {rank:6, name:'Lilit', streak:2, tier:'autumn'},
+      {rank:7, name:'Tigran', streak:0, tier:'dead'},
+      {rank:8, name:'Hayk', streak:0, tier:'dead'}
+    ].map(r => ({...r, bg: r.me ? 'rgba(30,46,40,.06)' : 'transparent', weight: r.me ? '600' : '400'}));
+
+    const history = ['bloom','bloom','green','green','autumn','dead','autumn','green','green','bloom','bloom','bloom','green','bloom']
+      .map((t, i) => ({tier: t, key: i}));
+
+    return {
+      s, screen: s.screen, day: s.day,
+      tasks: s.tasks.map((t, i) => ({text: t, key: i})),
+      draftRows: s.draft.map((v, i) => ({
+        value: v, key: i, ph: i === 0 ? 'Read 60 pages' : 'Add a task',
+        onChange: e => this.setDraft(i, e.target.value)
+      })),
+      appRows: APPS.map(a => {
+        const on = s.apps.indexOf(a.kind) >= 0;
+        const full = s.apps.length >= 3 && !on;
+        return {...a, on: on ? '1' : '0',
+          bg: on ? '#1E2E28' : 'transparent', fg: on ? '#EDEFE4' : (full ? '#9AA69F' : '#1E2E28'),
+          bd: on ? '#1E2E28' : (full ? 'rgba(30,46,40,.2)' : 'rgba(30,46,40,.35)'),
+          onClick: () => this.toggleApp(a.kind)};
+      }),
+      declaredApps, appCount: s.apps.length + ' / 3',
+      launcherApps: APPS.map(a => {
+        const on = s.apps.indexOf(a.kind) >= 0;
+        return {...a, on: on ? '1' : '0', fg: on ? '#EDEFE4' : 'rgba(237,239,228,.45)',
+          onClick: on ? (() => {}) : (() => this.setState({screen:'lockout'}))};
+      }),
+      leaders, history,
+      camX: this.camFor(s.charX), charX: s.charX, pose: s.pose, tier: s.tier, who: s.who,
+      skyColor: (PW && PW.TIERS[s.tier] ? PW.TIERS[s.tier].sky : '#CBDFD6'),
+      fireFrame: s.frame % 3, dim: Math.min(0.9, s.sessionSec / 7200),
+      countdown: remain > 0 ? clock(remain) : 'passed',
+      countdownColor: remain > 0 ? '#1E2E28' : '#E4695E',
+      cutoffLabel: hhmm(s.cutoffMin),
+      nowLabel: hhmm(Math.floor(s.nowSec / 60) % 1440),
+      sessionClock: clock(s.sessionSec),
+      midnightClock: clock(midnight),
+      taskLine: s.tasks[0] || 'Read 60 pages',
+      smallDay: s.draft.filter(t => t.trim()).length < 3,
+      isEmpty: s.day === 'empty', isDeclared: s.day === 'declared', isDone: s.day === 'done',
+      isWalk: s.screen === 'walk', isD1: s.screen === 'd1', isD2: s.screen === 'd2', isD3: s.screen === 'd3',
+      isRoom: s.screen === 'room', isMissed: s.screen === 'missed',
+      isLauncher: s.screen === 'launcher', isLockout: s.screen === 'lockout',
+      doorOpen: s.charX > HOUSE_X - 44 ? '1' : '0',
+      walkLabel: s.day === 'done' ? 'leaving' : 'going in',
+      confirmTasks: s.draft.map(t => t.trim()).filter(Boolean).map((t, i) => ({text: t, key: i})),
+      allowedList: declaredApps.map(a => a.label).join(' and ') || 'Books and Notes',
+      onHome: s.screen === 'home', onBoard: s.screen === 'board', onProfile: s.screen === 'profile',
+      tabHome: s.screen === 'home' ? '#1E2E28' : 'transparent',
+      tabBoard: s.screen === 'board' ? '#1E2E28' : 'transparent',
+      tabMe: s.screen === 'profile' ? '#1E2E28' : 'transparent',
+      showTabs: ['home','board','profile'].indexOf(s.screen) >= 0,
+      goHome: () => this.go('home'), goBoard: () => this.go('board'), goProfile: () => this.go('profile'),
+      declare: () => this.startDeclare(),
+      toD2: () => this.go('d2'), toD3: () => this.go('d3'), backD1: () => this.go('d1'), backD2: () => this.go('d2'),
+      doConfirm: () => this.confirm(), doStart: () => this.start(), doEnd: () => this.endSession(),
+      closeMissed: () => this.setState({screen:'launcher'}),
+      openLauncher: () => this.go('launcher'),
+      tapBlocked: () => this.setState({screen:'lockout'}),
+      tapAllowed: () => {},
+      backFromLockout: () => this.setState({screen:'launcher'}),
+      toggleGear: () => this.setState({gear: !s.gear}),
+      jEmpty: () => this.jump('empty'), jDeclared: () => this.jump('declared'), jRoom: () => this.jump('room'),
+      jDone: () => this.jump('done'), jMissed: () => this.jump('missed'), jLockout: () => this.jump('lockout'),
+      jLauncher: () => this.jump('launcher'),
+      setBloom: () => this.setState({tier:'bloom'}), setGreen: () => this.setState({tier:'green'}),
+      setAutumn: () => this.setState({tier:'autumn'}), setDead: () => this.setState({tier:'dead'}),
+      speedReal: () => this.setState({speed:1}), speedFast: () => this.setState({speed:60}), speedTurbo: () => this.setState({speed:600}),
+      togglePlay: () => this.setState({playing: !s.playing}),
+      playLabel: s.playing ? 'Pause clock' : 'Run clock',
+      speedLabel: s.speed === 1 ? 'real time' : (s.speed === 60 ? '60x' : '600x')
+    };
+  }
+}
+
+</script>
+</body>
+</html>

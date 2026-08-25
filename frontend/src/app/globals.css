@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/* Design System colors — Design System/301AD.dc.html, docs/design-tokens.md */
+:root {
+  --background: #edefe4;
+  --foreground: #1e2e28;
+
+  --color-sky-day: #cbdfd6;
+  --color-sky-cloud: #edefe4;
+  --color-water: #93b5b0;
+  --color-water-deep: #6e9691;
+  --color-foliage-light: #a8c0ac;
+  --color-foliage-mid: #7c9a8a;
+  --color-foliage-dark: #5a7a6c;
+  --color-trunk: #9a6156;
+  --color-ink: #1e2e28;
+  --color-wood-light: #c89457;
+  --color-wood-mid: #9a6634;
+  --color-wood-dark: #5e3d24;
+  --color-wall: #eae2d4;
+  --color-stone: #c4bfb8;
+  --color-fire: #e88a3c;
+  --color-fire-hot: #f3c24c;
+  --color-alert: #e4695e;
+  --color-autumn: #c97f3d;
+  --color-dead: #a88b4a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-noto-sans-armenian);
+  --font-mono: var(--font-jetbrains-mono);
+
+  --color-sky-day: var(--color-sky-day);
+  --color-sky-cloud: var(--color-sky-cloud);
+  --color-water: var(--color-water);
+  --color-water-deep: var(--color-water-deep);
+  --color-foliage-light: var(--color-foliage-light);
+  --color-foliage-mid: var(--color-foliage-mid);
+  --color-foliage-dark: var(--color-foliage-dark);
+  --color-trunk: var(--color-trunk);
+  --color-ink: var(--color-ink);
+  --color-wood-light: var(--color-wood-light);
+  --color-wood-mid: var(--color-wood-mid);
+  --color-wood-dark: var(--color-wood-dark);
+  --color-wall: var(--color-wall);
+  --color-stone: var(--color-stone);
+  --color-fire: var(--color-fire);
+  --color-fire-hot: var(--color-fire-hot);
+  --color-alert: var(--color-alert);
+  --color-autumn: var(--color-autumn);
+  --color-dead: var(--color-dead);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}

@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<script src="./pixel.js"></script>
+<style>
+body{margin:0;background:#DDE3DA}
+a{color:#1E2E28}a:hover{color:#E4695E}
+canvas{display:block}
+input{font-family:'Noto Sans Armenian',system-ui,sans-serif}
+</style>
+</helmet>
+
+<div style="font-family:'Noto Sans Armenian',system-ui,sans-serif;color:#1E2E28;padding:48px 40px 88px;display:flex;flex-direction:column;gap:52px;align-items:center">
+
+  <div style="width:100%;max-width:1180px;display:flex;flex-direction:column;gap:26px">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;color:#5A7A6C">301AD · PHASES 1 · 3 · 6 · 8</div>
+      <div style="font-size:32px;font-weight:600;line-height:1.15">Register, log in, session room, gardens, profile</div>
+      <div style="font-size:15px;line-height:1.6;color:#3E5C50;max-width:660px;text-wrap:pretty">The screens the build plan specifies but the existing prototype did not have. Same pixel engine, same phone frame, same tokens. Build notes sit beside the phone: state name, endpoint, and what refreshes when.</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px;background:rgba(30,46,40,.14);border:1px solid rgba(30,46,40,.14)">
+      <div style="background:#EDEFE4;padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">FAUNA RULE</div>
+        <div style="font-size:14px;line-height:1.55">The dog is drawn beside the character in every tier — the coat just loses saturation as the streak dies. Deer and butterflies arrive for a window and then leave, so seeing them is an event.</div>
+      </div>
+      <div style="background:#EDEFE4;padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">APPS PER TASK</div>
+        <div style="font-size:14px;line-height:1.55">Each task carries its own allowed list. Only the running task's apps open, and the next task does not start until the one before it is marked done.</div>
+      </div>
+      <div style="background:#EDEFE4;padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">GARDENS</div>
+        <div style="font-size:14px;line-height:1.55">A place and a portrait sit beside every name, and the list switches between your ten and everyone. Equal counts share a place.</div>
+      </div>
+      <div style="background:#EDEFE4;padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">FLAGGED · PLAN VS SYSTEM</div>
+        <div style="font-size:14px;line-height:1.55">The plan has one allowed-app list per day and no sign-up. This build has a list per task and a registration screen with a privacy consent, at your request.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width:100%;max-width:1180px;display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;justify-content:center">
+
+    <div style="width:236px;display:flex;flex-direction:column;gap:16px;position:sticky;top:24px">
+      <div style="background:#EDEFE4;border:1px solid rgba(30,46,40,.16);padding:18px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">STATE JUMPER</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div onClick="{{ jReg }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Register</div>
+          <div onClick="{{ jRegTaken }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Register · taken</div>
+          <div onClick="{{ jLogin }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Login</div>
+          <div onClick="{{ jLoginErr }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Login · rejected</div>
+          <div onClick="{{ jApps }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Apps per task</div>
+          <div onClick="{{ jRoom }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Room · task 1</div>
+          <div onClick="{{ jRoomMid }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Room · task 2</div>
+          <div onClick="{{ jRoomDone }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Room · all done</div>
+          <div onClick="{{ jBoard }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Gardens · group</div>
+          <div onClick="{{ jBoardGlobal }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Gardens · global</div>
+          <div onClick="{{ jProfile }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Me</div>
+          <div onClick="{{ jSettings }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">Me · settings</div>
+        </div>
+      </div>
+      <div style="background:#EDEFE4;border:1px solid rgba(30,46,40,.16);padding:18px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">CLOCK · {{ speedLabel }}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:24px">{{ nowLabel }}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div onClick="{{ speedReal }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 4px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">1x</div>
+          <div onClick="{{ speedFast }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 4px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">60x</div>
+        </div>
+        <div onClick="{{ togglePlay }}" style="border:1px solid rgba(30,46,40,.3);padding:9px 8px;font-size:13px;text-align:center;border-radius:12px;cursor:pointer" style-hover="background:rgba(30,46,40,.08)">{{ playLabel }}</div>
+        <div style="font-size:13px;color:#5A7A6C;line-height:1.45">Session time drives the hearth. Visitors come and go on their own window: {{ visitState }}</div>
+      </div>
+    </div>
+
+    <x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" width="{{ 440 }}" height="{{ 956 }}" hint-size="440px,956px">
+      <div style="height:100%;background:#EDEFE4;display:flex;flex-direction:column;font-family:'Noto Sans Armenian',system-ui,sans-serif;color:#1E2E28;overflow:hidden">
+
+        <sc-if value="{{ isReg }}" hint-placeholder-val="{{ false }}">
+          <div style="height:100%;display:flex;flex-direction:column;background:#EDEFE4">
+            <div style="height:150px;flex:none;overflow:hidden;background:#CBDFD6">
+              <canvas data-px="world" data-tier="bloom" data-cam="24" data-view="220" data-scale="2" data-char="0" style="margin-top:-120px"></canvas>
+            </div>
+            <div style="flex:1;overflow:auto;padding:26px 28px 28px;display:flex;flex-direction:column;gap:22px;min-height:0">
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <div style="font-size:24px">Create an account</div>
+                <div style="font-size:15px;color:#5A7A6C">You need a group code to join.</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:20px">
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="font-size:13px;color:#5A7A6C">Username</div>
+                  <input value="{{ rUser }}" onChange="{{ onRUser }}" style="border:none;border-bottom:2px solid #1E2E28;background:transparent;font-size:24px;color:#1E2E28;padding:6px 0;outline:none">
+                </div>
+                <sc-if value="{{ regTaken }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:15px;line-height:1.45;color:#A88B4A;margin-top:-12px">That username is taken. Nothing else you typed was lost.</div>
+                </sc-if>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="font-size:13px;color:#5A7A6C">Password</div>
+                  <input type="password" value="{{ rPass }}" onChange="{{ onRPass }}" style="border:none;border-bottom:2px solid #1E2E28;background:transparent;font-size:24px;color:#1E2E28;padding:6px 0;outline:none">
+                  <div style="font-size:13px;color:#5A7A6C">Eight characters, no other rules.</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="font-size:13px;color:#5A7A6C">Repeat password</div>
+                  <input type="password" value="{{ rPass2 }}" onChange="{{ onRPass2 }}" style="border:none;border-bottom:2px solid #1E2E28;background:transparent;font-size:24px;color:#1E2E28;padding:6px 0;outline:none">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="font-size:13px;color:#5A7A6C">Group code</div>
+                  <input value="{{ rCode }}" onChange="{{ onRCode }}" style="border:none;border-bottom:2px solid #1E2E28;background:transparent;font-family:'JetBrains Mono',monospace;font-size:24px;letter-spacing:.1em;color:#1E2E28;padding:6px 0;outline:none">
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid rgba(30,46,40,.14);padding-top:18px">
+                <div onClick="{{ toggleAgree }}" style="display:flex;gap:14px;align-items:flex-start;cursor:pointer">
+                  <div style="width:26px;height:26px;flex:none;box-sizing:border-box;border:2px solid {{ agreeBd }};background:{{ agreeBox }};margin-top:1px;display:flex;align-items:center;justify-content:center">
+                    <sc-if value="{{ agree }}" hint-placeholder-val="{{ false }}">
+                      <canvas data-px="glyph" data-kind="check" data-scale="1"></canvas>
+                    </sc-if>
+                  </div>
+                  <div style="font-size:15px;line-height:1.45">I have read the privacy policy and agree to it.</div>
+                </div>
+                <div onClick="{{ togglePriv }}" style="font-size:15px;color:#5A7A6C;cursor:pointer;padding-left:38px" style-hover="color:#1E2E28">{{ privAction }}</div>
+                <sc-if value="{{ privOpen }}" hint-placeholder-val="{{ false }}">
+                  <div style="background:rgba(30,46,40,.05);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">PRIVACY POLICY · SHORT VERSION</div>
+                    <div style="font-size:15px;line-height:1.5">301AD stores your username, your cutoff time, the tasks you type, which apps you allow, and the timestamps of your sessions.</div>
+                    <div style="font-size:15px;line-height:1.5">It does not read what is inside those apps, your messages, your files or your location. The lock only checks which app is in front.</div>
+                    <div style="font-size:15px;line-height:1.5">Your group sees your name, your cutoff, your declared tasks and your clean-day count. Nobody outside the group sees your tasks.</div>
+                    <div style="font-size:15px;line-height:1.5">Delete your account from Me and every row goes with it, same day.</div>
+                    <div style="font-size:13px;color:#5A7A6C">Full text at 301ad.app/privacy. Armenian translation is still in draft.</div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ agreeErr }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:15px;line-height:1.45;color:#A88B4A">The privacy policy has to be accepted before an account can be made.</div>
+                </sc-if>
+              </div>
+
+              <div style="flex:1;min-height:4px"></div>
+              <div onClick="{{ doRegister }}" style="background:{{ regBtnBg }};color:{{ regBtnFg }};padding:18px;text-align:center;border-radius:12px;font-size:18px;font-weight:500;cursor:pointer">Create account</div>
+              <div onClick="{{ jLogin }}" style="font-size:15px;color:#5A7A6C;text-align:center;cursor:pointer" style-hover="color:#1E2E28">I already have one</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+          <div style="height:100%;display:flex;flex-direction:column;background:#EDEFE4">
+            <div style="height:196px;flex:none;overflow:hidden;background:#CBDFD6">
+              <canvas data-px="world" data-tier="green" data-cam="40" data-view="220" data-scale="2" data-charx="60" data-dog="1" data-fauna="{{ faunaOn }}" data-smoke="1" style="margin-top:-172px"></canvas>
+            </div>
+            <div style="flex:1;padding:30px 28px 30px;display:flex;flex-direction:column;gap:26px;min-height:0">
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:500">301AD</div>
+                <div style="font-size:15px;color:#5A7A6C">Ten people, one week at a time.</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:24px">
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="font-size:13px;color:#5A7A6C">Username</div>
+                  <input value="{{ user }}" onChange="{{ onUser }}" style="border:none;border-bottom:2px solid #1E2E28;background:transparent;font-size:24px;color:#1E2E28;padding:6px 0;outline:none">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="font-size:13px;color:#5A7A6C">Password</div>
+                  <input type="password" value="{{ pass }}" onChange="{{ onPass }}" style="border:none;border-bottom:2px solid #1E2E28;background:transparent;font-size:24px;color:#1E2E28;padding:6px 0;outline:none">
+                </div>
+                <sc-if value="{{ loginErr }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:15px;line-height:1.45;color:#A88B4A">That pair does not match an account. Nothing is locked out; try again.</div>
+                </sc-if>
+              </div>
+              <div style="flex:1;min-height:8px"></div>
+              <div onClick="{{ doLogin }}" style="background:#E4695E;color:#EDEFE4;padding:18px;text-align:center;border-radius:12px;font-size:18px;font-weight:500;cursor:pointer" style-hover="background:#D85A4F">Log in</div>
+              <div onClick="{{ jReg }}" style="font-size:15px;color:#5A7A6C;text-align:center;cursor:pointer" style-hover="color:#1E2E28">Create an account</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isApps }}" hint-placeholder-val="{{ false }}">
+          <div style="height:100%;display:flex;flex-direction:column;background:#EDEFE4;min-height:0">
+            <div style="padding:26px 24px 12px;flex:none;display:flex;flex-direction:column;gap:4px">
+              <div style="font-size:24px">Apps for each task</div>
+              <div style="font-size:15px;color:#5A7A6C;line-height:1.45">One list per task. While a task is running, only its apps open — the rest of the phone stays shut.</div>
+            </div>
+            <div style="flex:1;overflow:auto;padding:8px 24px 20px;display:flex;flex-direction:column;gap:12px;min-height:0">
+              <sc-for list="{{ declRows }}" as="d" hint-placeholder-count="3">
+                <div onClick="{{ d.onClick }}" style="border:2px solid {{ d.bd }};border-radius:14px;padding:14px 16px;display:flex;gap:14px;align-items:center;cursor:pointer;background:{{ d.bg }}">
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#5A7A6C;width:20px;flex:none">{{ d.n }}</div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+                    <div style="font-size:18px">{{ d.name }}</div>
+                    <div style="font-size:13px;color:#5A7A6C">{{ d.summary }}</div>
+                  </div>
+                  <div style="font-size:15px;color:#5A7A6C">{{ d.action }}</div>
+                </div>
+              </sc-for>
+              <div style="border-top:1px solid rgba(30,46,40,.14);padding-top:18px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;flex-direction:column;gap:3px">
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">UNLOCKED DURING TASK {{ selTaskN }}</div>
+                  <div style="font-size:18px">{{ selTaskName }}</div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+                  <sc-for list="{{ appGrid }}" as="a" hint-placeholder-count="8">
+                    <div onClick="{{ a.onClick }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 4px;border-radius:12px;background:{{ a.bg }};cursor:pointer">
+                      <canvas data-px="app" data-kind="{{ a.kind }}" data-on="{{ a.on }}" data-scale="2"></canvas>
+                      <div style="font-size:13px;color:{{ a.fg }};text-align:center">{{ a.name }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="background:rgba(30,46,40,.05);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px">
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">PLACEHOLDER ICONS</div>
+                  <div style="font-size:13px;color:#5A7A6C;line-height:1.45">These tiles stand in for the phone's own app list. In the build each row is a real installed package, with its real name and its real icon.</div>
+                </div>
+                <div style="font-size:13px;color:#5A7A6C;line-height:1.45">{{ selAppNote }}</div>
+              </div>
+            </div>
+            <div style="flex:none;padding:0 24px 22px;display:flex;flex-direction:column;gap:12px">
+              <div onClick="{{ jRoom }}" style="background:#E4695E;color:#EDEFE4;padding:18px;text-align:center;border-radius:12px;font-size:18px;font-weight:500;cursor:pointer" style-hover="background:#D85A4F">Start the day</div>
+              <div style="font-size:13px;color:#5A7A6C;text-align:center">Task one starts first. The next unlocks when you mark it done.</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isRoom }}" hint-placeholder-val="{{ false }}">
+          <div style="height:100%;display:flex;flex-direction:column;background:#EAE2D4;min-height:0">
+            <div style="padding:24px 24px 12px;display:flex;align-items:flex-end;justify-content:space-between;flex:none">
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:44px;line-height:1;font-weight:500">{{ sessionClock }}</div>
+                <div style="font-size:13px;color:#5A7A6C">In session</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:18px;color:{{ countdownColor }}">{{ countdown }}</div>
+                <div style="font-size:13px;color:#5A7A6C">until {{ cutoffLabel }}</div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:center;flex:none;padding:0 24px 12px">
+              <div style="position:relative">
+                <canvas data-px="room" data-w="176" data-h="92" data-frame="{{ fireFrame }}" data-dim="{{ dim }}" data-scale="2"></canvas>
+                <div style="position:absolute;left:0;right:0;bottom:6px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(237,239,228,.55)">ROOM ART GOES HERE</div>
+              </div>
+            </div>
+            <div style="flex:1;background:#EDEFE4;border-top:2px solid #1E2E28;padding:18px 24px 22px;display:flex;flex-direction:column;gap:16px;min-height:0;overflow:auto">
+              <sc-if value="{{ hasCurrent }}" hint-placeholder-val="{{ true }}">
+                <div style="border:2px solid #1E2E28;border-radius:14px;padding:16px 18px 18px;display:flex;flex-direction:column;gap:14px">
+                  <div style="display:flex;justify-content:space-between;align-items:baseline">
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">{{ curLabel }}</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">{{ doneLine }}</div>
+                  </div>
+                  <div style="font-size:24px;line-height:1.2">{{ curName }}</div>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <div style="font-size:13px;color:#5A7A6C">Open right now, nothing else</div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap">
+                      <sc-for list="{{ curApps }}" as="a" hint-placeholder-count="2">
+                        <div style="display:flex;align-items:center;gap:8px;border:1px solid rgba(30,46,40,.22);border-radius:10px;padding:6px 12px 6px 7px">
+                          <canvas data-px="app" data-kind="{{ a.kind }}" data-on="1" data-scale="1"></canvas>
+                          <span style="font-size:13px">{{ a.name }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div onClick="{{ completeCur }}" style="background:#1E2E28;color:#EDEFE4;padding:16px;text-align:center;border-radius:12px;font-size:18px;font-weight:500;cursor:pointer" style-hover="background:#33514A">Mark done</div>
+                </div>
+              </sc-if>
+              <div style="display:flex;flex-direction:column">
+                <sc-for list="{{ taskRows }}" as="t" hint-placeholder-count="3">
+                  <div style="display:flex;gap:14px;align-items:flex-start;padding:13px 0;border-top:1px solid rgba(30,46,40,.14)">
+                    <div style="width:22px;height:22px;flex:none;box-sizing:border-box;border:2px solid {{ t.bd }};border-radius:{{ t.rad }};margin-top:2px;display:flex;align-items:center;justify-content:center">
+                      <sc-if value="{{ t.checked }}" hint-placeholder-val="{{ false }}">
+                        <canvas data-px="glyph" data-kind="check" data-scale="1"></canvas>
+                      </sc-if>
+                    </div>
+                    <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+                      <div style="font-size:18px;color:{{ t.fg }}">{{ t.text }}</div>
+                      <div style="font-size:13px;color:#5A7A6C">{{ t.note }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="flex:1;min-height:8px"></div>
+              <sc-if value="{{ allChecked }}" hint-placeholder-val="{{ false }}">
+                <div onClick="{{ doEnd }}" style="background:#E4695E;color:#EDEFE4;padding:20px;text-align:center;border-radius:12px;font-size:18px;font-weight:500;cursor:pointer" style-hover="background:#D85A4F">End session</div>
+              </sc-if>
+              <sc-if value="{{ notAllChecked }}" hint-placeholder-val="{{ true }}">
+                <div onClick="{{ doEnd }}" style="border:2px solid #1E2E28;padding:18px;text-align:center;border-radius:12px;font-size:18px;cursor:pointer" style-hover="background:rgba(30,46,40,.06)">End session early</div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isBoard }}" hint-placeholder-val="{{ false }}">
+          <div style="height:100%;display:flex;flex-direction:column;background:#EDEFE4;min-height:0">
+            <div style="padding:26px 24px 14px;flex:none;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <div style="font-size:24px">{{ boardTitle }}</div>
+                <div style="font-size:15px;color:#5A7A6C">{{ boardSub }}</div>
+              </div>
+              <div style="display:flex;border:2px solid #1E2E28;border-radius:12px;overflow:hidden">
+                <div onClick="{{ setGroup }}" style="flex:1;padding:11px 0;text-align:center;font-size:15px;cursor:pointer;background:{{ grpBg }};color:{{ grpFg }}">My group</div>
+                <div onClick="{{ setGlobal }}" style="flex:1;padding:11px 0;text-align:center;font-size:15px;cursor:pointer;background:{{ gloBg }};color:{{ gloFg }};border-left:2px solid #1E2E28">Everyone</div>
+              </div>
+            </div>
+            <div style="flex:1;overflow:auto;min-height:0">
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+                <div onClick="{{ r.onClick }}" style="padding:14px 18px 16px;border-top:{{ r.topBd }};border-bottom:1px solid rgba(30,46,40,.1);background:{{ r.bg }};display:flex;gap:12px;align-items:flex-start;cursor:pointer">
+                  <div style="width:30px;flex:none;padding-top:2px;font-family:'JetBrains Mono',monospace;font-size:{{ r.placeSize }};line-height:1.1;color:{{ r.placeFg }};text-align:right">{{ r.place }}</div>
+                  <div style="width:52px;flex:none;display:flex;flex-direction:column;align-items:center;gap:6px">
+                    <canvas data-px="avatar" data-v="{{ r.av }}" data-scale="3"></canvas>
+                    <div style="font-size:13px;font-weight:{{ r.weight }};text-align:center;line-height:1.25">{{ r.name }}</div>
+                  </div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0">
+                    <div style="display:flex;align-items:baseline;gap:8px">
+                      <div style="font-family:'JetBrains Mono',monospace;font-size:24px;line-height:1">{{ r.days }}</div>
+                      <div style="font-size:13px;color:#5A7A6C;flex:1">{{ r.dayWord }}</div>
+                      <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#5A7A6C">{{ r.cutoff }}</div>
+                    </div>
+                    <canvas data-px="bed" data-days="{{ r.days }}" data-tier="{{ r.tier }}" data-scale="2"></canvas>
+                    <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;flex-direction:column;gap:6px;padding-top:2px">
+                        <div style="font-size:15px;line-height:1.5">{{ r.taskLine }}</div>
+                        <div style="font-size:13px;color:#5A7A6C">{{ r.meta }}</div>
+                      </div>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-for>
+              <div style="padding:16px 24px 26px;font-size:13px;color:#5A7A6C;line-height:1.5">{{ boardFoot }}</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+          <div style="height:100%;display:flex;flex-direction:column;background:#EDEFE4;min-height:0">
+            <div style="padding:26px 24px 8px;display:flex;align-items:center;gap:14px;flex:none">
+              <canvas data-px="avatar" data-v="{{ myAv }}" data-scale="3"></canvas>
+              <div style="flex:1">
+                <div style="font-size:24px">Me</div>
+                <div style="font-size:15px;color:#5A7A6C">arman · 301AD pilot</div>
+              </div>
+              <div onClick="{{ toggleGear }}" style="cursor:pointer;padding:6px"><canvas data-px="glyph" data-kind="cog" data-scale="2"></canvas></div>
+            </div>
+            <div style="flex:1;overflow:auto;padding:16px 24px 28px;display:flex;flex-direction:column;gap:26px;min-height:0">
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:56px;line-height:1;font-weight:500">2:14</div>
+                <div style="font-size:18px">Median time left when you began</div>
+                <div style="font-size:13px;color:#5A7A6C">The one number the pilot is measuring.</div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(30,46,40,.14);border:1px solid rgba(30,46,40,.14)">
+                <div style="background:#EDEFE4;padding:16px 16px 18px;display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;align-items:center;gap:12px">
+                    <canvas data-px="glyph" data-kind="sprout" data-scale="2"></canvas>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:32px;line-height:1;font-weight:500">{{ myDays }}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:15px">Clean days</div>
+                    <div style="font-size:13px;color:#5A7A6C;line-height:1.45">Out of 30 on record. Six missed, one late.</div>
+                  </div>
+                </div>
+                <div style="background:#EDEFE4;padding:16px 16px 18px;display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;align-items:center;gap:12px">
+                    <canvas data-px="glyph" data-kind="lantern" data-scale="2"></canvas>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:32px;line-height:1;font-weight:500">{{ myRun }}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:15px">Current run</div>
+                    <div style="font-size:13px;color:#5A7A6C;line-height:1.45">Since 19 Aug. Two more and the garden climbs a tier.</div>
+                  </div>
+                </div>
+                <div style="background:#EDEFE4;padding:16px 16px 18px;display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;align-items:center;gap:12px">
+                    <canvas data-px="glyph" data-kind="peak" data-scale="2"></canvas>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:32px;line-height:1;font-weight:500">9</div>
+                  </div>
+                  <div>
+                    <div style="font-size:15px">Longest run</div>
+                    <div style="font-size:13px;color:#5A7A6C;line-height:1.45">17 to 25 July. Ended on a 14:00 cutoff.</div>
+                  </div>
+                </div>
+                <div style="background:#EDEFE4;padding:16px 16px 18px;display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;align-items:center;gap:12px">
+                    <canvas data-px="glyph" data-kind="hearth" data-scale="2"></canvas>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:32px;line-height:1;font-weight:500">31</div>
+                  </div>
+                  <div>
+                    <div style="font-size:15px">Sessions</div>
+                    <div style="font-size:13px;color:#5A7A6C;line-height:1.45">Median 1h 52m. Longest 4h 06m.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div style="font-size:15px;color:#5A7A6C">Last thirty days</div>
+                <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:5px">
+                  <sc-for list="{{ history }}" as="d" hint-placeholder-count="30">
+                    <div style="aspect-ratio:1;background:{{ d.color }}"></div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;gap:18px;flex-wrap:wrap">
+                  <div style="display:flex;gap:7px;align-items:center"><div style="width:10px;height:10px;background:#5A7A6C"></div><span style="font-size:13px;color:#5A7A6C">full</span></div>
+                  <div style="display:flex;gap:7px;align-items:center"><div style="width:10px;height:10px;background:#C97F3D"></div><span style="font-size:13px;color:#5A7A6C">late</span></div>
+                  <div style="display:flex;gap:7px;align-items:center"><div style="width:10px;height:10px;background:#A88B4A"></div><span style="font-size:13px;color:#5A7A6C">none</span></div>
+                </div>
+              </div>
+
+              <sc-if value="{{ gear }}" hint-placeholder-val="{{ true }}">
+                <div style="border:2px solid #1E2E28;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:4px">
+                  <div style="font-size:18px;padding-bottom:8px">Settings</div>
+                  <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid rgba(30,46,40,.14)">
+                    <canvas data-px="glyph" data-kind="clock" data-scale="1"></canvas>
+                    <div style="flex:1"><div style="font-size:15px">Cutoff</div><div style="font-size:13px;color:#5A7A6C">Locked 4 more days</div></div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:15px">14:00</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid rgba(30,46,40,.14)">
+                    <canvas data-px="glyph" data-kind="key" data-scale="1"></canvas>
+                    <div style="flex:1"><div style="font-size:15px">Password</div><div style="font-size:13px;color:#5A7A6C">Changed 6 days ago</div></div>
+                    <div style="font-size:15px;color:#5A7A6C">Change</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid rgba(30,46,40,.14)">
+                    <canvas data-px="glyph" data-kind="people" data-scale="1"></canvas>
+                    <div style="flex:1"><div style="font-size:15px">Group</div><div style="font-size:13px;color:#5A7A6C">301AD pilot · 10 people</div></div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:15px;color:#5A7A6C">301AD</div>
+                  </div>
+                  <div onClick="{{ jApps }}" style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid rgba(30,46,40,.14);cursor:pointer">
+                    <canvas data-px="app" data-kind="book" data-on="1" data-scale="1"></canvas>
+                    <div style="flex:1"><div style="font-size:15px">Allowed apps</div><div style="font-size:13px;color:#5A7A6C">One list per task, set at declaration</div></div>
+                    <div style="font-size:15px;color:#5A7A6C">{{ appsSummary }}</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid rgba(30,46,40,.14)">
+                    <canvas data-px="glyph" data-kind="globe" data-scale="1"></canvas>
+                    <div style="flex:1"><div style="font-size:15px">Language</div><div style="font-size:13px;color:#5A7A6C">Armenian copy still in draft</div></div>
+                    <div style="font-size:15px;color:#5A7A6C">English</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid rgba(30,46,40,.14)">
+                    <canvas data-px="glyph" data-kind="door" data-scale="1"></canvas>
+                    <div style="flex:1"><div style="font-size:15px">Log out</div><div style="font-size:13px;color:#5A7A6C">The lock keeps running either way</div></div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:10px;padding:14px 0 0;border-top:1px solid rgba(30,46,40,.14)">
+                    <div style="display:flex;align-items:center;gap:14px">
+                      <canvas data-px="glyph" data-kind="person" data-scale="1"></canvas>
+                      <div style="flex:1"><div style="font-size:15px">Portrait</div><div style="font-size:13px;color:#5A7A6C">This is the face the group sees.</div></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                      <sc-for list="{{ avOptions }}" as="a" hint-placeholder-count="8">
+                        <div onClick="{{ a.onClick }}" style="padding:5px;border:2px solid {{ a.bd }};background:{{ a.bg }};border-radius:10px;cursor:pointer;display:flex;justify-content:center">
+                          <canvas data-px="avatar" data-v="{{ a.v }}" data-scale="3"></canvas>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:10px;padding:14px 0 0;border-top:1px solid rgba(30,46,40,.14)">
+                    <div style="display:flex;align-items:center;gap:14px">
+                      <canvas data-px="glyph" data-kind="sprout" data-scale="1"></canvas>
+                      <div style="flex:1"><div style="font-size:15px">Character</div><div style="font-size:13px;color:#5A7A6C">The plan asks for a tunic; both are drawn.</div></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                      <div onClick="{{ pickBoy }}" style="border:2px solid {{ boyBd }};background:{{ boyBg }};border-radius:12px;padding:16px 10px 12px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:12px;cursor:pointer">
+                        <canvas data-px="sprite" data-pose="idle" data-who="boy" data-scale="4"></canvas>
+                        <span style="font-size:15px">Traveller</span>
+                      </div>
+                      <div onClick="{{ pickTunic }}" style="border:2px solid {{ tunicBd }};background:{{ tunicBg }};border-radius:12px;padding:16px 10px 12px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:12px;cursor:pointer">
+                        <canvas data-px="sprite" data-pose="idle" data-who="tunic" data-scale="4"></canvas>
+                        <span style="font-size:15px">Tunic</span>
+                      </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:14px;padding-top:6px">
+                      <canvas data-px="fauna" data-kind="dogSit" data-tier="green" data-scale="2"></canvas>
+                      <div style="flex:1"><div style="font-size:15px">The dog</div><div style="font-size:13px;color:#5A7A6C">Always beside you. Not a setting.</div></div>
+                    </div>
+                  </div>
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C;padding-top:10px">301AD · PILOT BUILD 0.5</div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+          <div style="height:100%;display:flex;flex-direction:column;background:#EDEFE4;min-height:0">
+            <div style="flex:none;overflow:hidden;height:392px">
+              <canvas data-px="world" data-tier="green" data-cam="40" data-view="220" data-scale="2" data-charx="60" data-dog="1" data-fauna="{{ faunaOn }}" data-smoke="1" style="margin-top:-28px"></canvas>
+            </div>
+            <div style="flex:1;padding:22px 24px;display:flex;flex-direction:column;gap:12px;min-height:0;overflow:auto">
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <canvas data-px="fauna" data-kind="dogStand" data-tier="green" data-scale="2" style="flex:none;margin-top:2px"></canvas>
+                <div style="font-size:18px;line-height:1.4">{{ visitLine }}</div>
+              </div>
+              <div style="font-size:15px;color:#5A7A6C;line-height:1.5">Home and Declare are built in 301AD.dc.html. This stand-in carries the fauna rule and the tab bar so both behave the way they will in the app.</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;border-top:2px solid #1E2E28;background:#E4E8DA;flex:none;padding-bottom:10px">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+              <div onClick="{{ t.onClick }}" style="flex:1;padding:0 0 4px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;background:{{ t.bg }};border-right:{{ t.sep }}">
+                <div style="display:flex;gap:3px;height:4px;width:100%;justify-content:center;padding-top:4px">
+                  <div style="width:4px;height:4px;background:{{ t.mark }}"></div>
+                  <div style="width:4px;height:4px;background:{{ t.mark }}"></div>
+                  <div style="width:4px;height:4px;background:{{ t.mark }}"></div>
+                  <div style="width:4px;height:4px;background:{{ t.mark }}"></div>
+                  <div style="width:4px;height:4px;background:{{ t.mark }}"></div>
+                </div>
+                <div style="opacity:{{ t.op }}"><canvas data-px="glyph" data-kind="{{ t.kind }}" data-scale="2"></canvas></div>
+                <div style="font-size:12px;letter-spacing:.04em;font-weight:{{ t.wt }};color:{{ t.fg }}">{{ t.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+      </div>
+    </x-import>
+
+    <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+      <div style="width:300px;display:flex;flex-direction:column;gap:16px;position:sticky;top:24px">
+        <div style="background:#EDEFE4;border:1px solid rgba(30,46,40,.16);padding:20px;display:flex;flex-direction:column;gap:18px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">BUILD NOTES · {{ screenLabel }}</div>
+          <sc-for list="{{ notes }}" as="n" hint-placeholder-count="5">
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:{{ n.color }}">{{ n.k }}</div>
+              <div style="font-size:14px;line-height:1.55">{{ n.v }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#EDEFE4;border:1px solid rgba(30,46,40,.16);padding:20px;display:flex;flex-direction:column;gap:8px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">STILL OPEN</div>
+          <div style="font-size:14px;line-height:1.55">{{ openNote }}</div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <div style="width:100%;max-width:1180px;display:flex;flex-direction:column;gap:20px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;color:#5A7A6C">FAUNA · WHO STAYS AND WHO PASSES THROUGH</div>
+    <div style="display:flex;gap:2px;background:rgba(30,46,40,.14);border:1px solid rgba(30,46,40,.14);flex-wrap:wrap">
+      <sc-for list="{{ faunaCards }}" as="f" hint-placeholder-count="4">
+        <div style="background:#EDEFE4;padding:20px;display:flex;flex-direction:column;gap:12px;flex:1;min-width:230px">
+          <div style="height:64px;display:flex;align-items:flex-end"><canvas data-px="fauna" data-kind="{{ f.kind }}" data-tier="{{ f.tier }}" data-scale="{{ f.scale }}"></canvas></div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:18px">{{ f.name }}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#5A7A6C">{{ f.rule }}</div>
+            <div style="font-size:14px;line-height:1.5;color:#3E5C50">{{ f.note }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="width:100%;max-width:1180px;font-size:14px;line-height:1.6;color:#3E5C50">Next: the locked-open and locked-closed overlays from Phase 7, which now have to name the task whose list they are enforcing, and the comprehension check from Phase 9 if it stays in scope.</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;notes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;reg&quot;,&quot;login&quot;,&quot;apps&quot;,&quot;room&quot;,&quot;board&quot;,&quot;profile&quot;,&quot;home&quot;],&quot;default&quot;:&quot;board&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;visitors&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;myDays&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:4,&quot;min&quot;:0,&quot;max&quot;:14,&quot;unit&quot;:&quot;days&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Data&quot;}}">
+const pad2 = n => (n < 10 ? '0' : '') + n;
+const clock = s => { s = Math.max(0, Math.round(s)); return Math.floor(s/3600) + ':' + pad2(Math.floor(s/60)%60) + ':' + pad2(s%60); };
+const hhmm = m => Math.floor(m/60) + ':' + pad2(m%60);
+
+const APPS = [
+  {kind:'book', name:'Books'}, {kind:'note', name:'Notes'}, {kind:'docs', name:'Docs'}, {kind:'calc', name:'Calculator'},
+  {kind:'camera', name:'Camera'}, {kind:'browser', name:'Browser'}, {kind:'maps', name:'Maps'}, {kind:'music', name:'Music'},
+  {kind:'video', name:'Video'}, {kind:'gear', name:'Settings'}
+];
+const APP_NAME = {};
+APPS.forEach(a => { APP_NAME[a.kind] = a.name; });
+
+const TASKS = [
+  {name:'Read 60 pages', apps:['book']},
+  {name:'Notes on ch. 4', apps:['note','camera']},
+  {name:'Problem set 3', apps:['calc','docs']}
+];
+
+const MEMBERS = [
+  {name:'Ani', av:1, days:12, cutoff:'13:00', tier:'bloom', started:'07:10', tasks:['Read 60 pages','Notes on ch. 4']},
+  {name:'Davit', av:0, days:9, cutoff:'15:30', tier:'bloom', started:'09:02', tasks:['Finish problem set 3']},
+  {name:'Narek', av:3, days:7, cutoff:'14:00', tier:'green', started:'08:35', tasks:['Lecture 9','Summary of lecture 9','Anki, 40 cards']},
+  {name:'Mher', av:5, days:6, cutoff:'18:00', tier:'green', started:'11:40', tasks:['Draft the essay intro']},
+  {name:'You', av:2, days:4, cutoff:'14:00', tier:'green', me:true, started:'08:12', tasks:['Read 60 pages','Notes on ch. 4','Problem set 3']},
+  {name:'Sona', av:6, days:4, cutoff:'12:00', tier:'green', started:'06:55', tasks:['Two hours of piano']},
+  {name:'Vahe', av:7, days:3, cutoff:'9:30', tier:'green', started:'06:20', tasks:['Write 500 words']},
+  {name:'Lilit', av:4, days:2, cutoff:'16:00', tier:'autumn', started:'10:15', tasks:['Read 40 pages']},
+  {name:'Tigran', av:3, days:1, cutoff:'11:00', tier:'autumn', started:'—', tasks:[]},
+  {name:'Hayk', av:5, days:0, cutoff:'14:30', tier:'dead', started:'—', tasks:[]}
+];
+
+const GLOBAL = [
+  {name:'Anahit', av:6, days:14, cutoff:'6:00', tier:'bloom', started:'05:40', tasks:['Thesis, 4 hours']},
+  {name:'Gor', av:0, days:14, cutoff:'8:00', tier:'bloom', started:'06:15', tasks:['Kanji, 90 minutes','Reading, 60 pages']},
+  {name:'Elen', av:2, days:13, cutoff:'7:30', tier:'bloom', started:'06:02', tasks:['Studio work']},
+  {name:'Suren', av:3, days:13, cutoff:'12:00', tier:'bloom', started:'09:20', tasks:['Two lectures']},
+  {name:'Karine', av:1, days:12, cutoff:'9:00', tier:'bloom', started:'07:05', tasks:['Grade 30 papers']},
+  {name:'Vazgen', av:7, days:11, cutoff:'14:00', tier:'bloom', started:'08:50', tasks:['Problem set 7','Lab notes']},
+  {name:'Nune', av:4, days:11, cutoff:'10:30', tier:'bloom', started:'07:40', tasks:['Piano, 3 hours']},
+  {name:'Arsen', av:5, days:10, cutoff:'13:00', tier:'bloom', started:'08:10', tasks:['Write 2000 words']},
+  {name:'Mariam', av:6, days:10, cutoff:'11:00', tier:'bloom', started:'07:55', tasks:['Anatomy, chapter 6']},
+  {name:'Levon', av:0, days:9, cutoff:'15:00', tier:'bloom', started:'10:05', tasks:['Client work, no phone']}
+];
+
+const HIST = 'ffflfnfffflffnnffflfffflffnfff';
+
+const NOTES = {
+  reg: [
+    ['STATE', 'screen: register. The taken-username variant is the same screen with one line added.'],
+    ['ENDPOINT', 'POST /auth/register with username, password, group code and privacy_accepted_at. The server refuses the write without the timestamp.'],
+    ['PRIVACY', 'The short version is the screen; the full text is a web page. Consent is a checkbox, never pre-ticked, and the button stays dead until it is on.'],
+    ['GROUP CODE', 'Resolves to a row in groups. An unknown or full code fails before the user row is written.'],
+    ['FLAG', 'The plan says accounts are seeded by POST /admin/create-user and there is no sign-up. This screen is your override; keep the admin endpoint for the pilot ten either way.', 1]
+  ],
+  login: [
+    ['STATE', 'screen: login. The rejected variant is the same screen with the error line, not a dialog.'],
+    ['ENDPOINT', 'POST /auth/login returns a JWT. Any later 401 lands back here.'],
+    ['ART', 'The header is the live world at the current tier, cropped to the ground line so the dog reads. Visitors are on the same window as Home.'],
+    ['FLAG', 'The plan asks for --ember-dead on the error text. There is no ember ramp in the system, so this is dead A88B4A.', 1]
+  ],
+  apps: [
+    ['STATE', 'screen: declare, step 2. Runs after the tasks are typed and before the day starts.'],
+    ['ENDPOINT', 'POST /days/today/declare now takes tasks as objects: {text, allowed_packages[]}. One list per task, not one per day.'],
+    ['ORDER', 'Task order is the run order. The accessibility service reads only the current task list; every other package resolves to blocked.'],
+    ['DEFAULT', 'Each task opens with the list it had last time that text was declared. A new task starts empty and the day cannot start until it has one app.'],
+    ['FLAG', 'This replaces the single per-day allowed list in the plan. The lock service and the Phase 7 overlays both have to name the task they are enforcing.', 1]
+  ],
+  room: [
+    ['STATE', 'day.started_at is set, credit is still null, current_task_index drives the screen.'],
+    ['ENDPOINT', 'POST /days/today/tasks/:taskId/complete. The server timestamps each check, advances the index and returns the next task with its list.'],
+    ['SEQUENCE', 'One task runs at a time. Marking it done swaps the allowed list to the next task, so the phone changes shape as the day moves.'],
+    ['SCORING', 'credit = full only when every task is complete before cutoff_at. Two of three changes nothing except the fire.'],
+    ['PLACEHOLDER', 'The room is a footprint. Only the hearth is real, and it dims on session length — swapping the art later touches nothing else.', 1]
+  ],
+  board: [
+    ['STATE', 'screen: gardens, scope group | global. Scope and selection are local and never post.'],
+    ['ENDPOINT', 'GET /groups/:id/leaderboard and GET /leaderboard/global?limit=10. Both return username, avatar_id, cutoff_at and full_credit_count.'],
+    ['PORTRAIT', 'avatar_id indexes eight drawn 16x16 portraits. No uploads, no faces from a camera, nothing to moderate.'],
+    ['ORDER', 'The server sorts by full_credit_count and returns the place with each row. Equal counts share a place, so two people can both be third.'],
+    ['GLOBAL', 'Global shows the top ten with their places and pins your own row underneath, carrying your real place out of everyone.']
+  ],
+  profile: [
+    ['STATE', 'screen: me. Settings is an inline block, not a route.'],
+    ['ENDPOINT', 'GET /users/me/history?days=30, GET /users/me/stats, PATCH /users/me/cutoff, PATCH /users/me/avatar.'],
+    ['STATS', 'Each card needs one number and one detail line. Clean days, runs and session medians all come off the day and session tables — no new writes.'],
+    ['LOCK', 'PATCH rejects inside the current locked week. The row shows the days remaining rather than disabling silently.'],
+    ['FLAG', 'Character choice lives here. The plan says Greek tunic, the drawn sprite is a traveller. Both are shown; one ships.', 1]
+  ],
+  home: [
+    ['STATE', 'Stand-in only. Home and the declare flow are built in 301AD.dc.html.'],
+    ['FAUNA', 'The dog is drawn on every Home paint, at every tier. Deer and butterflies are gated on a visit window and their counts come from the tier, so a dead garden has none.'],
+    ['WINDOW', 'Visits are server-side and shared by the group: same visitors for everyone that hour, so it is worth mentioning to each other.'],
+    ['REFRESH', 'On resume, so a day finalised by the cutoff job is reflected without a restart.']
+  ]
+};
+
+const OPEN = {
+  reg: 'Whether a self-registered user joins a group immediately or waits for the group owner to admit them.',
+  login: 'Whether a wrong password should say anything at all, or just fail quietly.',
+  apps: 'Whether a task can be reordered mid-day, and whether the app list can be edited after the day starts or is locked with the cutoff.',
+  room: 'Whether the current task should be skippable, and what happens to a day where task two is impossible before cutoff.',
+  board: 'Whether the global view should be opt-in, since it puts your name in front of people who are not in your group.',
+  profile: 'Whether late days should count toward the longest run. Right now they break it.',
+  home: 'How long a visit window lasts and how often one opens. Right now the prototype swaps every ten seconds so you can see both states.'
+};
+
+class Component extends DCLogic {
+  state = {
+    screen: null, loginErr: false, regTaken: false, gear: false,
+    agree: false, agreeErr: false, privOpen: false,
+    user: 'arman', pass: 'sparrow',
+    rUser: 'arman', rPass: 'sparrow1', rPass2: 'sparrow1', rCode: '301AD',
+    done: [false, false, false], taskApps: TASKS.map(t => t.apps.slice()), selTask: 0,
+    scope: 'group', sel: 4, who: 'boy', myAv: 2,
+    cutoffMin: 840, nowSec: 11*3600 + 37*60, sessionSec: 4987,
+    frame: 0, speed: 60, playing: true
+  };
+
+  componentDidMount(){
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.timer = setInterval(() => this.tick(), 250);
+    this.boot(0);
+  }
+  componentWillUnmount(){ clearInterval(this.timer); }
+
+  tick(){
+    const s = this.state;
+    if (!s.playing) return;
+    const patch = {nowSec: s.nowSec + s.speed * 0.25, frame: this.reduced ? s.frame : s.frame + 1};
+    if (this.screen() === 'room') patch.sessionSec = s.sessionSec + s.speed * 0.25;
+    this.setState(patch);
+  }
+
+  boot(n){
+    if (!window.PixelWorld) { if (n < 80) setTimeout(() => this.boot(n+1), 60); return; }
+    this.paint();
+  }
+  componentDidUpdate(){ this.paint(); }
+
+  paint(){
+    const PW = window.PixelWorld; if (!PW) return;
+    document.querySelectorAll('canvas[data-px]').forEach(cv => {
+      const k = cv.getAttribute('data-px'), sc = +(cv.getAttribute('data-scale') || 2);
+      let sig = k; for (const a of cv.attributes) if (a.name.indexOf('data-') === 0) sig += '|' + a.name + '=' + a.value;
+      if (cv.__sig === sig) return; cv.__sig = sig;
+      if (k === 'sprite') PW.drawSprite(cv, {pose: cv.getAttribute('data-pose') || 'idle', who: cv.getAttribute('data-who') || 'boy', scale: sc});
+      else if (k === 'glyph') PW.drawGlyph(cv, {kind: cv.getAttribute('data-kind') || 'cog', scale: sc});
+      else if (k === 'avatar') PW.drawAvatar(cv, {v: +(cv.getAttribute('data-v') || 0), scale: sc});
+      else if (k === 'fauna') PW.drawFauna(cv, {kind: cv.getAttribute('data-kind') || 'dogSit', tier: cv.getAttribute('data-tier') || 'green', scale: sc});
+      else if (k === 'bed') PW.drawBed(cv, {days: +(cv.getAttribute('data-days') || 0), tier: cv.getAttribute('data-tier') || 'green', scale: sc});
+      else if (k === 'plot') PW.drawPlot(cv, {days: +(cv.getAttribute('data-days') || 0), tier: cv.getAttribute('data-tier') || 'green', scale: sc});
+      else if (k === 'app') PW.drawAppTile(cv, {kind: cv.getAttribute('data-kind') || 'book', on: cv.getAttribute('data-on') === '1', scale: sc});
+      else if (k === 'room') PW.drawRoomSlot(cv, {W: +(cv.getAttribute('data-w')||176), H: +(cv.getAttribute('data-h')||118), dim: +(cv.getAttribute('data-dim')||0), frame: +(cv.getAttribute('data-frame')||0), scale: sc});
+      else if (k === 'world') PW.drawWorld(cv, {
+        tier: cv.getAttribute('data-tier') || 'green',
+        camX: +(cv.getAttribute('data-cam') || 0),
+        viewW: +(cv.getAttribute('data-view') || 220),
+        charX: +(cv.getAttribute('data-charx') || 60),
+        pose: cv.getAttribute('data-pose') || 'idle',
+        who: cv.getAttribute('data-who') || 'boy',
+        smoke: cv.getAttribute('data-smoke') === '1',
+        dog: cv.getAttribute('data-dog') === '1',
+        fauna: cv.getAttribute('data-fauna') === '1',
+        character: cv.getAttribute('data-char') !== '0',
+        frame: +(cv.getAttribute('data-frame') || 0),
+        scale: sc
+      });
+    });
+  }
+
+  screen(){ return this.state.screen || (this.props.startScreen ?? 'board'); }
+  myDays(){ const v = this.props.myDays; return v == null ? 4 : +v; }
+  current(){ const d = this.state.done; for (let i = 0; i < TASKS.length; i++) if (!d[i]) return i; return -1; }
+  go(screen){ this.setState({screen}); }
+  completeCur(){ const i = this.current(); if (i < 0) return; const d = this.state.done.slice(); d[i] = true; this.setState({done: d}); }
+  toggleApp(kind){
+    const i = this.state.selTask, next = this.state.taskApps.map(a => a.slice());
+    const at = next[i].indexOf(kind);
+    if (at >= 0) next[i].splice(at, 1); else next[i].push(kind);
+    this.setState({taskApps: next});
+  }
+
+  renderVals(){
+    const s = this.state, sc = this.screen(), mine = this.myDays();
+    const remain = s.cutoffMin * 60 - s.nowSec;
+    const cur = this.current(), doneN = s.done.filter(Boolean).length;
+    const visitors = this.props.visitors !== false && Math.floor(s.frame / 40) % 2 === 0;
+    const notes = (NOTES[sc] || []).map(([k, v, warn], i) => ({k, v, key: i, color: warn ? '#C97F3D' : '#5A7A6C'}));
+    const label = {reg: 'REGISTER', login: 'LOGIN', apps: 'APPS PER TASK', room: 'SESSION ROOM', board: 'GARDENS', profile: 'ME', home: 'HOME'}[sc];
+    const glob = s.scope === 'global';
+    const base = glob ? GLOBAL : MEMBERS.map(m => m.me ? {...m, days: mine, av: s.myAv} : m);
+    const sorted = base.slice().sort((a, b) => b.days - a.days);
+    const list = sorted.map((m, i, arr) => ({...m, place: arr.findIndex(x => x.days === m.days) + 1}));
+    if (glob) list.push({name: 'You', av: s.myAv, days: mine, cutoff: '14:00', tier: 'green', me: true, pinned: true, place: 312, started: '08:12', tasks: TASKS.map(t => t.name)});
+    const selApps = s.taskApps[s.selTask] || [];
+
+    return {
+      showNotes: this.props.notes !== false,
+      myDays: mine, myRun: mine, myAv: s.myAv,
+      isReg: sc === 'reg', isLogin: sc === 'login', isApps: sc === 'apps', isRoom: sc === 'room',
+      isBoard: sc === 'board', isProfile: sc === 'profile', isHome: sc === 'home',
+      screenLabel: label, notes, openNote: OPEN[sc],
+
+      faunaOn: visitors ? '1' : '0',
+      visitState: visitors ? 'two butterflies and a doe are out.' : 'nobody is passing through.',
+      visitLine: visitors ? 'A doe came down to the beds, and there are butterflies over the far garden.' : 'No visitors today. The dog is where he always is.',
+      faunaCards: [
+        {key:'dog', kind:'dogSit', tier:'green', scale:'4', name:'Dog', rule:'ALWAYS PRESENT', note:'Sits beside the character at every tier. In a dead garden the coat greys, but he does not leave.'},
+        {key:'buck', kind:'buck', tier:'bloom', scale:'3', name:'Buck', rule:'BLOOM AND GREEN', note:'Comes for a visit window and goes. Gone entirely once the garden is dead.'},
+        {key:'doe', kind:'doe', tier:'green', scale:'3', name:'Doe', rule:'BLOOM AND GREEN', note:'The second deer. Autumn keeps one animal, not two.'},
+        {key:'bf', kind:'butterflyUp', tier:'bloom', scale:'8', name:'Butterfly', rule:'BLOOM ONLY, FIVE', note:'Five in bloom, two in green, none from autumn on. Two frames, so they read as flight.'}
+      ],
+
+      user: s.user, pass: s.pass, loginErr: s.loginErr,
+      onUser: e => this.setState({user: e.target.value}),
+      onPass: e => this.setState({pass: e.target.value}),
+      doLogin: () => this.setState({screen: s.loginErr ? 'login' : 'board', loginErr: false}),
+
+      rUser: s.rUser, rPass: s.rPass, rCode: s.rCode, regTaken: s.regTaken,
+      onRUser: e => this.setState({rUser: e.target.value}),
+      onRPass: e => this.setState({rPass: e.target.value}),
+      rPass2: s.rPass2,
+      onRPass2: e => this.setState({rPass2: e.target.value}),
+      onRCode: e => this.setState({rCode: e.target.value}),
+      agreeBox: s.agree ? 'rgba(30,46,40,.07)' : 'transparent',
+      agree: s.agree,
+      agreeBd: s.agreeErr && !s.agree ? '#A88B4A' : '#1E2E28',
+      agreeErr: s.agreeErr && !s.agree,
+      privOpen: s.privOpen,
+      privAction: s.privOpen ? 'Hide the policy' : 'Read the privacy policy',
+      togglePriv: () => this.setState({privOpen: !s.privOpen}),
+      toggleAgree: () => this.setState({agree: !s.agree, agreeErr: false}),
+      regBtnBg: s.agree ? '#E4695E' : 'rgba(30,46,40,.12)',
+      regBtnFg: s.agree ? '#EDEFE4' : '#5A7A6C',
+      doRegister: () => {
+        if (!s.agree) { this.setState({agreeErr: true, privOpen: true}); return; }
+        this.setState({screen: s.regTaken ? 'reg' : 'login', regTaken: false});
+      },
+
+      declRows: TASKS.map((t, i) => {
+        const picked = s.taskApps[i] || [];
+        return {
+          key: i, n: i + 1, name: t.name,
+          summary: picked.length ? picked.map(k => APP_NAME[k]).join(' · ') : 'No app chosen yet',
+          action: i === s.selTask ? 'editing' : 'edit',
+          bd: i === s.selTask ? '#1E2E28' : 'rgba(30,46,40,.2)',
+          bg: i === s.selTask ? 'rgba(30,46,40,.05)' : 'transparent',
+          onClick: () => this.setState({selTask: i})
+        };
+      }),
+      selTaskN: s.selTask + 1,
+      selTaskName: TASKS[s.selTask].name,
+      appGrid: APPS.map(a => ({
+        key: a.kind, kind: a.kind, name: a.name,
+        on: selApps.indexOf(a.kind) >= 0 ? '1' : '0',
+        bg: selApps.indexOf(a.kind) >= 0 ? 'rgba(30,46,40,.08)' : 'transparent',
+        fg: selApps.indexOf(a.kind) >= 0 ? '#1E2E28' : '#5A7A6C',
+        onClick: () => this.toggleApp(a.kind)
+      })),
+      selAppNote: selApps.length
+        ? 'Everything not on this list closes the moment task ' + (s.selTask + 1) + ' starts.'
+        : 'A task with no app is a task you cannot start. Pick at least one.',
+      appsSummary: (s.taskApps[0] || []).map(k => APP_NAME[k]).join(', ') + ' +' + Math.max(0, s.taskApps.reduce((n, a) => n + a.length, 0) - (s.taskApps[0] || []).length),
+
+      sessionClock: clock(s.sessionSec),
+      countdown: remain > 0 ? clock(remain) : 'passed',
+      countdownColor: remain > 0 ? '#1E2E28' : '#E4695E',
+      cutoffLabel: hhmm(s.cutoffMin),
+      nowLabel: hhmm(Math.floor(s.nowSec / 60) % 1440),
+      fireFrame: s.frame % 3,
+      dim: Math.min(0.9, s.sessionSec / 7200),
+      hasCurrent: cur >= 0,
+      curLabel: cur >= 0 ? 'TASK ' + (cur + 1) + ' OF ' + TASKS.length : '',
+      curName: cur >= 0 ? TASKS[cur].name : '',
+      curApps: cur >= 0 ? (s.taskApps[cur] || []).map(k => ({key: k, kind: k, name: APP_NAME[k]})) : [],
+      doneLine: doneN + ' / ' + TASKS.length + ' DONE',
+      completeCur: () => this.completeCur(),
+      taskRows: TASKS.map((t, i) => {
+        const isDone = s.done[i], isCur = i === cur;
+        return {
+          key: i, text: t.name,
+          checked: isDone,
+          bd: isDone || isCur ? '#1E2E28' : 'rgba(30,46,40,.28)',
+          rad: isCur && !isDone ? '10px' : '0',
+          fg: isDone ? '#5A7A6C' : (isCur ? '#1E2E28' : '#8A9A92'),
+          note: isDone
+            ? 'Done · ' + (s.taskApps[i] || []).map(k => APP_NAME[k]).join(', ') + ' locked again'
+            : (isCur ? 'Running · ' + (s.taskApps[i] || []).map(k => APP_NAME[k]).join(', ') + ' open'
+                     : 'Unlocks after task ' + i + ' · ' + (s.taskApps[i] || []).map(k => APP_NAME[k]).join(', '))
+        };
+      }),
+      allChecked: cur < 0, notAllChecked: cur >= 0,
+      doEnd: () => this.setState({screen: 'board'}),
+
+      boardTitle: glob ? 'Everyone' : 'Your group',
+      boardSub: glob ? 'The ten longest runs of 1,240 people.' : 'Ten people. One plant per clean day.',
+      boardFoot: glob
+        ? 'The top ten, then your own row with the place you hold out of 1,240.'
+        : 'A bed fills at fourteen plants. Equal counts share a place, so a tie shows the same number twice.',
+      grpBg: glob ? 'transparent' : '#1E2E28', grpFg: glob ? '#1E2E28' : '#EDEFE4',
+      gloBg: glob ? '#1E2E28' : 'transparent', gloFg: glob ? '#EDEFE4' : '#1E2E28',
+      setGroup: () => this.setState({scope: 'group', sel: null}),
+      setGlobal: () => this.setState({scope: 'global', sel: null}),
+      rows: list.map((m, i) => ({
+        key: m.name + i, name: m.name, days: m.days, tier: m.tier, cutoff: m.cutoff, av: m.av,
+        place: m.place, placeFg: m.me ? '#1E2E28' : '#5A7A6C', placeSize: m.pinned ? '15px' : '20px',
+        dayWord: m.days === 1 ? 'clean day' : 'clean days',
+        bg: i === s.sel ? 'rgba(30,46,40,.06)' : 'transparent',
+        topBd: m.pinned ? '3px solid #1E2E28' : 'none',
+        weight: m.me ? '600' : '400',
+        open: i === s.sel,
+        taskLine: m.tasks.length ? m.tasks.join(' · ') : 'Nothing declared today.',
+        meta: m.tasks.length
+          ? 'Started ' + m.started + ' · one app list per task'
+          : 'The bed holds until midnight, then it counts as a miss.',
+        onClick: () => this.setState({sel: i === s.sel ? null : i})
+      })),
+
+      history: HIST.split('').map((c, i) => ({key: i, color: c === 'f' ? '#5A7A6C' : (c === 'l' ? '#C97F3D' : '#A88B4A')})),
+      gear: s.gear, toggleGear: () => this.setState({gear: !s.gear}),
+      avOptions: [0,1,2,3,4,5,6,7].map(v => ({
+        key: v, v, bd: v === s.myAv ? '#1E2E28' : 'rgba(30,46,40,.14)',
+        bg: v === s.myAv ? 'rgba(30,46,40,.06)' : 'transparent',
+        onClick: () => this.setState({myAv: v})
+      })),
+      pickBoy: () => this.setState({who: 'boy'}), pickTunic: () => this.setState({who: 'tunic'}),
+      boyBd: s.who === 'boy' ? '#1E2E28' : 'rgba(30,46,40,.2)',
+      boyBg: s.who === 'boy' ? 'rgba(30,46,40,.06)' : 'transparent',
+      tunicBd: s.who === 'tunic' ? '#1E2E28' : 'rgba(30,46,40,.2)',
+      tunicBg: s.who === 'tunic' ? 'rgba(30,46,40,.06)' : 'transparent',
+
+      showTabs: ['home', 'board', 'profile'].indexOf(sc) >= 0,
+      tabs: [
+        {key:'home', label:'Home', kind:'hearth', on: sc === 'home', onClick: () => this.go('home')},
+        {key:'board', label:'Gardens', kind:'sprout', on: sc === 'board', onClick: () => this.go('board')},
+        {key:'me', label:'Me', kind:'person', on: sc === 'profile', onClick: () => this.go('profile')}
+      ].map((t, i, arr) => ({...t,
+        mark: t.on ? '#1E2E28' : 'transparent',
+        bg: t.on ? '#EDEFE4' : 'transparent',
+        op: t.on ? '1' : '0.38',
+        fg: t.on ? '#1E2E28' : '#5A7A6C',
+        wt: t.on ? '600' : '400',
+        sep: i < arr.length - 1 ? '1px solid rgba(30,46,40,.12)' : 'none'
+      })),
+
+      jReg: () => this.setState({screen: 'reg', regTaken: false, agree: false, agreeErr: false, privOpen: false}),
+      jRegTaken: () => this.setState({screen: 'reg', regTaken: true, agree: true, agreeErr: false, privOpen: false}),
+      jLogin: () => this.setState({screen: 'login', loginErr: false}),
+      jLoginErr: () => this.setState({screen: 'login', loginErr: true}),
+      jApps: () => this.setState({screen: 'apps', selTask: 1}),
+      jRoom: () => this.setState({screen: 'room', done: [false, false, false], sessionSec: 1240}),
+      jRoomMid: () => this.setState({screen: 'room', done: [true, false, false], sessionSec: 4987}),
+      jRoomDone: () => this.setState({screen: 'room', done: [true, true, true], sessionSec: 11240}),
+      jBoard: () => this.setState({screen: 'board', scope: 'group', sel: 2}),
+      jBoardGlobal: () => this.setState({screen: 'board', scope: 'global', sel: null}),
+      jProfile: () => this.setState({screen: 'profile', gear: false}),
+      jSettings: () => this.setState({screen: 'profile', gear: true}),
+      speedReal: () => this.setState({speed: 1}), speedFast: () => this.setState({speed: 60}),
+      togglePlay: () => this.setState({playing: !s.playing}),
+      playLabel: s.playing ? 'Pause clock' : 'Run clock',
+      speedLabel: s.speed === 1 ? 'real time' : '60x'
+    };
+  }
+}
+</script>
+</body>
+</html>
