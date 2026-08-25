@@ -8,7 +8,7 @@ import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { FocusMinutesForm } from "@/components/FocusMinutesForm";
 import { TasksModal } from "@/components/TasksModal";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
-import { MIN_TOTAL_MINUTES, splitSession } from "@/lib/pomodoro";
+import { splitSession } from "@/lib/pomodoro";
 import { streakToTier } from "@/lib/gardenTier";
 
 function tasksButtonLabel(tasks) {
@@ -103,6 +103,20 @@ export default function Home() {
       <Countdown deadlineAt={day.deadlineAt} />
 
       <div className="flex flex-col items-center gap-3">
+        {pomodoroBlocks && <PomodoroTimer blocks={pomodoroBlocks} onStop={() => setPomodoroBlocks(null)} />}
+      </div>
+
+      <div className="flex w-full max-w-sm flex-col items-center gap-3 px-6">
+        {pomodoroBlocks ? null : day.startedAt ? (
+          <FocusMinutesForm
+            onStart={handleStartPomodoro}
+            buttonLabel="Start a focus session"
+            busyLabel="Starting..."
+          />
+        ) : (
+          <FocusMinutesForm onStart={handleStart} buttonLabel="Start" busyLabel="Starting..." />
+        )}
+
         <button
           type="button"
           onClick={() => setTasksOpen(true)}
@@ -110,22 +124,6 @@ export default function Home() {
         >
           {tasksButtonLabel(day.tasks)}
         </button>
-
-        {pomodoroBlocks && <PomodoroTimer blocks={pomodoroBlocks} onStop={() => setPomodoroBlocks(null)} />}
-      </div>
-
-      <div className="w-full max-w-sm px-6">
-        {pomodoroBlocks ? null : day.startedAt ? (
-          <button
-            type="button"
-            onClick={() => handleStartPomodoro(MIN_TOTAL_MINUTES)}
-            className="w-full rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud"
-          >
-            Start a focus session
-          </button>
-        ) : (
-          <FocusMinutesForm onStart={handleStart} buttonLabel="Start" busyLabel="Starting..." />
-        )}
       </div>
 
       {tasksOpen && <TasksModal day={day} onClose={() => setTasksOpen(false)} onChanged={handleTasksChanged} />}
