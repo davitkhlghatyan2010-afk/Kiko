@@ -5,7 +5,9 @@ import { prisma } from "./db.js";
 import authRouter from "./routes/auth.js";
 import daysRouter from "./routes/days.js";
 import sessionsRouter from "./routes/sessions.js";
+import adminRouter from "./routes/admin.js";
 import { authenticate } from "./middleware/authenticate.js";
+import { requireAdmin } from "./middleware/requireAdmin.js";
 
 const app = express();
 app.use(cors());
@@ -14,6 +16,7 @@ app.use(express.json());
 app.use("/auth", authRouter);
 app.use("/days", authenticate, daysRouter);
 app.use("/sessions", authenticate, sessionsRouter);
+app.use("/admin", authenticate, requireAdmin, adminRouter);
 
 app.get("/health", async (_req, res, next) => {
   try {
