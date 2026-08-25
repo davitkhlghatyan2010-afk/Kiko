@@ -150,4 +150,27 @@ router.post("/today/tasks", async (req, res, next) => {
   }
 });
 
+router.post("/today/start", async (req, res, next) => {
+  try {
+    const date = startOfToday();
+    const existing = await prisma.day.findUnique({ where: { userId_date: { userId: req.user.id, date } } });
+    if (!existing) {
+      return res.status(404).json({ status: "error", message: "Declare today before starting" });
+    }
+    if (existing.startedAt) {
+      return res.status(409).json({ status: "error", message: "Today's work has already been started" });
+    }
+
+    const day = await prisma.day.update({
+      where: { id: existing.id },
+      data: { startedAt: new Date() },
+      include: { tasks: true },
+    });
+
+    res.json({ day: serializeDay(day) });
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default router;

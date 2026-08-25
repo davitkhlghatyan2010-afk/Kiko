@@ -101,3 +101,7 @@ export function addTasks(tasks) {
     body: JSON.stringify({ tasks }),
   });
 }
+
+export function startDay() {
+  return request("/days/today/start", { method: "POST", auth: true });
+}

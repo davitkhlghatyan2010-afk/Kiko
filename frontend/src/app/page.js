@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getHealth, getToday } from "@/lib/api";
+import { getHealth, getToday, startDay } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { Countdown } from "@/components/Countdown";
 
 export default function Home() {
   const { user, loading, signOut } = useAuth();
   const [status, setStatus] = useState("checking");
   const [day, setDay] = useState(undefined);
+  const [starting, setStarting] = useState(false);
 
   useEffect(() => {
     getHealth()
@@ -17,10 +19,25 @@ export default function Home() {
 
   useEffect(() => {
     if (!user) return;
-    getToday()
-      .then(({ day }) => setDay(day))
-      .catch(() => setDay(null));
+    function refresh() {
+      getToday()
+        .then(({ day }) => setDay(day))
+        .catch(() => setDay(null));
+    }
+    refresh();
+    window.addEventListener("focus", refresh);
+    return () => window.removeEventListener("focus", refresh);
   }, [user]);
+
+  async function handleStart() {
+    setStarting(true);
+    try {
+      const { day } = await startDay();
+      setDay(day);
+    } finally {
+      setStarting(false);
+    }
+  }
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-6 bg-sky-cloud px-6 text-ink">
@@ -56,18 +73,31 @@ export default function Home() {
               Declare today
             </a>
           ) : (
-            <div className="w-full max-w-sm rounded bg-wall p-4">
-              <p className="mb-2 font-mono text-xs uppercase tracking-wide text-stone">
-                Deadline {new Date(day.deadlineAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-              </p>
-              <ul className="mb-3 flex flex-col gap-1">
+            <div className="flex w-full max-w-sm flex-col items-center gap-4 rounded bg-wall p-6">
+              <Countdown deadlineAt={day.deadlineAt} />
+
+              {day.startedAt ? (
+                <p className="font-mono text-xs uppercase tracking-wide text-stone">
+                  Started {new Date(day.startedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                </p>
+              ) : (
+                <button
+                  onClick={handleStart}
+                  disabled={starting}
+                  className="w-full rounded bg-alert px-4 py-2 font-semibold text-sky-cloud disabled:opacity-60"
+                >
+                  {starting ? "Starting..." : "Start"}
+                </button>
+              )}
+
+              <ul className="flex w-full flex-col gap-1 self-start">
                 {day.tasks.map((task) => (
                   <li key={task.id}>
                     {task.completed ? "✓" : "○"} {task.text} — {task.amount}
                   </li>
                 ))}
               </ul>
-              <a href="/declare/add" className="text-sm underline">
+              <a href="/declare/add" className="self-start text-sm underline">
                 + Add another task
               </a>
             </div>
