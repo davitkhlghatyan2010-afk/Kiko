@@ -6,6 +6,38 @@ import { getGlobalLeaderboard, getGroupLeaderboard } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
 import { PixelAvatar } from "@/components/PixelAvatar";
+import { PixelBed } from "@/components/PixelBed";
+
+function Row({ row, pinned = false }) {
+  return (
+    <li
+      className={`flex items-start gap-3 p-3 ${pinned ? "border-t-2 border-ink" : "border-b border-ink/10"} ${
+        row.isSelf ? "bg-sky-cloud" : ""
+      }`}
+    >
+      <span
+        className={`w-6 shrink-0 pt-1 text-right font-mono ${pinned ? "text-sm" : "text-lg"} ${
+          row.isSelf ? "text-ink" : "text-stone"
+        }`}
+      >
+        {row.place}
+      </span>
+      <div className="flex w-14 shrink-0 flex-col items-center gap-1">
+        <PixelAvatar id={row.userId} scale={3} />
+        <span className={`text-center text-xs leading-tight ${row.isSelf ? "font-semibold" : ""} text-ink`}>
+          {row.username}
+        </span>
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col gap-2">
+        <div className="flex items-baseline gap-2">
+          <span className="font-mono text-2xl leading-none text-ink">{row.days}</span>
+          <span className="flex-1 text-xs text-stone">{row.days === 1 ? "clean day" : "clean days"}</span>
+        </div>
+        <PixelBed days={row.days} tier={row.tier} />
+      </div>
+    </li>
+  );
+}
 
 export default function LeaderboardPage() {
   const { user, loading } = useAuth();
@@ -13,7 +45,7 @@ export default function LeaderboardPage() {
   // null = "no explicit choice yet" -- falls back to group for group
   // accounts, global otherwise. Set once a toggle button is clicked.
   const [view, setView] = useState(null);
-  const [rows, setRows] = useState(undefined);
+  const [data, setData] = useState(undefined);
   const [error, setError] = useState(null);
 
   const isGroup = user?.accountType === "group";
@@ -27,8 +59,8 @@ export default function LeaderboardPage() {
   const refresh = useCallback((which) => {
     const fetcher = which === "group" ? getGroupLeaderboard : getGlobalLeaderboard;
     fetcher()
-      .then(({ leaderboard }) => {
-        setRows(leaderboard);
+      .then((res) => {
+        setData(res);
         setError(null);
       })
       .catch((err) => setError(err.message));
@@ -41,7 +73,7 @@ export default function LeaderboardPage() {
 
   function selectView(next) {
     setView(next);
-    setRows(undefined);
+    setData(undefined);
     setError(null);
   }
 
@@ -53,64 +85,73 @@ export default function LeaderboardPage() {
     );
   }
 
+  const title = effectiveView === "group" ? "Your group" : "Everyone";
+  const subtitle =
+    data === undefined
+      ? ""
+      : effectiveView === "group"
+        ? `${data.totalCount} ${data.totalCount === 1 ? "person" : "people"}. One plant per clean day.`
+        : `The top ten of ${data.totalCount} ${data.totalCount === 1 ? "person" : "people"}.`;
+  const footer =
+    effectiveView === "group"
+      ? "A bed fills at fourteen plants. Equal counts share a place, so a tie shows the same number twice."
+      : "The top ten, then your own row with the place you hold out of everyone.";
+
   return (
     <PixelBackdrop stretch>
-      <div className="flex w-full max-w-sm flex-1 flex-col items-center gap-4 py-8">
-        <h1 className="text-2xl font-semibold text-ink">Leaderboard</h1>
-
-        {isGroup && (
-          <div className="flex gap-2 rounded-xl border-2 border-ink bg-wall p-1">
-            <button
-              type="button"
-              onClick={() => selectView("group")}
-              className={`rounded-lg px-4 py-1 text-sm font-semibold ${
-                effectiveView === "group" ? "bg-alert text-sky-cloud" : "text-ink"
-              }`}
-            >
-              Group
-            </button>
-            <button
-              type="button"
-              onClick={() => selectView("global")}
-              className={`rounded-lg px-4 py-1 text-sm font-semibold ${
-                effectiveView === "global" ? "bg-alert text-sky-cloud" : "text-ink"
-              }`}
-            >
-              Global
-            </button>
+      <div className="flex w-full max-w-md flex-1 flex-col gap-4 py-8">
+        <div className="flex flex-col gap-3 px-2">
+          <div>
+            <h1 className="text-2xl font-semibold text-ink">{title}</h1>
+            {subtitle && <p className="text-sm text-stone">{subtitle}</p>}
           </div>
-        )}
 
-        <div className="w-full flex-1 overflow-y-auto rounded-2xl border-2 border-ink bg-wall p-4">
-          {error && <p className="text-sm text-dead">{error}</p>}
+          {isGroup && (
+            <div className="flex overflow-hidden rounded-xl border-2 border-ink">
+              <button
+                type="button"
+                onClick={() => selectView("group")}
+                className={`flex-1 py-2 text-sm ${
+                  effectiveView === "group" ? "bg-ink text-wall" : "bg-wall text-ink"
+                }`}
+              >
+                My group
+              </button>
+              <button
+                type="button"
+                onClick={() => selectView("global")}
+                className={`flex-1 border-l-2 border-ink py-2 text-sm ${
+                  effectiveView === "global" ? "bg-ink text-wall" : "bg-wall text-ink"
+                }`}
+              >
+                Everyone
+              </button>
+            </div>
+          )}
+        </div>
 
-          {!error && rows === undefined && <p className="text-sm text-stone">Loading rankings...</p>}
+        <div className="flex-1 overflow-y-auto rounded-2xl border-2 border-ink bg-wall">
+          {error && <p className="p-4 text-sm text-dead">{error}</p>}
 
-          {!error && rows?.length === 0 && (
-            <p className="text-sm text-stone">
+          {!error && data === undefined && <p className="p-4 text-sm text-stone">Loading rankings...</p>}
+
+          {!error && data?.leaderboard.length === 0 && (
+            <p className="p-4 text-sm text-stone">
               {effectiveView === "group" ? "You're not on a group account." : "No one's declared a day yet."}
             </p>
           )}
 
-          {!error && rows && rows.length > 0 && (
-            <ol className="flex flex-col gap-2">
-              {rows.map((row, i) => (
-                <li
-                  key={row.userId}
-                  className={`flex items-center gap-3 rounded-xl p-2 ${
-                    row.isSelf ? "border-2 border-ink bg-sky-cloud" : ""
-                  }`}
-                >
-                  <span className="w-5 shrink-0 text-right font-mono text-sm text-stone">{i + 1}</span>
-                  <PixelAvatar id={row.userId} />
-                  <span className="flex-1 truncate text-sm font-semibold text-ink">
-                    {row.username}
-                    {row.isSelf && " (you)"}
-                  </span>
-                  <span className="font-mono text-xs uppercase tracking-wide text-stone">{row.streak} streak</span>
-                </li>
+          {!error && data && data.leaderboard.length > 0 && (
+            <ul>
+              {data.leaderboard.map((row) => (
+                <Row key={row.userId} row={row} />
               ))}
-            </ol>
+              {data.pinnedSelf && <Row row={data.pinnedSelf} pinned />}
+            </ul>
+          )}
+
+          {!error && data && data.leaderboard.length > 0 && (
+            <p className="px-4 py-3 text-xs leading-relaxed text-stone">{footer}</p>
           )}
         </div>
       </div>
