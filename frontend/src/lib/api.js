@@ -167,6 +167,14 @@ export function getStreak() {
   return request("/users/me/streak", { auth: true });
 }
 
+export function getGroupLeaderboard() {
+  return request("/leaderboard/group", { auth: true });
+}
+
+export function getGlobalLeaderboard() {
+  return request("/leaderboard/global", { auth: true });
+}
+
 // Fire-and-forget: deliberately bypasses request() (which redirects to /login
 // on a 401) and swallows every failure. The Pomodoro timer must keep running
 // silently even if this never lands -- see backend/src/routes/sessions.js.

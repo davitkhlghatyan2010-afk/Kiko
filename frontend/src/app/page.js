@@ -10,13 +10,6 @@ import { TasksModal } from "@/components/TasksModal";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
 import { splitSession } from "@/lib/pomodoro";
 
-function tasksButtonLabel(tasks) {
-  if (!tasks || tasks.length === 0) return "Tasks";
-  if (tasks.length === 1) return `${tasks[0].text} — ${tasks[0].amount}`;
-  const done = tasks.filter((t) => t.completed).length;
-  return `Tasks: ${done}/${tasks.length} done`;
-}
-
 export default function Home() {
   const { user, loading } = useAuth();
   const [day, setDay] = useState(undefined);
@@ -125,7 +118,7 @@ export default function Home() {
           onClick={() => setTasksOpen(true)}
           className="rounded-xl border-2 border-ink bg-wall px-4 py-2 text-sm font-semibold text-ink"
         >
-          {tasksButtonLabel(day.tasks)}
+          Tasks
         </button>
       </div>
 
