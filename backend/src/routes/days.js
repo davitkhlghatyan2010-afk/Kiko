@@ -2,7 +2,6 @@ import { Router } from "express";
 import { prisma } from "../db.js";
 
 const router = Router();
-const TASK_TYPES = new Set(["artifact", "knowledge"]);
 
 function startOfToday() {
   // A plain `new Date(y, m, d)` is a local-midnight instant; Postgres' DATE column truncates
@@ -29,9 +28,6 @@ function validateTasks(tasks) {
     if (typeof task?.amount !== "string" || !task.amount.trim()) {
       return "Every task needs an amount";
     }
-    if (!TASK_TYPES.has(task?.type)) {
-      return "Task type must be 'artifact' or 'knowledge'";
-    }
   }
   return null;
 }
@@ -48,7 +44,6 @@ function serializeDay(day) {
       id: task.id,
       text: task.text,
       amount: task.amount,
-      type: task.type,
       completed: task.completed,
     })),
   };
@@ -78,7 +73,6 @@ router.post("/", async (req, res, next) => {
           create: tasks.map((task) => ({
             text: task.text.trim(),
             amount: task.amount.trim(),
-            type: task.type,
           })),
         },
       },
@@ -130,7 +124,6 @@ router.post("/today/tasks", async (req, res, next) => {
           create: tasks.map((task) => ({
             text: task.text.trim(),
             amount: task.amount.trim(),
-            type: task.type,
           })),
         },
       },

@@ -12,11 +12,6 @@ enum AccountType {
   solo
 }
 
-enum TaskType {
-  artifact
-  knowledge
-}
-
 enum DayCredit {
   full
   none
@@ -84,7 +79,6 @@ model Task {
   day       Day      @relation(fields: [dayId], references: [id])
   text      String
   amount    String
-  type      TaskType
   completed Boolean  @default(false)
   proofId   String?  @map("proof_id")
   createdAt DateTime @default(now()) @map("created_at")

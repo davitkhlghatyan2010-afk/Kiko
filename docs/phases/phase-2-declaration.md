@@ -31,6 +31,15 @@ Per your request: no cap on how many tasks can be declared, and a way to add mor
 - **Frontend**: extracted the task-row UI (`src/components/TaskRows.js`) since both `/declare` and the new `/declare/add` page need the same uncapped add/remove-row behavior. The home page shows a "+ Add another task" link under today's task list once something's declared.
 - No PATCH/DELETE was added for existing tasks — intentionally, since you asked for add-only.
 
+## Extension: removed artifact/knowledge task type (2026-08-25, same day)
+
+Per your instruction: tasks no longer have a "type." Every task uses one proving method going forward — write a summary, answer one AI-generated follow-up question, task completes. No branching by type anywhere.
+
+- **Schema**: dropped `tasks.type` and the `TaskType` enum entirely. Migration `20260825135955_remove_task_type`.
+- **Backend**: removed the artifact/knowledge check from `validateTasks()` and the `type` field from task creation and serialization in `backend/src/routes/days.js`.
+- **Frontend**: removed the artifact/knowledge toggle from `TaskRows`, and the `(type)` annotation from the home page's task list.
+- **No file-upload proof path existed to remove.** Checked — there's no `Proof` model, no upload endpoint, nothing artifact-specific beyond the type field itself, since Phase 4 (proving) hasn't been built yet. When it is, it'll be built single-flow from the start per this instruction: `tasks.proof_id` (already an unwired placeholder column) will point at one `Proof` record per task with `summary`, `ai_question`, `user_answer`, `flagged` — no type-conditional logic to remove later, because there isn't any now.
+
 ## Carried into Phase 3
 
 Two test declarations exist for `erin` (one with the pre-fix mis-dated `date`, one correct) — harmless leftovers, not cleaned up since deleting rows now requires your go-ahead each time. Say the word if you want the test data cleared before continuing.

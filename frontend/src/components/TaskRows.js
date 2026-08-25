@@ -1,5 +1,5 @@
 export function emptyTask() {
-  return { text: "", amount: "", type: "artifact" };
+  return { text: "", amount: "" };
 }
 
 export function TaskRows({ tasks, setTasks }) {
@@ -39,7 +39,7 @@ export function TaskRows({ tasks, setTasks }) {
             />
           </label>
 
-          <label className="mb-2 block text-sm">
+          <label className="block text-sm">
             How much
             <input
               className="mt-1 w-full rounded border border-stone bg-sky-cloud px-3 py-2 text-ink"
@@ -49,23 +49,6 @@ export function TaskRows({ tasks, setTasks }) {
               required
             />
           </label>
-
-          <div className="flex rounded border border-stone p-1 text-sm">
-            <button
-              type="button"
-              onClick={() => updateTask(index, { type: "artifact" })}
-              className={`flex-1 rounded px-3 py-1.5 ${task.type === "artifact" ? "bg-foliage-mid text-sky-cloud" : "text-ink"}`}
-            >
-              Artifact
-            </button>
-            <button
-              type="button"
-              onClick={() => updateTask(index, { type: "knowledge" })}
-              className={`flex-1 rounded px-3 py-1.5 ${task.type === "knowledge" ? "bg-foliage-mid text-sky-cloud" : "text-ink"}`}
-            >
-              Knowledge
-            </button>
-          </div>
         </div>
       ))}
 

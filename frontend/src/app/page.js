@@ -63,8 +63,7 @@ export default function Home() {
               <ul className="mb-3 flex flex-col gap-1">
                 {day.tasks.map((task) => (
                   <li key={task.id}>
-                    {task.completed ? "✓" : "○"} {task.text} — {task.amount}{" "}
-                    <span className="text-stone">({task.type})</span>
+                    {task.completed ? "✓" : "○"} {task.text} — {task.amount}
                   </li>
                 ))}
               </ul>
