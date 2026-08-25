@@ -12,13 +12,15 @@ const LINKS = [
   { href: "/profile", label: "Profile", kind: "profile" },
 ];
 
+const ADMIN_LINK = { href: "/admin", label: "Admin", kind: "admin" };
+
 function NavIcon({ kind, active }) {
   const draw = (canvas) => PixelWorld.drawNavIcon(canvas, { kind, active, bg: null, scale: 2 });
   return <PixelCanvas draw={draw} />;
 }
 
-function NavLinks({ pathname }) {
-  return LINKS.map(({ href, label, kind }) => {
+function NavLinks({ pathname, links }) {
+  return links.map(({ href, label, kind }) => {
     const active = pathname === href;
     return (
       <Link
@@ -45,10 +47,12 @@ export function NavBar({ variant }) {
 
   if (loading || !user) return null;
 
+  const links = user.isAdmin ? [...LINKS, ADMIN_LINK] : LINKS;
+
   if (variant === "top") {
     return (
       <nav className="hidden items-center justify-center gap-6 border-b-2 border-ink bg-wall py-1 md:flex">
-        <NavLinks pathname={pathname} />
+        <NavLinks pathname={pathname} links={links} />
       </nav>
     );
   }
@@ -57,7 +61,7 @@ export function NavBar({ variant }) {
     <>
       <div className="h-16 md:hidden" />
       <nav className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-t-2 border-ink bg-wall py-1 md:hidden">
-        <NavLinks pathname={pathname} />
+        <NavLinks pathname={pathname} links={links} />
       </nav>
     </>
   );

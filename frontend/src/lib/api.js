@@ -175,6 +175,18 @@ export function getGlobalLeaderboard() {
   return request("/leaderboard/global", { auth: true });
 }
 
+export function getAdminProofs() {
+  return request("/admin/proofs", { auth: true });
+}
+
+export function setProofFlagged(proofId, flagged) {
+  return request(`/admin/proofs/${proofId}/flag`, {
+    method: "PATCH",
+    auth: true,
+    body: JSON.stringify({ flagged }),
+  });
+}
+
 // Fire-and-forget: deliberately bypasses request() (which redirects to /login
 // on a 401) and swallows every failure. The Pomodoro timer must keep running
 // silently even if this never lands -- see backend/src/routes/sessions.js.

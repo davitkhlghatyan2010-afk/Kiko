@@ -885,6 +885,11 @@ var PAL = {
       p.rect(2, 10, 3, 4, fillC); p.vl(2, 10, 4, ink); p.vl(5, 10, 4, ink); p.hl(2, 10, 3, ink); p.hl(2, 13, 3, ink);
       p.rect(6, 6, 3, 8, fillC); p.vl(6, 6, 8, ink); p.vl(9, 6, 8, ink); p.hl(6, 6, 3, ink); p.hl(6, 13, 3, ink);
       p.rect(10, 3, 3, 11, fillC); p.vl(10, 3, 11, ink); p.vl(13, 3, 11, ink); p.hl(10, 3, 3, ink); p.hl(10, 13, 3, ink);
+    } else if (kind === 'admin') {
+      // magnifying glass: ink ring with a two-tone fill, diagonal handle
+      p.disc(6, 6, 4, ink);
+      p.disc(6, 6, 3, fillC);
+      p.set(9, 9, ink); p.set(10, 10, ink); p.set(11, 11, ink); p.set(12, 12, ink); p.set(13, 13, ink);
     } else if (kind === 'profile') {
       // head + shoulders silhouette, same flat two-tone style as the other icons
       p.disc(8, 6, 3, fillC);
