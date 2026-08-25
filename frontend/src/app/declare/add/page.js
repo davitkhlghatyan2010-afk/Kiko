@@ -51,7 +51,7 @@ export default function AddTasksPage() {
 
   return (
     <main className="flex flex-1 items-center justify-center bg-sky-cloud px-6 py-10">
-      <form onSubmit={handleSubmit} className="w-full max-w-lg rounded bg-wall p-6 text-ink">
+      <form onSubmit={handleSubmit} className="w-full max-w-lg rounded-2xl border-2 border-ink bg-wall p-6 text-ink">
         <h1 className="mb-1 text-2xl font-semibold">Add to today</h1>
         <p className="mb-6 text-sm text-stone">
           Tasks already declared today can&apos;t be edited or removed — this only adds more on top, before
@@ -60,12 +60,12 @@ export default function AddTasksPage() {
 
         <TaskRows tasks={tasks} setTasks={setTasks} />
 
-        {error && <p className="mb-3 rounded bg-stone/40 px-3 py-2 text-sm text-ink">{error}</p>}
+        {error && <p className="mb-3 text-sm text-dead">{error}</p>}
 
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded bg-alert px-4 py-2 font-semibold text-sky-cloud disabled:opacity-60"
+          className="w-full rounded-xl bg-alert px-4 py-2 font-semibold text-sky-cloud disabled:opacity-60"
         >
           {submitting ? "Adding..." : "Add tasks"}
         </button>

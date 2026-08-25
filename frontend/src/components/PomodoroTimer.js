@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { logSession } from "@/lib/api";
+import { PomodoroScene } from "@/components/PomodoroScene";
 
 function format(seconds) {
   const m = String(Math.floor(seconds / 60)).padStart(2, "0");
@@ -62,19 +63,10 @@ export function PomodoroTimer({ blocks, onStop }) {
       </p>
       <p className="font-mono text-3xl tabular-nums text-ink">{format(secondsLeft)}</p>
 
-      <div className="relative flex h-12 w-full overflow-hidden rounded">
-        <div className="flex flex-1 items-center justify-center bg-wood-mid text-xs uppercase tracking-wide text-sky-cloud">
-          House
-        </div>
-        <div className="flex flex-1 items-center justify-center bg-foliage-mid text-xs uppercase tracking-wide text-sky-cloud">
-          Garden
-        </div>
-        <div
-          className={`absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-ink transition-all duration-700 ease-in-out ${
-            phase === "work" ? "left-[calc(25%-0.625rem)]" : "left-[calc(75%-0.625rem)]"
-          }`}
-        />
-      </div>
+      {/* Inside the house while working, out in the garden while resting -- the
+          scene switches the instant `phase` flips, driven by real Design System
+          pixel art (src/lib/pixelWorld.js), not a CSS placeholder. */}
+      <PomodoroScene phase={phase === "work" ? "work" : "rest"} />
 
       <button onClick={onStop} className="text-xs underline">
         Stop

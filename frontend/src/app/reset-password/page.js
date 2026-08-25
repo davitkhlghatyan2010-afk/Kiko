@@ -53,7 +53,7 @@ function ResetPasswordForm() {
         New password
         <input
           type="password"
-          className="mt-1 w-full rounded border border-stone bg-sky-cloud px-3 py-2 text-ink"
+          className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           minLength={8}
@@ -66,7 +66,7 @@ function ResetPasswordForm() {
         Confirm new password
         <input
           type="password"
-          className="mt-1 w-full rounded border border-stone bg-sky-cloud px-3 py-2 text-ink"
+          className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           minLength={8}
@@ -74,12 +74,12 @@ function ResetPasswordForm() {
         />
       </label>
 
-      {error && <p className="mb-3 rounded bg-stone/40 px-3 py-2 text-sm text-ink">{error}</p>}
+      {error && <p className="mb-3 text-sm text-dead">{error}</p>}
 
       <button
         type="submit"
         disabled={submitting}
-        className="w-full rounded bg-alert px-4 py-2 font-semibold text-sky-cloud disabled:opacity-60"
+        className="w-full rounded-xl bg-alert px-4 py-2 font-semibold text-sky-cloud disabled:opacity-60"
       >
         {submitting ? "Updating..." : "Update password"}
       </button>
@@ -90,7 +90,7 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <main className="flex flex-1 items-center justify-center bg-sky-cloud px-6">
-      <div className="w-full max-w-sm rounded bg-wall p-6 text-ink">
+      <div className="w-full max-w-sm rounded-2xl border-2 border-ink bg-wall p-6 text-ink">
         <h1 className="mb-6 text-2xl font-semibold">Set a new password</h1>
         <Suspense fallback={<p className="text-sm">Loading...</p>}>
           <ResetPasswordForm />

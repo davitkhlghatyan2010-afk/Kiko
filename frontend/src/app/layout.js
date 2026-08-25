@@ -1,5 +1,6 @@
 import { Noto_Sans_Armenian, JetBrains_Mono } from "next/font/google";
 import { AuthProvider } from "@/lib/auth-context";
+import { Header } from "@/components/Header";
 import "./globals.css";
 
 const notoSansArmenian = Noto_Sans_Armenian({
@@ -24,7 +25,10 @@ export default function RootLayout({ children }) {
       className={`${notoSansArmenian.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <Header />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

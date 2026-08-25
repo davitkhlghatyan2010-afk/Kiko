@@ -9,7 +9,7 @@ import { TaskItem } from "@/components/TaskItem";
 import { MAX_TOTAL_MINUTES, MIN_TOTAL_MINUTES, splitSession } from "@/lib/pomodoro";
 
 export default function Home() {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading } = useAuth();
   const [status, setStatus] = useState("checking");
   const [day, setDay] = useState(undefined);
   const [starting, setStarting] = useState(false);
@@ -60,19 +60,10 @@ export default function Home() {
   }
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-6 bg-sky-cloud px-6 text-ink">
-      <h1 className="text-3xl font-semibold">Kiko</h1>
-      <p className="font-mono text-sm uppercase tracking-wide">
+    <main className="flex flex-1 flex-col items-center gap-6 bg-sky-cloud px-6 py-10 text-ink">
+      <p className="font-mono text-xs uppercase tracking-wide text-stone">
         backend:{" "}
-        <span
-          className={
-            status === "ok"
-              ? "text-foliage-dark"
-              : status === "error"
-                ? "text-alert"
-                : "text-stone"
-          }
-        >
+        <span className={status === "ok" ? "text-foliage-dark" : status === "error" ? "text-alert" : "text-stone"}>
           {status}
         </span>
       </p>
@@ -80,23 +71,21 @@ export default function Home() {
       {loading ? (
         <p className="text-sm text-stone">Loading session...</p>
       ) : user ? (
-        <div className="flex flex-col items-center gap-3 text-sm">
+        <div className="flex w-full flex-col items-center gap-3 text-sm">
           <p>
-            Logged in as <strong>{user.username}</strong> ({user.accountType}
-            {user.isAdmin ? ", admin" : ""})
+            {user.accountType}
+            {user.isAdmin ? ", admin" : ""}
+            {streak !== null && <span className="ml-2 font-mono text-xs uppercase tracking-wide">Streak: {streak}</span>}
           </p>
-          {streak !== null && (
-            <p className="font-mono text-xs uppercase tracking-wide text-stone">Streak: {streak}</p>
-          )}
 
           {day === undefined ? (
             <p className="text-stone">Checking today...</p>
           ) : day === null ? (
-            <a href="/declare" className="rounded bg-alert px-4 py-2 font-semibold text-sky-cloud">
+            <a href="/declare" className="rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud">
               Declare today
             </a>
           ) : (
-            <div className="flex w-full max-w-sm flex-col items-center gap-4 rounded bg-wall p-6">
+            <div className="flex w-full max-w-sm flex-col items-center gap-4 rounded-2xl border-2 border-ink bg-wall p-6">
               {/* The deadline countdown is always the largest, primary timer on screen. */}
               <Countdown deadlineAt={day.deadlineAt} />
 
@@ -112,16 +101,16 @@ export default function Home() {
                       type="number"
                       min={MIN_TOTAL_MINUTES}
                       max={MAX_TOTAL_MINUTES}
-                      className="mt-1 w-full rounded border border-stone bg-sky-cloud px-3 py-2 text-ink"
+                      className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-xl text-ink outline-none"
                       value={focusMinutes}
                       onChange={(e) => setFocusMinutes(e.target.value)}
                     />
                   </label>
-                  {focusMinutesError && <p className="text-xs text-stone">{focusMinutesError}</p>}
+                  {focusMinutesError && <p className="text-xs text-dead">{focusMinutesError}</p>}
                   <button
                     onClick={handleStart}
                     disabled={starting}
-                    className="w-full rounded bg-alert px-4 py-2 font-semibold text-sky-cloud disabled:opacity-60"
+                    className="w-full rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud disabled:opacity-60"
                   >
                     {starting ? "Starting..." : "Start"}
                   </button>
@@ -158,20 +147,9 @@ export default function Home() {
               </a>
             </div>
           )}
-
-          <button onClick={signOut} className="rounded bg-wall px-4 py-2 underline">
-            Log out
-          </button>
         </div>
       ) : (
-        <div className="flex gap-3 text-sm">
-          <a href="/login" className="rounded bg-wall px-4 py-2 underline">
-            Log in
-          </a>
-          <a href="/register" className="rounded bg-alert px-4 py-2 font-semibold text-sky-cloud">
-            Create account
-          </a>
-        </div>
+        <p className="text-sm text-stone">Log in or create an account to get started.</p>
       )}
     </main>
   );

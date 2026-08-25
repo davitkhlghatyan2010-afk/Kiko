@@ -18,7 +18,7 @@ export function TaskRows({ tasks, setTasks }) {
   return (
     <>
       {tasks.map((task, index) => (
-        <div key={index} className="mb-4 rounded border border-stone p-3">
+        <div key={index} className="mb-4 rounded-2xl border-2 border-ink p-3">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-wide text-stone">Task {index + 1}</span>
             {tasks.length > 1 && (
@@ -31,7 +31,7 @@ export function TaskRows({ tasks, setTasks }) {
           <label className="mb-2 block text-sm">
             What
             <input
-              className="mt-1 w-full rounded border border-stone bg-sky-cloud px-3 py-2 text-ink"
+              className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
               value={task.text}
               onChange={(e) => updateTask(index, { text: e.target.value })}
               placeholder="Read chapter 4"
@@ -42,7 +42,7 @@ export function TaskRows({ tasks, setTasks }) {
           <label className="block text-sm">
             How much
             <input
-              className="mt-1 w-full rounded border border-stone bg-sky-cloud px-3 py-2 text-ink"
+              className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
               value={task.amount}
               onChange={(e) => updateTask(index, { amount: e.target.value })}
               placeholder="20 pages"

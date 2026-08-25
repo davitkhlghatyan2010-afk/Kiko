@@ -3,6 +3,17 @@
 import { useState } from "react";
 import { answerProof, submitProof } from "@/lib/api";
 
+// 8x8 filled square when done, 2px outlined square when not -- the Design
+// System's task-row bullet, standing in for a checkbox without implying
+// partial credit (it's a marker, not a control).
+function TaskBullet({ done }) {
+  return done ? (
+    <span className="inline-block h-2 w-2 shrink-0 bg-ink" />
+  ) : (
+    <span className="inline-block h-2 w-2 shrink-0 border-2 border-ink" />
+  );
+}
+
 // Binary display, no partial credit anywhere: a task is either the plain
 // "done" row, or mid-flow (summary/question), or waiting to be started.
 // Only answering the AI question flips completed -- see backend/src/routes/proofs.js.
@@ -17,8 +28,9 @@ export function TaskItem({ task, onProved }) {
 
   if (task.completed) {
     return (
-      <li>
-        ✓ {task.text} — {task.amount}
+      <li className="flex items-center gap-2">
+        <TaskBullet done />
+        {task.text} — {task.amount}
       </li>
     );
   }
@@ -26,8 +38,9 @@ export function TaskItem({ task, onProved }) {
   if (phase === "idle") {
     return (
       <li className="flex items-center justify-between gap-2">
-        <span>
-          ○ {task.text} — {task.amount}
+        <span className="flex items-center gap-2">
+          <TaskBullet done={false} />
+          {task.text} — {task.amount}
         </span>
         <button onClick={() => setPhase("summary")} className="text-xs underline">
           Mark done
@@ -68,26 +81,27 @@ export function TaskItem({ task, onProved }) {
 
   if (phase === "summary") {
     return (
-      <li className="flex flex-col gap-2 rounded border border-stone p-3">
-        <p className="text-sm">
-          ○ {task.text} — {task.amount}
+      <li className="flex flex-col gap-2 rounded-2xl border-2 border-ink p-3">
+        <p className="flex items-center gap-2 text-sm">
+          <TaskBullet done={false} />
+          {task.text} — {task.amount}
         </p>
         <form onSubmit={handleSummarySubmit} className="flex flex-col gap-2">
           <label className="text-sm">
             What did you do / learn?
             <textarea
-              className="mt-1 w-full rounded border border-stone bg-sky-cloud px-3 py-2 text-ink"
+              className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
               rows={3}
               required
             />
           </label>
-          {error && <p className="rounded bg-stone/40 px-3 py-2 text-sm text-ink">{error}</p>}
+          {error && <p className="text-sm text-dead">{error}</p>}
           <button
             type="submit"
             disabled={submitting}
-            className="rounded bg-alert px-4 py-2 text-sm font-semibold text-sky-cloud disabled:opacity-60"
+            className="rounded-xl bg-alert px-4 py-2 text-sm font-semibold text-sky-cloud disabled:opacity-60"
           >
             {submitting ? "Submitting..." : "Submit"}
           </button>
@@ -97,24 +111,25 @@ export function TaskItem({ task, onProved }) {
   }
 
   return (
-    <li className="flex flex-col gap-2 rounded border border-stone p-3">
-      <p className="text-sm">
-        ○ {task.text} — {task.amount}
+    <li className="flex flex-col gap-2 rounded-2xl border-2 border-ink p-3">
+      <p className="flex items-center gap-2 text-sm">
+        <TaskBullet done={false} />
+        {task.text} — {task.amount}
       </p>
       <p className="text-sm font-semibold">{aiQuestion}</p>
       <form onSubmit={handleAnswerSubmit} className="flex flex-col gap-2">
         <textarea
-          className="w-full rounded border border-stone bg-sky-cloud px-3 py-2 text-ink"
+          className="w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
           rows={2}
           required
         />
-        {error && <p className="rounded bg-stone/40 px-3 py-2 text-sm text-ink">{error}</p>}
+        {error && <p className="text-sm text-dead">{error}</p>}
         <button
           type="submit"
           disabled={submitting}
-          className="rounded bg-alert px-4 py-2 text-sm font-semibold text-sky-cloud disabled:opacity-60"
+          className="rounded-xl bg-alert px-4 py-2 text-sm font-semibold text-sky-cloud disabled:opacity-60"
         >
           {submitting ? "Submitting..." : "Answer"}
         </button>
