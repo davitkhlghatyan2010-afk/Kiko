@@ -8,7 +8,7 @@ import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { FocusMinutesForm } from "@/components/FocusMinutesForm";
 import { TasksModal } from "@/components/TasksModal";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
-import { splitSession } from "@/lib/pomodoro";
+import { MIN_TOTAL_MINUTES, splitSession } from "@/lib/pomodoro";
 import { streakToTier } from "@/lib/gardenTier";
 
 function tasksButtonLabel(tasks) {
@@ -97,35 +97,35 @@ export default function Home() {
   }
 
   return (
-    <PixelBackdrop tier={streakToTier(streak)}>
-      <div className="flex h-full w-full max-w-sm flex-col items-center justify-between self-stretch py-8">
-        {/* Deadline countdown, floating over the sky -- always the largest,
-            primary timer on screen, visible the moment today is declared. */}
-        <Countdown deadlineAt={day.deadlineAt} />
+    <PixelBackdrop tier={streakToTier(streak)} stretch>
+      {/* Deadline countdown, floating over the sky -- always the largest,
+          primary timer on screen, visible the moment today is declared. */}
+      <Countdown deadlineAt={day.deadlineAt} />
 
-        <div className="flex flex-col items-center gap-3">
+      <div className="flex flex-col items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setTasksOpen(true)}
+          className="rounded-xl border-2 border-ink bg-wall px-4 py-2 text-sm font-semibold text-ink"
+        >
+          {tasksButtonLabel(day.tasks)}
+        </button>
+
+        {pomodoroBlocks && <PomodoroTimer blocks={pomodoroBlocks} onStop={() => setPomodoroBlocks(null)} />}
+      </div>
+
+      <div className="w-full max-w-sm px-6">
+        {pomodoroBlocks ? null : day.startedAt ? (
           <button
             type="button"
-            onClick={() => setTasksOpen(true)}
-            className="rounded-xl border-2 border-ink bg-wall px-4 py-2 text-sm font-semibold text-ink"
+            onClick={() => handleStartPomodoro(MIN_TOTAL_MINUTES)}
+            className="w-full rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud"
           >
-            {tasksButtonLabel(day.tasks)}
+            Start a focus session
           </button>
-
-          {pomodoroBlocks && <PomodoroTimer blocks={pomodoroBlocks} onStop={() => setPomodoroBlocks(null)} />}
-        </div>
-
-        <div className="w-full px-6">
-          {pomodoroBlocks ? null : day.startedAt ? (
-            <FocusMinutesForm
-              onStart={handleStartPomodoro}
-              buttonLabel="Start a focus session"
-              busyLabel="Starting..."
-            />
-          ) : (
-            <FocusMinutesForm onStart={handleStart} buttonLabel="Start" busyLabel="Starting..." />
-          )}
-        </div>
+        ) : (
+          <FocusMinutesForm onStart={handleStart} buttonLabel="Start" busyLabel="Starting..." />
+        )}
       </div>
 
       {tasksOpen && <TasksModal day={day} onClose={() => setTasksOpen(false)} onChanged={handleTasksChanged} />}
