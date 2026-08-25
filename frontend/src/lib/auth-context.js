@@ -7,10 +7,19 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(() => !!getToken());
+  // Always starts true (both server and client render the same "loading" markup on first
+  // paint) — reading getToken() here instead would return null during SSR (no window) but
+  // a real value during client hydration, so the two render passes would produce different
+  // markup and React would throw a hydration mismatch.
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!getToken()) return;
+    if (!getToken()) {
+      // Nothing to await here, so there's no way to move this off the effect's first tick.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLoading(false);
+      return;
+    }
     getMe()
       .then(({ user }) => setUser(user))
       .catch(() => clearToken())
