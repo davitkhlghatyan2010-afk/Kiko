@@ -105,3 +105,16 @@ export function addTasks(tasks) {
 export function startDay() {
   return request("/days/today/start", { method: "POST", auth: true });
 }
+
+// Fire-and-forget: deliberately bypasses request() (which redirects to /login
+// on a 401) and swallows every failure. The Pomodoro timer must keep running
+// silently even if this never lands -- see backend/src/routes/sessions.js.
+export function logSession({ startedAt, endedAt, type }) {
+  const token = getToken();
+  if (!token) return;
+  fetch(`${API_URL}/sessions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ startedAt, endedAt, type }),
+  }).catch(() => {});
+}

@@ -4,12 +4,17 @@ import { useEffect, useState } from "react";
 import { getHealth, getToday, startDay } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { Countdown } from "@/components/Countdown";
+import { PomodoroTimer } from "@/components/PomodoroTimer";
+import { MAX_TOTAL_MINUTES, MIN_TOTAL_MINUTES, splitSession } from "@/lib/pomodoro";
 
 export default function Home() {
   const { user, loading, signOut } = useAuth();
   const [status, setStatus] = useState("checking");
   const [day, setDay] = useState(undefined);
   const [starting, setStarting] = useState(false);
+  const [focusMinutes, setFocusMinutes] = useState(String(MIN_TOTAL_MINUTES));
+  const [focusMinutesError, setFocusMinutesError] = useState(null);
+  const [pomodoroBlocks, setPomodoroBlocks] = useState(null);
 
   useEffect(() => {
     getHealth()
@@ -30,10 +35,19 @@ export default function Home() {
   }, [user]);
 
   async function handleStart() {
+    const minutes = Number(focusMinutes);
+    if (!Number.isInteger(minutes) || minutes < MIN_TOTAL_MINUTES || minutes > MAX_TOTAL_MINUTES) {
+      setFocusMinutesError(`Enter a whole number between ${MIN_TOTAL_MINUTES} and ${MAX_TOTAL_MINUTES}`);
+      return;
+    }
+    setFocusMinutesError(null);
     setStarting(true);
     try {
+      // Unchanged: this is the day-start call that scoring/deadline logic cares about.
+      // The Pomodoro sequence below is purely a client-side companion on top of it.
       const { day } = await startDay();
       setDay(day);
+      setPomodoroBlocks(splitSession(minutes));
     } finally {
       setStarting(false);
     }
@@ -74,6 +88,7 @@ export default function Home() {
             </a>
           ) : (
             <div className="flex w-full max-w-sm flex-col items-center gap-4 rounded bg-wall p-6">
+              {/* The deadline countdown is always the largest, primary timer on screen. */}
               <Countdown deadlineAt={day.deadlineAt} />
 
               {day.startedAt ? (
@@ -81,13 +96,31 @@ export default function Home() {
                   Started {new Date(day.startedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </p>
               ) : (
-                <button
-                  onClick={handleStart}
-                  disabled={starting}
-                  className="w-full rounded bg-alert px-4 py-2 font-semibold text-sky-cloud disabled:opacity-60"
-                >
-                  {starting ? "Starting..." : "Start"}
-                </button>
+                <div className="flex w-full flex-col gap-2">
+                  <label className="block text-sm">
+                    Focus minutes ({MIN_TOTAL_MINUTES}-{MAX_TOTAL_MINUTES})
+                    <input
+                      type="number"
+                      min={MIN_TOTAL_MINUTES}
+                      max={MAX_TOTAL_MINUTES}
+                      className="mt-1 w-full rounded border border-stone bg-sky-cloud px-3 py-2 text-ink"
+                      value={focusMinutes}
+                      onChange={(e) => setFocusMinutes(e.target.value)}
+                    />
+                  </label>
+                  {focusMinutesError && <p className="text-xs text-stone">{focusMinutesError}</p>}
+                  <button
+                    onClick={handleStart}
+                    disabled={starting}
+                    className="w-full rounded bg-alert px-4 py-2 font-semibold text-sky-cloud disabled:opacity-60"
+                  >
+                    {starting ? "Starting..." : "Start"}
+                  </button>
+                </div>
+              )}
+
+              {pomodoroBlocks && (
+                <PomodoroTimer blocks={pomodoroBlocks} onStop={() => setPomodoroBlocks(null)} />
               )}
 
               <ul className="flex w-full flex-col gap-1 self-start">

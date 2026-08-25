@@ -17,6 +17,11 @@ enum DayCredit {
   none
 }
 
+enum SessionType {
+  work
+  rest
+}
+
 model Group {
   id          String   @id @default(uuid())
   name        String
@@ -42,6 +47,7 @@ model User {
   createdAt           DateTime            @default(now()) @map("created_at")
   passwordResetTokens PasswordResetToken[]
   days                Day[]
+  focusSessions       FocusSession[]
 
   @@map("users")
 }
@@ -84,4 +90,20 @@ model Task {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("tasks")
+}
+
+// Write-only. Nothing in scoring/streak/deadline logic may read this table --
+// it exists purely to log completed Pomodoro intervals for later analysis.
+// Deliberately has no relation to Day/Task, so there is no schema-level path
+// from scoring into session data.
+model FocusSession {
+  id        String      @id @default(uuid())
+  userId    String      @map("user_id")
+  user      User        @relation(fields: [userId], references: [id])
+  date      DateTime    @db.Date
+  startedAt DateTime    @map("started_at")
+  endedAt   DateTime    @map("ended_at")
+  type      SessionType
+
+  @@map("sessions")
 }
