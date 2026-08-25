@@ -50,10 +50,28 @@ export async function getHealth() {
   return res.json();
 }
 
-export function register({ username, email, password, confirmPassword, accountType, inviteCode, groupName }) {
+export function register({
+  username,
+  email,
+  password,
+  confirmPassword,
+  accountType,
+  inviteCode,
+  groupName,
+  privacyAccepted,
+}) {
   return request("/auth/register", {
     method: "POST",
-    body: JSON.stringify({ username, email, password, confirmPassword, accountType, inviteCode, groupName }),
+    body: JSON.stringify({
+      username,
+      email,
+      password,
+      confirmPassword,
+      accountType,
+      inviteCode,
+      groupName,
+      privacyAccepted,
+    }),
   });
 }
 

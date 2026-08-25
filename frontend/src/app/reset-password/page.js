@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { resetPassword } from "@/lib/api";
 import { isValidPassword, PASSWORD_RULES_MESSAGE } from "@/lib/password";
+import { PixelBackdrop } from "@/components/PixelBackdrop";
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -89,13 +90,13 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <main className="flex flex-1 items-center justify-center bg-sky-cloud px-6">
+    <PixelBackdrop>
       <div className="w-full max-w-sm rounded-2xl border-2 border-ink bg-wall p-6 text-ink">
         <h1 className="mb-6 text-2xl font-semibold">Set a new password</h1>
         <Suspense fallback={<p className="text-sm">Loading...</p>}>
           <ResetPasswordForm />
         </Suspense>
       </div>
-    </main>
+    </PixelBackdrop>
   );
 }

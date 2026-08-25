@@ -45,6 +45,9 @@ model User {
   adminOfGroup        Group?              @relation("GroupAdmin")
   isAdmin             Boolean             @default(false) @map("is_admin")
   createdAt           DateTime            @default(now()) @map("created_at")
+  // Nullable: accounts created before this field existed never saw a policy to
+  // accept. Every new registration sets it -- enforced in routes/auth.js, not here.
+  privacyAcceptedAt   DateTime?           @map("privacy_accepted_at")
   passwordResetTokens PasswordResetToken[]
   days                Day[]
   focusSessions       FocusSession[]

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { forgotPassword } from "@/lib/api";
+import { PixelBackdrop } from "@/components/PixelBackdrop";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -24,7 +25,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center bg-sky-cloud px-6">
+    <PixelBackdrop>
       <div className="w-full max-w-sm rounded-2xl border-2 border-ink bg-wall p-6 text-ink">
         <h1 className="mb-6 text-2xl font-semibold">Reset your password</h1>
 
@@ -73,6 +74,6 @@ export default function ForgotPasswordPage() {
           </a>
         </p>
       </div>
-    </main>
+    </PixelBackdrop>
   );
 }

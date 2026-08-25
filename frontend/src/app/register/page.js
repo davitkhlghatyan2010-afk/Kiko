@@ -5,6 +5,8 @@ import { useState } from "react";
 import { register } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { isValidPassword, PASSWORD_RULES_MESSAGE } from "@/lib/password";
+import { PrivacyPolicy } from "@/components/PrivacyPolicy";
+import { PixelBackdrop } from "@/components/PixelBackdrop";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -16,6 +18,7 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [groupName, setGroupName] = useState("");
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -31,6 +34,10 @@ export default function RegisterPage() {
       setError("Passwords do not match");
       return;
     }
+    if (!privacyAccepted) {
+      setError("You must accept the Privacy Policy");
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -42,6 +49,7 @@ export default function RegisterPage() {
         accountType,
         inviteCode,
         groupName,
+        privacyAccepted,
       });
       signIn(token, user);
       router.push("/");
@@ -53,7 +61,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center bg-sky-cloud px-6">
+    <PixelBackdrop>
       <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-2xl border-2 border-ink bg-wall p-6 text-ink">
         <h1 className="mb-6 text-2xl font-semibold">Join Kiko</h1>
 
@@ -144,6 +152,8 @@ export default function RegisterPage() {
           </>
         )}
 
+        <PrivacyPolicy accepted={privacyAccepted} onAcceptedChange={setPrivacyAccepted} />
+
         {error && <p className="mb-3 text-sm text-dead">{error}</p>}
 
         <button
@@ -161,6 +171,6 @@ export default function RegisterPage() {
           </a>
         </p>
       </form>
-    </main>
+    </PixelBackdrop>
   );
 }

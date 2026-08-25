@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { login } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { PixelBackdrop } from "@/components/PixelBackdrop";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,7 +30,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center bg-sky-cloud px-6">
+    <PixelBackdrop>
       <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-2xl border-2 border-ink bg-wall p-6 text-ink">
         <h1 className="mb-6 text-2xl font-semibold">Log in to Kiko</h1>
 
@@ -76,6 +77,6 @@ export default function LoginPage() {
           </a>
         </p>
       </form>
-    </main>
+    </PixelBackdrop>
   );
 }

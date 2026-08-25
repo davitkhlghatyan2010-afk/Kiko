@@ -28,7 +28,8 @@ function hashToken(token) {
 
 router.post("/register", async (req, res, next) => {
   try {
-    const { username, email, password, confirmPassword, accountType, inviteCode, groupName } = req.body ?? {};
+    const { username, email, password, confirmPassword, accountType, inviteCode, groupName, privacyAccepted } =
+      req.body ?? {};
 
     if (typeof username !== "string" || username.trim().length < 3) {
       return res.status(400).json({ status: "error", message: "Username must be at least 3 characters" });
@@ -42,6 +43,9 @@ router.post("/register", async (req, res, next) => {
     if (password !== confirmPassword) {
       return res.status(400).json({ status: "error", message: "Passwords do not match" });
     }
+    if (privacyAccepted !== true) {
+      return res.status(400).json({ status: "error", message: "You must accept the Privacy Policy" });
+    }
     if (accountType !== "group" && accountType !== "solo") {
       return res.status(400).json({ status: "error", message: "accountType must be 'group' or 'solo'" });
     }
@@ -51,11 +55,18 @@ router.post("/register", async (req, res, next) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
     const normalizedEmail = email.trim().toLowerCase();
+    const privacyAcceptedAt = new Date();
 
     const user = await prisma.$transaction(async (tx) => {
       if (accountType === "solo") {
         return tx.user.create({
-          data: { username: username.trim(), email: normalizedEmail, passwordHash, accountType: "solo" },
+          data: {
+            username: username.trim(),
+            email: normalizedEmail,
+            passwordHash,
+            accountType: "solo",
+            privacyAcceptedAt,
+          },
         });
       }
 
@@ -70,12 +81,20 @@ router.post("/register", async (req, res, next) => {
             passwordHash,
             accountType: "group",
             groupId: existingGroup.id,
+            privacyAcceptedAt,
           },
         });
       }
 
       const admin = await tx.user.create({
-        data: { username: username.trim(), email: normalizedEmail, passwordHash, accountType: "group", isAdmin: true },
+        data: {
+          username: username.trim(),
+          email: normalizedEmail,
+          passwordHash,
+          accountType: "group",
+          isAdmin: true,
+          privacyAcceptedAt,
+        },
       });
       const group = await tx.group.create({
         data: { name: groupName?.trim() || code, inviteCode: code, adminUserId: admin.id },
