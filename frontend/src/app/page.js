@@ -6,15 +6,13 @@ import { useAuth } from "@/lib/auth-context";
 import { Countdown } from "@/components/Countdown";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { TaskItem } from "@/components/TaskItem";
-import { MAX_TOTAL_MINUTES, MIN_TOTAL_MINUTES, splitSession } from "@/lib/pomodoro";
+import { FocusMinutesForm } from "@/components/FocusMinutesForm";
+import { splitSession } from "@/lib/pomodoro";
 
 export default function Home() {
   const { user, loading } = useAuth();
   const [status, setStatus] = useState("checking");
   const [day, setDay] = useState(undefined);
-  const [starting, setStarting] = useState(false);
-  const [focusMinutes, setFocusMinutes] = useState(String(MIN_TOTAL_MINUTES));
-  const [focusMinutesError, setFocusMinutesError] = useState(null);
   const [pomodoroBlocks, setPomodoroBlocks] = useState(null);
   const [streak, setStreak] = useState(null);
 
@@ -40,23 +38,19 @@ export default function Home() {
     return () => window.removeEventListener("focus", refresh);
   }, [user, refresh]);
 
-  async function handleStart() {
-    const minutes = Number(focusMinutes);
-    if (!Number.isInteger(minutes) || minutes < MIN_TOTAL_MINUTES || minutes > MAX_TOTAL_MINUTES) {
-      setFocusMinutesError(`Enter a whole number between ${MIN_TOTAL_MINUTES} and ${MAX_TOTAL_MINUTES}`);
-      return;
-    }
-    setFocusMinutesError(null);
-    setStarting(true);
-    try {
-      // Unchanged: this is the day-start call that scoring/deadline logic cares about.
-      // The Pomodoro sequence below is purely a client-side companion on top of it.
-      const { day } = await startDay();
-      setDay(day);
-      setPomodoroBlocks(splitSession(minutes));
-    } finally {
-      setStarting(false);
-    }
+  // Fires once per day: the real startDay() call scoring/deadline logic
+  // cares about, plus the first Pomodoro on top of it.
+  async function handleStart(minutes) {
+    const { day } = await startDay();
+    setDay(day);
+    setPomodoroBlocks(splitSession(minutes));
+  }
+
+  // After the day's already started, stopping a Pomodoro shouldn't strand the
+  // user with no way to run another one -- this only re-launches the
+  // client-side timer, it never touches startDay() again.
+  function handleStartPomodoro(minutes) {
+    setPomodoroBlocks(splitSession(minutes));
   }
 
   return (
@@ -94,31 +88,19 @@ export default function Home() {
                   Started {new Date(day.startedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </p>
               ) : (
-                <div className="flex w-full flex-col gap-2">
-                  <label className="block text-sm">
-                    Focus minutes ({MIN_TOTAL_MINUTES}-{MAX_TOTAL_MINUTES})
-                    <input
-                      type="number"
-                      min={MIN_TOTAL_MINUTES}
-                      max={MAX_TOTAL_MINUTES}
-                      className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-xl text-ink outline-none"
-                      value={focusMinutes}
-                      onChange={(e) => setFocusMinutes(e.target.value)}
-                    />
-                  </label>
-                  {focusMinutesError && <p className="text-xs text-dead">{focusMinutesError}</p>}
-                  <button
-                    onClick={handleStart}
-                    disabled={starting}
-                    className="w-full rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud disabled:opacity-60"
-                  >
-                    {starting ? "Starting..." : "Start"}
-                  </button>
-                </div>
+                <FocusMinutesForm onStart={handleStart} buttonLabel="Start" busyLabel="Starting..." />
               )}
 
-              {pomodoroBlocks && (
+              {pomodoroBlocks ? (
                 <PomodoroTimer blocks={pomodoroBlocks} onStop={() => setPomodoroBlocks(null)} />
+              ) : (
+                day.startedAt && (
+                  <FocusMinutesForm
+                    onStart={handleStartPomodoro}
+                    buttonLabel="Start a focus session"
+                    busyLabel="Starting..."
+                  />
+                )
               )}
 
               {/* Binary display only -- no partial credit anywhere. Once day.credit is
