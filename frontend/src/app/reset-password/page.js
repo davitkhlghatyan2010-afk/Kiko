@@ -61,7 +61,7 @@ function ResetPasswordForm() {
           required
         />
       </label>
-      <p className="mb-3 text-xs text-stone">{PASSWORD_RULES_MESSAGE}</p>
+      <p className="mb-3 text-xs text-ink">{PASSWORD_RULES_MESSAGE}</p>
 
       <label className="mb-3 block text-sm">
         Confirm new password

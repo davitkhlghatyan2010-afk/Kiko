@@ -15,7 +15,7 @@ export function PrivacyPolicy({ accepted, onAcceptedChange }) {
       </button>
 
       {open && (
-        <div className="mb-2 rounded-xl border-2 border-ink p-3 text-xs text-stone">
+        <div className="mb-2 rounded-xl border-2 border-ink p-3 text-xs text-ink">
           <p className="mb-2">
             Kiko is a small pilot project. Here&apos;s what we collect and why: your username, email, and a
             hashed (never plaintext) password, to run your account. The tasks you declare, the summaries you
