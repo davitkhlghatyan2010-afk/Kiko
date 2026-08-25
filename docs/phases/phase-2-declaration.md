@@ -40,6 +40,13 @@ Per your instruction: tasks no longer have a "type." Every task uses one proving
 - **Frontend**: removed the artifact/knowledge toggle from `TaskRows`, and the `(type)` annotation from the home page's task list.
 - **No file-upload proof path existed to remove.** Checked — there's no `Proof` model, no upload endpoint, nothing artifact-specific beyond the type field itself, since Phase 4 (proving) hasn't been built yet. When it is, it'll be built single-flow from the start per this instruction: `tasks.proof_id` (already an unwired placeholder column) will point at one `Proof` record per task with `summary`, `ai_question`, `user_answer`, `flagged` — no type-conditional logic to remove later, because there isn't any now.
 
+## Extension: reject duplicate tasks (2026-08-25, same day)
+
+Per your request: a task can't be declared (or later added) if it's "totally similar" to one already on today's list. Defined as an exact match on `text` + `amount`, normalized (trimmed, case-insensitive) — so "Read chapter 4" / "20 pages" and "  READ CHAPTER 4  " / "20 PAGES" collide, but the same text with a different amount ("30 pages") is treated as a genuinely different task and allowed.
+
+- **Backend**: `taskKey()` builds the normalized `text||amount` key; `validateTasks()` now takes an `existingKeys` set and rejects both in-request duplicates (two identical tasks submitted together) and, for `POST /days/today/tasks`, duplicates of tasks already on the day.
+- No frontend changes needed — the declare/add-task forms already surface whatever error message the API returns.
+
 ## Carried into Phase 3
 
 Two test declarations exist for `erin` (one with the pre-fix mis-dated `date`, one correct) — harmless leftovers, not cleaned up since deleting rows now requires your go-ahead each time. Say the word if you want the test data cleared before continuing.

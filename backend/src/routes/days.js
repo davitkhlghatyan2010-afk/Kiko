@@ -17,10 +17,15 @@ function defaultDeadline() {
   return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
 }
 
-function validateTasks(tasks) {
+function taskKey(text, amount) {
+  return `${text.trim().toLowerCase()}||${amount.trim().toLowerCase()}`;
+}
+
+function validateTasks(tasks, existingKeys = new Set()) {
   if (!Array.isArray(tasks) || tasks.length < 1) {
     return "Declare at least 1 task";
   }
+  const seen = new Set(existingKeys);
   for (const task of tasks) {
     if (typeof task?.text !== "string" || !task.text.trim()) {
       return "Every task needs a description";
@@ -28,6 +33,11 @@ function validateTasks(tasks) {
     if (typeof task?.amount !== "string" || !task.amount.trim()) {
       return "Every task needs an amount";
     }
+    const key = taskKey(task.text, task.amount);
+    if (seen.has(key)) {
+      return `"${task.text.trim()}" is already on today's list`;
+    }
+    seen.add(key);
   }
   return null;
 }
@@ -103,18 +113,22 @@ router.post("/today/tasks", async (req, res, next) => {
   try {
     const { tasks } = req.body ?? {};
 
-    const validationError = validateTasks(tasks);
-    if (validationError) {
-      return res.status(400).json({ status: "error", message: validationError });
-    }
-
     const date = startOfToday();
-    const existing = await prisma.day.findUnique({ where: { userId_date: { userId: req.user.id, date } } });
+    const existing = await prisma.day.findUnique({
+      where: { userId_date: { userId: req.user.id, date } },
+      include: { tasks: true },
+    });
     if (!existing) {
       return res.status(404).json({ status: "error", message: "Declare today before adding more tasks" });
     }
     if (existing.deadlineAt < new Date()) {
       return res.status(400).json({ status: "error", message: "Today's deadline has already passed" });
+    }
+
+    const existingKeys = new Set(existing.tasks.map((task) => taskKey(task.text, task.amount)));
+    const validationError = validateTasks(tasks, existingKeys);
+    if (validationError) {
+      return res.status(400).json({ status: "error", message: validationError });
     }
 
     const day = await prisma.day.update({
