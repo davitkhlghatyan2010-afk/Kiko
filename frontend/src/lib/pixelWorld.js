@@ -651,7 +651,7 @@ var PAL = {
     if (opts.fauna === true) {
       if (T.deerCount > 0) {
         deer(p, 196, MY + 15, T, true, true);
-        if (T.deerCount > 1) deer(p, 335, MY + 5, T, false, false);
+        if (T.deerCount > 1) deer(p, 330, MY + 45, T, false, false);
         if (T.deerCount > 2) deer(p, 350, MY + 9, T, true, false);
       }
       if (T.flutter > 0) {
