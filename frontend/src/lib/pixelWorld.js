@@ -818,6 +818,26 @@ var PAL = {
       for (y = 0; y < wallH; y++) p.set(cx + x, top2 + y, ((x + y) & 1) ? wa : wb);
       p.set(cx + x, top2 - 1, PAL.ink);
     }
+    // window on the left wall, mirroring the fireplace's reference-point
+    // approach below rather than following the wall's slant exactly -- a
+    // narrow feature against a slanted wall reads fine without per-pixel
+    // slant correction, same simplification the fireplace already relies on.
+    var wxr = cx - Math.round(rx * 0.42), wyr = cy - ry + Math.round(ry * 0.42) - wallH;
+    var winW = 22, winH = 16, wx3 = wxr - (winW >> 1), wy3 = wyr + Math.round(wallH * 0.15);
+    p.rect(wx3 - 2, wy3 - 2, winW + 4, winH + 4, PAL.woodDark);
+    p.rect(wx3 - 1, wy3 - 1, winW + 2, winH + 2, PAL.ink);
+    var paneH = Math.round(winH * 0.55);
+    p.rect(wx3, wy3, winW, paneH, PAL.skyDay);
+    p.rect(wx3, wy3 + paneH, winW, winH - paneH, PAL.foliageMid);
+    p.vl(wx3 + (winW >> 1), wy3, winH, PAL.woodDark);
+    p.hl(wx3, wy3 + (winH >> 1), winW, PAL.woodDark);
+    // small shelf with a couple of books, tucked under the window
+    var shelfY = wy3 + winH + 6;
+    p.rect(wx3 - 2, shelfY, winW + 4, 2, PAL.woodDark);
+    p.rect(wx3 + 1, shelfY - 5, 3, 5, PAL.alert);
+    p.rect(wx3 + 5, shelfY - 6, 3, 6, PAL.autumn);
+    p.rect(wx3 + 9, shelfY - 4, 3, 4, PAL.foliageDark);
+
     var fx2 = cx + Math.round(rx * 0.42), fy = cy - ry + Math.round(ry * 0.42) - wallH;
     p.rect(fx2 - 12, fy, 24, wallH + 10, PAL.stone);
     p.rect(fx2 - 12, fy, 24, 1, PAL.ink); p.vl(fx2 - 13, fy, wallH + 10, PAL.ink); p.vl(fx2 + 12, fy, wallH + 10, PAL.ink);

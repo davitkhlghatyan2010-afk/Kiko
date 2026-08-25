@@ -7,7 +7,9 @@ import { Countdown } from "@/components/Countdown";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { TaskItem } from "@/components/TaskItem";
 import { FocusMinutesForm } from "@/components/FocusMinutesForm";
+import { PixelBackdrop } from "@/components/PixelBackdrop";
 import { splitSession } from "@/lib/pomodoro";
+import { streakToTier } from "@/lib/gardenTier";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -54,8 +56,9 @@ export default function Home() {
   }
 
   return (
-    <main className="flex flex-1 flex-col items-center gap-6 bg-sky-cloud px-6 py-10 text-ink">
-      <p className="font-mono text-xs uppercase tracking-wide text-stone">
+    <PixelBackdrop tier={streakToTier(streak)}>
+      <div className="flex flex-1 flex-col items-center gap-6 py-10 text-ink">
+      <p className="rounded-xl border-2 border-ink bg-wall px-3 py-1 font-mono text-xs uppercase tracking-wide text-stone">
         backend:{" "}
         <span className={status === "ok" ? "text-foliage-dark" : status === "error" ? "text-alert" : "text-stone"}>
           {status}
@@ -63,17 +66,17 @@ export default function Home() {
       </p>
 
       {loading ? (
-        <p className="text-sm text-stone">Loading session...</p>
+        <p className="rounded-xl border-2 border-ink bg-wall px-4 py-2 text-sm text-ink">Loading session...</p>
       ) : user ? (
         <div className="flex w-full flex-col items-center gap-3 text-sm">
-          <p>
+          <p className="rounded-xl border-2 border-ink bg-wall px-3 py-1 text-ink">
             {user.accountType}
             {user.isAdmin ? ", admin" : ""}
             {streak !== null && <span className="ml-2 font-mono text-xs uppercase tracking-wide">Streak: {streak}</span>}
           </p>
 
           {day === undefined ? (
-            <p className="text-stone">Checking today...</p>
+            <p className="rounded-xl border-2 border-ink bg-wall px-4 py-2 text-ink">Checking today...</p>
           ) : day === null ? (
             <a href="/declare" className="rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud">
               Declare today
@@ -131,8 +134,11 @@ export default function Home() {
           )}
         </div>
       ) : (
-        <p className="text-sm text-stone">Log in or create an account to get started.</p>
+        <p className="rounded-xl border-2 border-ink bg-wall px-4 py-2 text-sm text-ink">
+          Log in or create an account to get started.
+        </p>
       )}
-    </main>
+      </div>
+    </PixelBackdrop>
   );
 }

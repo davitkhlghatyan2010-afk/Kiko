@@ -9,18 +9,21 @@ import { PixelWorld } from "@/lib/pixelWorld";
 // cover the whole content area (cropping, not integer-scaling) via
 // object-fit: cover, so it reaches every edge instead of sitting in a
 // fixed-size framed box.
-export function PixelBackdrop({ children }) {
-  const draw = useCallback((canvas) => {
-    PixelWorld.drawWorld(canvas, {
-      tier: "green",
-      viewW: PixelWorld.WORLD_W,
-      character: true,
-      pose: "idle",
-      who: "boy",
-      dog: true,
-      fauna: true,
-    });
-  }, []);
+export function PixelBackdrop({ children, tier = "green" }) {
+  const draw = useCallback(
+    (canvas) => {
+      PixelWorld.drawWorld(canvas, {
+        tier,
+        viewW: PixelWorld.WORLD_W,
+        character: true,
+        pose: "idle",
+        who: "boy",
+        dog: true,
+        fauna: true,
+      });
+    },
+    [tier],
+  );
 
   return (
     <main className="relative flex flex-1 items-center justify-center overflow-hidden bg-sky-cloud px-6">
