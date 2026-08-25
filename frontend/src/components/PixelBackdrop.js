@@ -28,6 +28,13 @@ export function PixelBackdrop({ children, tier = "green", stretch = false }) {
         who: "boy",
         dog: true,
         fauna: true,
+        // `fill` mode crops this 380px-wide world via object-fit: cover,
+        // centered on the container -- on a narrow (phone) viewport, most
+        // of the width is cropped away. The default charX=60 (near the
+        // world's left edge, fine for PomodoroScene's own narrow 176px
+        // crop) would fall outside that centered crop, so pin the
+        // character+dog near the world's horizontal center (190) instead.
+        charX: 170,
       });
     },
     [tier],
