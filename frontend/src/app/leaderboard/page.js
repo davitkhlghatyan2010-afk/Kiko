@@ -32,6 +32,9 @@ function Row({ row, pinned = false }) {
         <div className="flex items-baseline gap-2">
           <span className="font-mono text-2xl leading-none text-ink">{row.days}</span>
           <span className="flex-1 text-xs text-stone">{row.days === 1 ? "clean day" : "clean days"}</span>
+          <span className="font-mono text-xs uppercase tracking-wide text-stone">
+            {row.streak} streak
+          </span>
         </div>
         <PixelBed days={row.days} tier={row.tier} />
       </div>

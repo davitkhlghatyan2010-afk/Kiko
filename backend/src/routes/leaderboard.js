@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { prisma } from "../db.js";
-import { getUserGardenTier } from "../streak.js";
+import { getUserGardenTier, getUserStreak } from "../streak.js";
 
 const router = Router();
 
@@ -13,11 +13,12 @@ const GLOBAL_LIMIT = 10;
 async function rankedRows(users, selfId) {
   const rows = await Promise.all(
     users.map(async (user) => {
-      const [days, tier] = await Promise.all([
+      const [days, tier, streak] = await Promise.all([
         prisma.day.count({ where: { userId: user.id, credit: "full" } }),
         getUserGardenTier(user.id),
+        getUserStreak(user.id),
       ]);
-      return { userId: user.id, username: user.username, days, tier, isSelf: user.id === selfId };
+      return { userId: user.id, username: user.username, days, tier, streak, isSelf: user.id === selfId };
     }),
   );
   rows.sort((a, b) => b.days - a.days || a.username.localeCompare(b.username));
