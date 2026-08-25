@@ -106,6 +106,22 @@ export function startDay() {
   return request("/days/today/start", { method: "POST", auth: true });
 }
 
+export function submitProof(taskId, summary) {
+  return request(`/tasks/${taskId}/proof`, {
+    method: "POST",
+    auth: true,
+    body: JSON.stringify({ summary }),
+  });
+}
+
+export function answerProof(proofId, answer) {
+  return request(`/proofs/${proofId}/answer`, {
+    method: "POST",
+    auth: true,
+    body: JSON.stringify({ answer }),
+  });
+}
+
 // Fire-and-forget: deliberately bypasses request() (which redirects to /login
 // on a 401) and swallows every failure. The Pomodoro timer must keep running
 // silently even if this never lands -- see backend/src/routes/sessions.js.

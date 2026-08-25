@@ -55,6 +55,10 @@ function serializeDay(day) {
       text: task.text,
       amount: task.amount,
       completed: task.completed,
+      // A pending (unanswered) proof lets the frontend resume the question step
+      // after a reload instead of restarting from "Mark done".
+      pendingProof:
+        !task.completed && task.proof ? { id: task.proof.id, aiQuestion: task.proof.aiQuestion } : null,
     })),
   };
 }
@@ -86,7 +90,7 @@ router.post("/", async (req, res, next) => {
           })),
         },
       },
-      include: { tasks: true },
+      include: { tasks: { include: { proof: true } } },
     });
 
     res.status(201).json({ day: serializeDay(day) });
@@ -100,7 +104,7 @@ router.get("/today", async (req, res, next) => {
     const date = startOfToday();
     const day = await prisma.day.findUnique({
       where: { userId_date: { userId: req.user.id, date } },
-      include: { tasks: true },
+      include: { tasks: { include: { proof: true } } },
     });
 
     res.json({ day: day ? serializeDay(day) : null });
@@ -141,7 +145,7 @@ router.post("/today/tasks", async (req, res, next) => {
           })),
         },
       },
-      include: { tasks: true },
+      include: { tasks: { include: { proof: true } } },
     });
 
     res.status(201).json({ day: serializeDay(day) });
@@ -164,7 +168,7 @@ router.post("/today/start", async (req, res, next) => {
     const day = await prisma.day.update({
       where: { id: existing.id },
       data: { startedAt: new Date() },
-      include: { tasks: true },
+      include: { tasks: { include: { proof: true } } },
     });
 
     res.json({ day: serializeDay(day) });

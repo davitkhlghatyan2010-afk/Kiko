@@ -6,17 +6,13 @@ import authRouter from "./routes/auth.js";
 import daysRouter from "./routes/days.js";
 import sessionsRouter from "./routes/sessions.js";
 import adminRouter from "./routes/admin.js";
+import proofsRouter from "./routes/proofs.js";
 import { authenticate } from "./middleware/authenticate.js";
 import { requireAdmin } from "./middleware/requireAdmin.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-app.use("/auth", authRouter);
-app.use("/days", authenticate, daysRouter);
-app.use("/sessions", authenticate, sessionsRouter);
-app.use("/admin", authenticate, requireAdmin, adminRouter);
 
 app.get("/health", async (_req, res, next) => {
   try {
@@ -26,6 +22,16 @@ app.get("/health", async (_req, res, next) => {
     next(err);
   }
 });
+
+app.use("/auth", authRouter);
+app.use("/days", authenticate, daysRouter);
+app.use("/sessions", authenticate, sessionsRouter);
+app.use("/admin", authenticate, requireAdmin, adminRouter);
+// No shared path prefix (routes are /tasks/:id/proof and /proofs/:id/answer) --
+// mounted last, after every unauthenticated route, so `authenticate` here can
+// never shadow something registered afterward the way it did before /health
+// was moved above this block.
+app.use(authenticate, proofsRouter);
 
 app.use((err, _req, res, _next) => {
   console.error(err);

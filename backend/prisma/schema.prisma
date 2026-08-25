@@ -86,10 +86,23 @@ model Task {
   text      String
   amount    String
   completed Boolean  @default(false)
-  proofId   String?  @map("proof_id")
   createdAt DateTime @default(now()) @map("created_at")
+  proof     Proof?
 
   @@map("tasks")
+}
+
+model Proof {
+  id         String   @id @default(uuid())
+  taskId     String   @unique @map("task_id")
+  task       Task     @relation(fields: [taskId], references: [id])
+  summary    String
+  aiQuestion String   @map("ai_question")
+  userAnswer String?  @map("user_answer")
+  flagged    Boolean  @default(false)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("proofs")
 }
 
 // Write-only. Nothing in scoring/streak/deadline logic may read this table --

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getHealth, getToday, startDay } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { Countdown } from "@/components/Countdown";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
+import { TaskItem } from "@/components/TaskItem";
 import { MAX_TOTAL_MINUTES, MIN_TOTAL_MINUTES, splitSession } from "@/lib/pomodoro";
 
 export default function Home() {
@@ -22,17 +23,18 @@ export default function Home() {
       .catch(() => setStatus("error"));
   }, []);
 
+  const refresh = useCallback(() => {
+    getToday()
+      .then(({ day }) => setDay(day))
+      .catch(() => setDay(null));
+  }, []);
+
   useEffect(() => {
     if (!user) return;
-    function refresh() {
-      getToday()
-        .then(({ day }) => setDay(day))
-        .catch(() => setDay(null));
-    }
     refresh();
     window.addEventListener("focus", refresh);
     return () => window.removeEventListener("focus", refresh);
-  }, [user]);
+  }, [user, refresh]);
 
   async function handleStart() {
     const minutes = Number(focusMinutes);
@@ -123,11 +125,15 @@ export default function Home() {
                 <PomodoroTimer blocks={pomodoroBlocks} onStop={() => setPomodoroBlocks(null)} />
               )}
 
-              <ul className="flex w-full flex-col gap-1 self-start">
+              {/* Binary display only -- no partial credit anywhere. Purely cosmetic
+                  here; Phase 5 computes the real day.credit server-side at the deadline. */}
+              <p className="self-start font-mono text-xs uppercase tracking-wide text-stone">
+                Today: {day.tasks.length > 0 && day.tasks.every((t) => t.completed) ? "done" : "not done"}
+              </p>
+
+              <ul className="flex w-full flex-col gap-2 self-start">
                 {day.tasks.map((task) => (
-                  <li key={task.id}>
-                    {task.completed ? "✓" : "○"} {task.text} — {task.amount}
-                  </li>
+                  <TaskItem key={task.id} task={task} onProved={refresh} />
                 ))}
               </ul>
               <a href="/declare/add" className="self-start text-sm underline">
