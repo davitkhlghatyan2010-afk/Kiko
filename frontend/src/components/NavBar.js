@@ -3,22 +3,32 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { PixelCanvas } from "@/components/PixelCanvas";
+import { PixelWorld } from "@/lib/pixelWorld";
 
 const LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/leaderboard", label: "Leaderboard" },
-  { href: "/profile", label: "Profile" },
+  { href: "/", label: "Home", kind: "home" },
+  { href: "/leaderboard", label: "Leaderboard", kind: "leaderboard" },
+  { href: "/profile", label: "Profile", kind: "profile" },
 ];
 
+function NavIcon({ kind, active }) {
+  const draw = (canvas) => PixelWorld.drawNavIcon(canvas, { kind, active, bg: null, scale: 2 });
+  return <PixelCanvas draw={draw} />;
+}
+
 function NavLinks({ pathname }) {
-  return LINKS.map(({ href, label }) => {
+  return LINKS.map(({ href, label, kind }) => {
     const active = pathname === href;
     return (
       <Link
         key={href}
         href={href}
-        className={`px-3 py-2 text-sm font-semibold ${active ? "text-ink underline" : "text-stone"}`}
+        className={`flex flex-col items-center gap-0.5 px-3 py-1 text-xs font-semibold ${
+          active ? "text-ink" : "text-stone"
+        }`}
       >
+        <NavIcon kind={kind} active={active} />
         {label}
       </Link>
     );
@@ -37,7 +47,7 @@ export function NavBar({ variant }) {
 
   if (variant === "top") {
     return (
-      <nav className="hidden h-12 items-center justify-center gap-6 border-b-2 border-ink bg-wall md:flex">
+      <nav className="hidden items-center justify-center gap-6 border-b-2 border-ink bg-wall py-1 md:flex">
         <NavLinks pathname={pathname} />
       </nav>
     );
@@ -45,8 +55,8 @@ export function NavBar({ variant }) {
 
   return (
     <>
-      <div className="h-14 md:hidden" />
-      <nav className="fixed inset-x-0 bottom-0 z-30 flex h-14 items-center justify-around border-t-2 border-ink bg-wall md:hidden">
+      <div className="h-16 md:hidden" />
+      <nav className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-t-2 border-ink bg-wall py-1 md:hidden">
         <NavLinks pathname={pathname} />
       </nav>
     </>

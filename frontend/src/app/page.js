@@ -9,7 +9,6 @@ import { StartSessionModal } from "@/components/StartSessionModal";
 import { TasksModal } from "@/components/TasksModal";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
 import { splitSession } from "@/lib/pomodoro";
-import { streakToTier } from "@/lib/gardenTier";
 
 function tasksButtonLabel(tasks) {
   if (!tasks || tasks.length === 0) return "Tasks";
@@ -22,7 +21,10 @@ export default function Home() {
   const { user, loading } = useAuth();
   const [day, setDay] = useState(undefined);
   const [pomodoroBlocks, setPomodoroBlocks] = useState(null);
-  const [streak, setStreak] = useState(null);
+  // A brand new user with no day history yet should see the garden at its
+  // best -- see computeGardenTier in backend/src/streak.js for the full
+  // climb/decline rule this mirrors.
+  const [gardenTier, setGardenTier] = useState("bloom");
   const [tasksOpen, setTasksOpen] = useState(false);
   const [startOpen, setStartOpen] = useState(false);
 
@@ -31,7 +33,7 @@ export default function Home() {
       .then(({ day }) => setDay(day))
       .catch(() => setDay(null));
     getStreak()
-      .then(({ streak }) => setStreak(streak))
+      .then(({ gardenTier }) => setGardenTier(gardenTier))
       .catch(() => {});
   }, []);
 
@@ -81,7 +83,7 @@ export default function Home() {
 
   if (day === undefined) {
     return (
-      <PixelBackdrop tier={streakToTier(streak)}>
+      <PixelBackdrop tier={gardenTier}>
         <p className={centeredPill}>Checking today...</p>
       </PixelBackdrop>
     );
@@ -89,7 +91,7 @@ export default function Home() {
 
   if (day === null) {
     return (
-      <PixelBackdrop tier={streakToTier(streak)}>
+      <PixelBackdrop tier={gardenTier}>
         <a href="/declare" className="rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud">
           Declare today
         </a>
@@ -98,7 +100,7 @@ export default function Home() {
   }
 
   return (
-    <PixelBackdrop tier={streakToTier(streak)} stretch>
+    <PixelBackdrop tier={gardenTier} stretch>
       {/* Deadline countdown, floating over the sky -- always the largest,
           primary timer on screen, visible the moment today is declared. */}
       <Countdown deadlineAt={day.deadlineAt} />

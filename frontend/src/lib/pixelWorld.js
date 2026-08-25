@@ -651,7 +651,7 @@ var PAL = {
 
     if (opts.fauna === true) {
       if (T.deerCount > 0) {
-        deer(p, 196, MY + 15, T, true, true);
+        deer(p, 70, MY + 35, T, true, true);
         if (T.deerCount > 1) deer(p, 330, MY + 45, T, false, false);
         if (T.deerCount > 2) deer(p, 350, MY + 9, T, true, false);
       }
@@ -875,6 +875,41 @@ var PAL = {
     paint(canvas, p, o.scale || 2);
   }
 
+  /* ---------- 16x16 nav bar icons ---------- */
+  function navIcon(kind, o) {
+    o = o || {};
+    var p = new P(16, 16), ink = PAL.ink;
+    if (o.bg !== null) p.rect(0, 0, 16, 16, o.bg || null);
+    var fillC = o.active ? PAL.fire : PAL.woodMid;
+    if (kind === 'leaderboard') {
+      p.rect(2, 10, 3, 4, fillC); p.vl(2, 10, 4, ink); p.vl(5, 10, 4, ink); p.hl(2, 10, 3, ink); p.hl(2, 13, 3, ink);
+      p.rect(6, 6, 3, 8, fillC); p.vl(6, 6, 8, ink); p.vl(9, 6, 8, ink); p.hl(6, 6, 3, ink); p.hl(6, 13, 3, ink);
+      p.rect(10, 3, 3, 11, fillC); p.vl(10, 3, 11, ink); p.vl(13, 3, 11, ink); p.hl(10, 3, 3, ink); p.hl(10, 13, 3, ink);
+    } else if (kind === 'profile') {
+      // head + shoulders silhouette, same flat two-tone style as the other icons
+      p.disc(8, 6, 3, fillC);
+      p.rect(3, 12, 10, 3, fillC);
+      p.set(6, 4, ink); p.set(10, 4, ink); p.set(4, 8, ink); p.set(12, 8, ink);
+      p.hl(3, 12, 10, ink); p.vl(3, 12, 3, ink); p.vl(12, 12, 3, ink);
+    } else {
+      // 'home' (default): triangular roof over a walled house with a door.
+      for (var y = 2; y <= 7; y++) {
+        var half = y - 2, x0 = 8 - half, x1 = 8 + half;
+        p.hl(x0, y, x1 - x0 + 1, fillC);
+      }
+      p.set(8, 1, ink);
+      p.hl(2, 8, 12, ink);
+      p.rect(3, 8, 10, 6, fillC);
+      p.vl(3, 8, 6, ink); p.vl(12, 8, 6, ink); p.hl(3, 13, 10, ink);
+      p.rect(7, 10, 3, 4, PAL.woodDark);
+    }
+    return p;
+  }
+  function drawNavIcon(canvas, o) {
+    o = o || {};
+    paint(canvas, navIcon(o.kind, o), o.scale || 2);
+  }
+
   /* ---------- leaderboard plot: one member, one bed, height = clean days ---------- */
   function plot(days, tier, o) {
     o = o || {};
@@ -1046,7 +1081,7 @@ var PAL = {
 export const PixelWorld = {
   PAL: PAL, TIERS: TIERS, WORLD_W: WORLD_W, WORLD_H: WORLD_H, GY: GY, MY: MY,
   world: world, paint: paint, drawWorld: drawWorld, drawSprite: drawSprite, drawFauna: drawFauna,
-  drawTile: drawTile, drawRoomSlot: drawRoomSlot, drawAppTile: drawAppTile,
+  drawTile: drawTile, drawRoomSlot: drawRoomSlot, drawAppTile: drawAppTile, drawNavIcon: drawNavIcon,
   plot: plot, drawPlot: drawPlot, bedRow: bedRow, drawBed: drawBed, glyph: glyph, drawGlyph: drawGlyph,
   avatar: avatar, drawAvatar: drawAvatar,
   P: P, sprite: sprite, POSES: POSES, CHAR: CHAR

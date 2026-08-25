@@ -34,7 +34,7 @@ export function PixelBackdrop({ children, tier = "green", stretch = false }) {
         // world's left edge, fine for PomodoroScene's own narrow 176px
         // crop) would fall outside that centered crop, so pin the
         // character+dog near the world's horizontal center (190) instead.
-        charX: 170,
+        charX: 210,
       });
     },
     [tier],

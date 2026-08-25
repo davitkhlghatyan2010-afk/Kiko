@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { getStreak } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
-import { streakToTier } from "@/lib/gardenTier";
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [streak, setStreak] = useState(null);
+  const [gardenTier, setGardenTier] = useState("bloom");
 
   useEffect(() => {
     if (loading) return;
@@ -19,7 +19,10 @@ export default function ProfilePage() {
       return;
     }
     getStreak()
-      .then(({ streak }) => setStreak(streak))
+      .then(({ streak, gardenTier }) => {
+        setStreak(streak);
+        setGardenTier(gardenTier);
+      })
       .catch(() => {});
   }, [loading, user, router]);
 
@@ -32,7 +35,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <PixelBackdrop tier={streakToTier(streak)}>
+    <PixelBackdrop tier={gardenTier}>
       <div className="w-full max-w-sm rounded-2xl border-2 border-ink bg-wall p-6 text-ink">
         <h1 className="mb-1 text-2xl font-semibold">{user.username}</h1>
         <p className="mb-6 text-sm text-stone">
