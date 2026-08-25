@@ -8,6 +8,7 @@ import sessionsRouter from "./routes/sessions.js";
 import adminRouter from "./routes/admin.js";
 import proofsRouter from "./routes/proofs.js";
 import usersRouter from "./routes/users.js";
+import recurringTasksRouter from "./routes/recurringTasks.js";
 import { authenticate } from "./middleware/authenticate.js";
 import { requireAdmin } from "./middleware/requireAdmin.js";
 import { startDeadlineSweep } from "./jobs/finalizeDays.js";
@@ -30,6 +31,7 @@ app.use("/days", authenticate, daysRouter);
 app.use("/sessions", authenticate, sessionsRouter);
 app.use("/admin", authenticate, requireAdmin, adminRouter);
 app.use("/users", authenticate, usersRouter);
+app.use("/recurring-tasks", authenticate, recurringTasksRouter);
 // No shared path prefix (routes are /tasks/:id/proof and /proofs/:id/answer) --
 // mounted last, after every unauthenticated route, so `authenticate` here can
 // never shadow something registered afterward the way it did before /health

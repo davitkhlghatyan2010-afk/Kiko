@@ -51,8 +51,25 @@ model User {
   passwordResetTokens PasswordResetToken[]
   days                Day[]
   focusSessions       FocusSession[]
+  recurringTasks      RecurringTask[]
 
   @@map("users")
+}
+
+// A template a user opts a task into repeating from. Declaring a new day
+// snapshots each active one into a real Task row (text/amount copied at
+// that moment) -- editing or deleting the template afterwards never rewrites
+// already-declared days, only whether future days get it.
+model RecurringTask {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  text      String
+  amount    String
+  createdAt DateTime @default(now()) @map("created_at")
+  tasks     Task[]
+
+  @@map("recurring_tasks")
 }
 
 model PasswordResetToken {
@@ -83,14 +100,19 @@ model Day {
 }
 
 model Task {
-  id        String   @id @default(uuid())
-  dayId     String   @map("day_id")
-  day       Day      @relation(fields: [dayId], references: [id])
-  text      String
-  amount    String
-  completed Boolean  @default(false)
-  createdAt DateTime @default(now()) @map("created_at")
-  proof     Proof?
+  id              String         @id @default(uuid())
+  dayId           String         @map("day_id")
+  day             Day            @relation(fields: [dayId], references: [id])
+  text            String
+  amount          String
+  completed       Boolean        @default(false)
+  createdAt       DateTime       @default(now()) @map("created_at")
+  proof           Proof?
+  // Nullable, SetNull on delete: which RecurringTask this was snapshotted
+  // from, if any -- lets a single day's copy be removed (skip) or the
+  // template stopped, without touching this row's own text/amount/history.
+  recurringTaskId String?        @map("recurring_task_id")
+  recurringTask   RecurringTask? @relation(fields: [recurringTaskId], references: [id], onDelete: SetNull)
 
   @@map("tasks")
 }

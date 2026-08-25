@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { addTasks, getToday } from "@/lib/api";
+import { addTasks, createRecurringTask, getToday } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { emptyTask, TaskRows } from "@/components/TaskRows";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
@@ -33,6 +33,12 @@ export default function AddTasksPage() {
     setError(null);
     setSubmitting(true);
     try {
+      // Unlike declaring a fresh day, adding to an already-declared one never
+      // auto-includes recurring templates -- so a "repeat every day" task
+      // still needs to be added to today explicitly, on top of creating the
+      // template for future days.
+      const repeating = tasks.filter((task) => task.repeat);
+      await Promise.all(repeating.map((task) => createRecurringTask(task.text, task.amount)));
       await addTasks(tasks);
       router.push("/");
     } catch (err) {

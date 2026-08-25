@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { answerProof, submitProof } from "@/lib/api";
+import { answerProof, skipTask, submitProof } from "@/lib/api";
 
 // 8x8 filled square when done, 2px outlined square when not -- the Design
 // System's task-row bullet, standing in for a checkbox without implying
@@ -17,7 +17,7 @@ function TaskBullet({ done }) {
 // Binary display, no partial credit anywhere: a task is either the plain
 // "done" row, or mid-flow (summary/question), or waiting to be started.
 // Only answering the AI question flips completed -- see backend/src/routes/proofs.js.
-export function TaskItem({ task, onProved }) {
+export function TaskItem({ task, onProved, onSkipped }) {
   const [phase, setPhase] = useState(task.pendingProof ? "question" : "idle");
   const [proofId, setProofId] = useState(task.pendingProof?.id ?? null);
   const [aiQuestion, setAiQuestion] = useState(task.pendingProof?.aiQuestion ?? null);
@@ -25,6 +25,17 @@ export function TaskItem({ task, onProved }) {
   const [answer, setAnswer] = useState("");
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [skipping, setSkipping] = useState(false);
+
+  async function handleSkip() {
+    setSkipping(true);
+    try {
+      await skipTask(task.id);
+      onSkipped?.();
+    } finally {
+      setSkipping(false);
+    }
+  }
 
   if (task.completed) {
     return (
@@ -42,9 +53,16 @@ export function TaskItem({ task, onProved }) {
           <TaskBullet done={false} />
           {task.text} — {task.amount}
         </span>
-        <button onClick={() => setPhase("summary")} className="text-xs underline">
-          Mark done
-        </button>
+        <span className="flex items-center gap-3">
+          {task.recurring && (
+            <button onClick={handleSkip} disabled={skipping} className="text-xs underline disabled:opacity-60">
+              {skipping ? "Skipping..." : "Skip today"}
+            </button>
+          )}
+          <button onClick={() => setPhase("summary")} className="text-xs underline">
+            Mark done
+          </button>
+        </span>
       </li>
     );
   }

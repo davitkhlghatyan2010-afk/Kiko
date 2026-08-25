@@ -1,23 +1,39 @@
 "use client";
 
-import { useState } from "react";
-import { addTasks } from "@/lib/api";
+import { useEffect, useState } from "react";
+import { addTasks, createRecurringTask, deleteRecurringTask, getRecurringTasks } from "@/lib/api";
 import { TaskItem } from "@/components/TaskItem";
 import { emptyTask, TaskRows } from "@/components/TaskRows";
 
 // Today's tasks can't be edited or removed once declared -- only proved (via
-// TaskItem) or added to (via addTasks) -- same rule /declare/add enforces.
+// TaskItem), skipped for today if recurring-origin (also via TaskItem), or
+// added to (via addTasks) -- same rule /declare/add enforces.
 export function TasksModal({ day, onClose, onChanged }) {
   const [adding, setAdding] = useState(false);
   const [newTasks, setNewTasks] = useState([emptyTask()]);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [recurringTasks, setRecurringTasks] = useState([]);
+
+  useEffect(() => {
+    getRecurringTasks()
+      .then(({ recurringTasks }) => setRecurringTasks(recurringTasks))
+      .catch(() => {});
+  }, []);
 
   async function handleAddSubmit(e) {
     e.preventDefault();
     setError(null);
     setSubmitting(true);
     try {
+      // Adding to an already-declared day never auto-includes recurring
+      // templates -- a "repeat every day" task still needs to be added to
+      // today explicitly, on top of creating the template for future days.
+      const repeating = newTasks.filter((task) => task.repeat);
+      if (repeating.length > 0) {
+        const created = await Promise.all(repeating.map((t) => createRecurringTask(t.text, t.amount)));
+        setRecurringTasks((prev) => [...prev, ...created.map((r) => r.recurringTask)]);
+      }
       await addTasks(newTasks);
       setNewTasks([emptyTask()]);
       setAdding(false);
@@ -27,6 +43,11 @@ export function TasksModal({ day, onClose, onChanged }) {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  async function handleStopRepeating(id) {
+    await deleteRecurringTask(id);
+    setRecurringTasks((prev) => prev.filter((t) => t.id !== id));
   }
 
   return (
@@ -47,7 +68,7 @@ export function TasksModal({ day, onClose, onChanged }) {
 
         <ul className="mb-4 flex flex-col gap-2">
           {day.tasks.map((task) => (
-            <TaskItem key={task.id} task={task} onProved={onChanged} />
+            <TaskItem key={task.id} task={task} onProved={onChanged} onSkipped={onChanged} />
           ))}
         </ul>
 
@@ -72,6 +93,24 @@ export function TasksModal({ day, onClose, onChanged }) {
           <button type="button" onClick={() => setAdding(true)} className="text-sm underline">
             + Add a task
           </button>
+        )}
+
+        {recurringTasks.length > 0 && (
+          <div className="mt-6 border-t-2 border-ink pt-4">
+            <p className="mb-2 font-mono text-xs uppercase tracking-wide text-stone">Repeating every day</p>
+            <ul className="flex flex-col gap-2">
+              {recurringTasks.map((task) => (
+                <li key={task.id} className="flex items-center justify-between gap-2 text-sm">
+                  <span>
+                    {task.text} — {task.amount}
+                  </span>
+                  <button type="button" onClick={() => handleStopRepeating(task.id)} className="text-xs underline">
+                    Stop repeating
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
     </div>

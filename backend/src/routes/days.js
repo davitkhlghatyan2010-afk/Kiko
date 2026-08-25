@@ -55,6 +55,9 @@ function serializeDay(day) {
       text: task.text,
       amount: task.amount,
       completed: task.completed,
+      // Recurring-origin tasks can be skipped for just today (see DELETE
+      // /today/tasks/:id) -- manually-typed ones stay locked once declared.
+      recurring: task.recurringTaskId != null,
       // A pending (unanswered) proof lets the frontend resume the question step
       // after a reload instead of restarting from "Mark done".
       pendingProof:
@@ -67,9 +70,17 @@ router.post("/", async (req, res, next) => {
   try {
     const { tasks } = req.body ?? {};
 
-    const validationError = validateTasks(tasks);
+    const recurringTasks = await prisma.recurringTask.findMany({ where: { userId: req.user.id } });
+    const recurringKeys = new Set(recurringTasks.map((task) => taskKey(task.text, task.amount)));
+
+    // Recurring tasks alone can cover the day -- only the tasks submitted on
+    // top of them need the "at least 1" / duplicate checks.
+    const validationError = tasks && tasks.length > 0 ? validateTasks(tasks, recurringKeys) : null;
     if (validationError) {
       return res.status(400).json({ status: "error", message: validationError });
+    }
+    if (recurringTasks.length === 0 && (!tasks || tasks.length === 0)) {
+      return res.status(400).json({ status: "error", message: "Declare at least 1 task" });
     }
 
     const date = startOfToday();
@@ -84,10 +95,17 @@ router.post("/", async (req, res, next) => {
         date,
         deadlineAt: defaultDeadline(),
         tasks: {
-          create: tasks.map((task) => ({
-            text: task.text.trim(),
-            amount: task.amount.trim(),
-          })),
+          create: [
+            ...recurringTasks.map((task) => ({
+              text: task.text,
+              amount: task.amount,
+              recurringTaskId: task.id,
+            })),
+            ...(tasks ?? []).map((task) => ({
+              text: task.text.trim(),
+              amount: task.amount.trim(),
+            })),
+          ],
         },
       },
       include: { tasks: { include: { proof: true } } },
@@ -149,6 +167,43 @@ router.post("/today/tasks", async (req, res, next) => {
     });
 
     res.status(201).json({ day: serializeDay(day) });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Skip a single recurring-origin task for today only -- the RecurringTask
+// template, and every other day, is untouched. Manually-typed tasks stay
+// locked once declared, same as the existing add-only rule.
+router.delete("/today/tasks/:taskId", async (req, res, next) => {
+  try {
+    const date = startOfToday();
+    const day = await prisma.day.findUnique({
+      where: { userId_date: { userId: req.user.id, date } },
+      include: { tasks: true },
+    });
+    if (!day) {
+      return res.status(404).json({ status: "error", message: "Today hasn't been declared" });
+    }
+
+    const task = day.tasks.find((t) => t.id === req.params.taskId);
+    if (!task) {
+      return res.status(404).json({ status: "error", message: "Task not found" });
+    }
+    if (task.recurringTaskId == null) {
+      return res.status(400).json({ status: "error", message: "Only recurring tasks can be removed once declared" });
+    }
+    if (task.completed) {
+      return res.status(400).json({ status: "error", message: "Already completed tasks can't be removed" });
+    }
+
+    await prisma.task.delete({ where: { id: task.id } });
+
+    const updated = await prisma.day.findUnique({
+      where: { id: day.id },
+      include: { tasks: { include: { proof: true } } },
+    });
+    res.json({ day: serializeDay(updated) });
   } catch (err) {
     next(err);
   }

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { declareDay, getToday } from "@/lib/api";
+import { createRecurringTask, declareDay, getToday } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { emptyTask, TaskRows } from "@/components/TaskRows";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
@@ -33,7 +33,13 @@ export default function DeclarePage() {
     setError(null);
     setSubmitting(true);
     try {
-      await declareDay(tasks);
+      // A "repeat every day" task becomes a RecurringTask template first --
+      // declareDay auto-snapshots every active template into today, so
+      // submitting it a second time in `tasks` would read as a duplicate.
+      const repeating = tasks.filter((task) => task.repeat);
+      const oneOff = tasks.filter((task) => !task.repeat);
+      await Promise.all(repeating.map((task) => createRecurringTask(task.text, task.amount)));
+      await declareDay(oneOff);
       router.push("/");
     } catch (err) {
       setError(err.message);

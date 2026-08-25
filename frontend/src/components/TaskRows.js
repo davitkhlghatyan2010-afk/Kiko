@@ -1,5 +1,5 @@
 export function emptyTask() {
-  return { text: "", amount: "" };
+  return { text: "", amount: "", repeat: false };
 }
 
 export function TaskRows({ tasks, setTasks }) {
@@ -39,7 +39,7 @@ export function TaskRows({ tasks, setTasks }) {
             />
           </label>
 
-          <label className="block text-sm">
+          <label className="mb-2 block text-sm">
             How much
             <input
               className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
@@ -48,6 +48,16 @@ export function TaskRows({ tasks, setTasks }) {
               placeholder="20 pages"
               required
             />
+          </label>
+
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={task.repeat}
+              onChange={(e) => updateTask(index, { repeat: e.target.checked })}
+              className="h-4 w-4 border-2 border-ink"
+            />
+            Repeat every day
           </label>
         </div>
       ))}

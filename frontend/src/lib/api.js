@@ -124,6 +124,29 @@ export function startDay() {
   return request("/days/today/start", { method: "POST", auth: true });
 }
 
+// Removes a single recurring-origin task from today only -- the underlying
+// RecurringTask template (and every other day) is untouched.
+export function skipTask(taskId) {
+  return request(`/days/today/tasks/${taskId}`, { method: "DELETE", auth: true });
+}
+
+export function getRecurringTasks() {
+  return request("/recurring-tasks", { auth: true });
+}
+
+export function createRecurringTask(text, amount) {
+  return request("/recurring-tasks", {
+    method: "POST",
+    auth: true,
+    body: JSON.stringify({ text, amount }),
+  });
+}
+
+// Stops it repeating from here on -- doesn't touch already-declared days.
+export function deleteRecurringTask(id) {
+  return request(`/recurring-tasks/${id}`, { method: "DELETE", auth: true });
+}
+
 export function submitProof(taskId, summary) {
   return request(`/tasks/${taskId}/proof`, {
     method: "POST",
