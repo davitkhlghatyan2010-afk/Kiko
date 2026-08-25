@@ -5,7 +5,7 @@ import { getStreak, getToday, startDay } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { Countdown } from "@/components/Countdown";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
-import { FocusMinutesForm } from "@/components/FocusMinutesForm";
+import { StartSessionModal } from "@/components/StartSessionModal";
 import { TasksModal } from "@/components/TasksModal";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
 import { splitSession } from "@/lib/pomodoro";
@@ -24,6 +24,7 @@ export default function Home() {
   const [pomodoroBlocks, setPomodoroBlocks] = useState(null);
   const [streak, setStreak] = useState(null);
   const [tasksOpen, setTasksOpen] = useState(false);
+  const [startOpen, setStartOpen] = useState(false);
 
   const refresh = useCallback(() => {
     getToday()
@@ -107,14 +108,14 @@ export default function Home() {
       </div>
 
       <div className="flex w-full max-w-sm flex-col items-center gap-3 px-6">
-        {pomodoroBlocks ? null : day.startedAt ? (
-          <FocusMinutesForm
-            onStart={handleStartPomodoro}
-            buttonLabel="Start a focus session"
-            busyLabel="Starting..."
-          />
-        ) : (
-          <FocusMinutesForm onStart={handleStart} buttonLabel="Start" busyLabel="Starting..." />
+        {!pomodoroBlocks && (
+          <button
+            type="button"
+            onClick={() => setStartOpen(true)}
+            className="w-full rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud"
+          >
+            {day.startedAt ? "Start a focus session" : "Start"}
+          </button>
         )}
 
         <button
@@ -127,6 +128,15 @@ export default function Home() {
       </div>
 
       {tasksOpen && <TasksModal day={day} onClose={() => setTasksOpen(false)} onChanged={handleTasksChanged} />}
+
+      {startOpen && (
+        <StartSessionModal
+          title={day.startedAt ? "Start a focus session" : "Start your day"}
+          buttonLabel={day.startedAt ? "Start a focus session" : "Start"}
+          onStart={day.startedAt ? handleStartPomodoro : handleStart}
+          onClose={() => setStartOpen(false)}
+        />
+      )}
     </PixelBackdrop>
   );
 }

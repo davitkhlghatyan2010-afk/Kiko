@@ -3,10 +3,9 @@
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 
-// Web-appropriate top header, not the source design's mobile bottom tab bar
-// (Home/Gardens/Me) -- there's nothing to navigate to yet besides Home
-// (Gardens is Phase 6, Me is Phase 8), so this stays a simple wordmark + auth
-// state bar until those screens exist to link to.
+// Brand + auth-state bar, always at the top. Screen navigation (Home /
+// Leaderboard / Profile) lives in NavBar, which renders as a row under this
+// on desktop and a fixed bottom tab bar on mobile.
 export function Header() {
   const { user, loading, signOut } = useAuth();
 
