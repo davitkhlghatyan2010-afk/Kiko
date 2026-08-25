@@ -264,8 +264,9 @@ var PAL = {
     var hx = nx + neck, hy = top - neck, hw = scale2 ? 4 : 3, hh = scale2 ? 3 : 2;
     p.rect(hx, hy - hh, hw, hh, body);
     p.hl(hx, hy - hh, hw, shade);
-    p.set(hx + hw, hy - 1, out);
-    p.set(hx + hw - 2, hy - hh + 1, out);
+    p.set(hx + hw, hy - 1, out); // nose tip
+    p.set(hx + hw, hy - 2, out); // stacked with the line above so the snout actually reads as a nose, not just outline noise
+    p.set(hx + hw - 2, hy - hh + 1, out); // eye
     if (buck) {
       p.set(hx, hy - hh - 1, out); p.set(hx, hy - hh - 2, out);
       p.set(hx - 1, hy - hh - 3, out); p.set(hx - 1, hy - hh - 4, out);
