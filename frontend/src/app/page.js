@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getHealth, getToday, startDay } from "@/lib/api";
+import { getHealth, getStreak, getToday, startDay } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { Countdown } from "@/components/Countdown";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
@@ -16,6 +16,7 @@ export default function Home() {
   const [focusMinutes, setFocusMinutes] = useState(String(MIN_TOTAL_MINUTES));
   const [focusMinutesError, setFocusMinutesError] = useState(null);
   const [pomodoroBlocks, setPomodoroBlocks] = useState(null);
+  const [streak, setStreak] = useState(null);
 
   useEffect(() => {
     getHealth()
@@ -27,6 +28,9 @@ export default function Home() {
     getToday()
       .then(({ day }) => setDay(day))
       .catch(() => setDay(null));
+    getStreak()
+      .then(({ streak }) => setStreak(streak))
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -81,6 +85,9 @@ export default function Home() {
             Logged in as <strong>{user.username}</strong> ({user.accountType}
             {user.isAdmin ? ", admin" : ""})
           </p>
+          {streak !== null && (
+            <p className="font-mono text-xs uppercase tracking-wide text-stone">Streak: {streak}</p>
+          )}
 
           {day === undefined ? (
             <p className="text-stone">Checking today...</p>
@@ -125,10 +132,20 @@ export default function Home() {
                 <PomodoroTimer blocks={pomodoroBlocks} onStop={() => setPomodoroBlocks(null)} />
               )}
 
-              {/* Binary display only -- no partial credit anywhere. Purely cosmetic
-                  here; Phase 5 computes the real day.credit server-side at the deadline. */}
+              {/* Binary display only -- no partial credit anywhere. Once day.credit is
+                  finalized (server-side, in proofs.js or the deadline sweep job), it wins
+                  over the live task snapshot -- otherwise a task proved *after* the
+                  deadline would wrongly flip this to "done" even though the day already
+                  scored 'none'. */}
               <p className="self-start font-mono text-xs uppercase tracking-wide text-stone">
-                Today: {day.tasks.length > 0 && day.tasks.every((t) => t.completed) ? "done" : "not done"}
+                Today:{" "}
+                {day.credit
+                  ? day.credit === "full"
+                    ? "done"
+                    : "not done"
+                  : day.tasks.length > 0 && day.tasks.every((t) => t.completed)
+                    ? "done"
+                    : "not done"}
               </p>
 
               <ul className="flex w-full flex-col gap-2 self-start">

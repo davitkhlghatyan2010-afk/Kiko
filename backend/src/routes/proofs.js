@@ -53,7 +53,7 @@ router.post("/proofs/:id/answer", async (req, res, next) => {
 
     const proof = await prisma.proof.findUnique({
       where: { id: req.params.id },
-      include: { task: { include: { day: true } } },
+      include: { task: { include: { day: { include: { tasks: true } } } } },
     });
     if (!proof || proof.task.day.userId !== req.user.id) {
       return res.status(404).json({ status: "error", message: "Proof not found" });
@@ -62,10 +62,24 @@ router.post("/proofs/:id/answer", async (req, res, next) => {
       return res.status(409).json({ status: "error", message: "This proof has already been answered" });
     }
 
-    await prisma.$transaction([
+    // Optimistic finalization: if every OTHER task on the day is already
+    // completed and the deadline hasn't passed, this answer is the one that
+    // finishes the day -- credit it as 'full' right now instead of waiting
+    // for the sweep job (see backend/src/jobs/finalizeDays.js) to catch it.
+    // Guarding on `credit === null` means a day already finalized (e.g. the
+    // sweep beat this request to it) never gets overwritten here.
+    const day = proof.task.day;
+    const otherTasksDone = day.tasks.filter((t) => t.id !== proof.taskId).every((t) => t.completed);
+    const dayNowFull = otherTasksDone && day.credit === null && day.deadlineAt > new Date();
+
+    const ops = [
       prisma.proof.update({ where: { id: proof.id }, data: { userAnswer: answer.trim() } }),
       prisma.task.update({ where: { id: proof.taskId }, data: { completed: true } }),
-    ]);
+    ];
+    if (dayNowFull) {
+      ops.push(prisma.day.update({ where: { id: day.id }, data: { credit: "full" } }));
+    }
+    await prisma.$transaction(ops);
 
     res.json({ task: { id: proof.taskId, completed: true } });
   } catch (err) {
