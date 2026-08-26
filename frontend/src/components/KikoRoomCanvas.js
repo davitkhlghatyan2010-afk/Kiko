@@ -7,7 +7,12 @@ import { Buf, ROOM, drawRoom } from "@/lib/kikoArt";
 // once) since the room's animation frame is picked from a live timestamp,
 // not a one-shot draw. `roomState` is read from a ref each frame so the
 // loop itself never restarts on a phase change -- only what it draws does.
-export function KikoRoomCanvas({ roomState, scale = 3, fill = false, className }) {
+//
+// `scale` default: the room's on-screen size everywhere it's used (Home's
+// backdrop, the admin preview). Must stay a whole number (3, 4, 5, ...) --
+// the art is upscaled with hard pixel edges, and a fraction would make some
+// pixels a different size than others instead of a clean block each.
+export function KikoRoomCanvas({ roomState, scale = 5, fill = false, className }) {
   const canvasRef = useRef(null);
   const stateRef = useRef(roomState);
 

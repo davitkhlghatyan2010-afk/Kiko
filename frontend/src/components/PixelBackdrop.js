@@ -52,11 +52,11 @@ export function PixelBackdrop({ children, tier = "green", stretch = false, scene
       {scene === "room" ? (
         // Not `fill` here -- a smaller, integer-scaled room reads better than
         // stretching it edge to edge, and matches the source kit's own "scaled
-        // up by whole numbers only" note. Bump this one number to resize --
-        // it must stay a whole number (3, 4, 5, ...), not a fraction, or the
-        // pixel art scales unevenly and looks blurry/uneven instead of crisp.
+        // up by whole numbers only" note. No `scale` override -- calibrate the
+        // size in KikoRoomCanvas's own default so this and the admin preview
+        // (/admin) always match.
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <KikoRoomCanvas roomState={roomState} scale={4} />
+          <KikoRoomCanvas roomState={roomState} />
         </div>
       ) : (
         <PixelCanvas draw={draw} fill className="pointer-events-none absolute inset-0" />

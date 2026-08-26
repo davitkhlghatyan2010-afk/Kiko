@@ -5,6 +5,49 @@ import { useRouter } from "next/navigation";
 import { getAdminProofs, setProofFlagged } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
+import { KikoRoomCanvas } from "@/components/KikoRoomCanvas";
+
+const ROOM_STATES = [
+  { value: "work", label: "Work" },
+  { value: "break", label: "Break" },
+  { value: "done", label: "Done" },
+];
+
+// Lets you preview each of the room's 3 animations on demand instead of
+// waiting out a real Pomodoro block (a rest block alone needs a 35+ minute
+// session, and "done" needs the whole thing to finish). No `scale` override
+// -- always renders at the same size as the real thing (KikoRoomCanvas's own
+// default), so calibrating here calibrates production too.
+function RoomPreview() {
+  const [previewState, setPreviewState] = useState(null);
+
+  return (
+    <div className="flex flex-col gap-3 rounded-2xl border-2 border-ink bg-wall p-4">
+      <p className="text-sm font-semibold text-ink">Room preview</p>
+      <div className="flex gap-2">
+        {ROOM_STATES.map(({ value, label }) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setPreviewState((prev) => (prev === value ? null : value))}
+            className={`rounded-xl border-2 border-ink px-4 py-1.5 text-sm font-semibold ${
+              previewState === value ? "bg-alert text-sky-cloud" : "bg-wall text-ink"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      {previewState && (
+        // At production scale this is wider than this card -- scrolls
+        // horizontally rather than clipping, same as any other wide content.
+        <div className="overflow-x-auto rounded-xl border-2 border-ink">
+          <KikoRoomCanvas roomState={previewState} />
+        </div>
+      )}
+    </div>
+  );
+}
 
 function ProofRow({ proof, onToggleFlag, busy }) {
   return (
@@ -92,6 +135,8 @@ export default function AdminPage() {
           <h1 className="text-2xl font-semibold text-ink">Review proofs</h1>
           <p className="text-sm text-stone">Your group&apos;s completed proofs, most recent first.</p>
         </div>
+
+        <RoomPreview />
 
         <div className="flex-1 overflow-y-auto rounded-2xl">
           {error && (
