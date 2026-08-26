@@ -20,9 +20,12 @@ export default function Home() {
   const [gardenTier, setGardenTier] = useState("bloom");
   const [tasksOpen, setTasksOpen] = useState(false);
   const [startOpen, setStartOpen] = useState(false);
-  // Drives the fullscreen backdrop: "work" swaps it to the room interior,
-  // "rest"/null leaves it as the garden. Set by PomodoroTimer.
+  // Drives the fullscreen backdrop: any non-null value swaps it to the Kiko
+  // Pixel Kit room, with "rest"/"done" mapped to that engine's "break"/"done"
+  // room states (see lib/kikoArt.js) -- null leaves it as the garden. Set by
+  // PomodoroTimer.
   const [pomodoroPhase, setPomodoroPhase] = useState(null);
+  const roomState = pomodoroPhase === "rest" ? "break" : pomodoroPhase === "done" ? "done" : "work";
 
   const refresh = useCallback(() => {
     getToday()
@@ -96,7 +99,7 @@ export default function Home() {
   }
 
   return (
-    <PixelBackdrop tier={gardenTier} stretch scene={pomodoroPhase === "work" ? "room" : "garden"}>
+    <PixelBackdrop tier={gardenTier} stretch scene={pomodoroPhase ? "room" : "garden"} roomState={roomState}>
       {/* Floating over the sky -- always the largest, primary timer on
           screen. The deadline countdown while idle, swapped for the
           concentration-time countdown the instant a focus session starts. */}

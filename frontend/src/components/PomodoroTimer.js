@@ -23,7 +23,9 @@ export function PomodoroTimer({ blocks, onPhaseChange }) {
   const phase = blocks[blockIndex].type;
 
   useEffect(() => {
-    onPhaseChange?.(done ? null : phase);
+    // "done" is its own signal (not folded into null) so the backdrop can
+    // play the celebrate animation instead of just reverting to the garden.
+    onPhaseChange?.(done ? "done" : phase);
     // Clears the room/garden backdrop override on unmount too (e.g. Stop),
     // not just when a later phase change overwrites it.
     return () => onPhaseChange?.(null);

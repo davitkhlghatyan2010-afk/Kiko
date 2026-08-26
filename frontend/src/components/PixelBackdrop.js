@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import { PixelCanvas } from "@/components/PixelCanvas";
+import { KikoRoomCanvas } from "@/components/KikoRoomCanvas";
 import { PixelWorld } from "@/lib/pixelWorld";
 
 // The garden world scene as a full-bleed page backdrop behind auth cards.
@@ -18,23 +19,14 @@ import { PixelWorld } from "@/lib/pixelWorld";
 // nested flex layers) so justify-between actually has real space to spread
 // children across instead of collapsing them into a centered cluster.
 //
-// `scene`: "garden" (default) or "room" -- room is drawRoomSlot with the
-// character composited into the same buffer (see pixelWorld.js), so a
-// fullscreen crop/stretch never desyncs a separately-positioned overlay.
-// Used while a Pomodoro work block is running, so the backdrop itself
-// reads as "inside" instead of the small framed room widget.
-export function PixelBackdrop({ children, tier = "green", stretch = false, scene = "garden" }) {
+// `scene`: "garden" (default) or "room". "room" renders the Kiko Pixel Kit's
+// isometric room+character (lib/kikoArt.js) instead of the garden -- used
+// while a Pomodoro block is running, so the backdrop itself reads as
+// "inside". `roomState` ("work" | "break" | "done") picks which animation
+// plays; it maps directly onto the Pomodoro work/rest/complete phases.
+export function PixelBackdrop({ children, tier = "green", stretch = false, scene = "garden", roomState = "work" }) {
   const draw = useCallback(
     (canvas) => {
-      if (scene === "room") {
-        // A small native buffer (the old 176x120 framed-widget size) forces
-        // an extreme object-fit: cover zoom on a wide viewport, since there's
-        // so little width to cover from -- wider virtual dimensions (closer
-        // to the garden's own 380-wide world) keep the crop at roughly the
-        // same zoom level as the garden backdrop it swaps with.
-        PixelWorld.drawRoomSlot(canvas, { W: 380, H: 230, character: true, pose: "idle", who: "boy" });
-        return;
-      }
       PixelWorld.drawWorld(canvas, {
         tier,
         viewW: PixelWorld.WORLD_W,
@@ -52,12 +44,16 @@ export function PixelBackdrop({ children, tier = "green", stretch = false, scene
         charX: 210,
       });
     },
-    [tier, scene],
+    [tier],
   );
 
   return (
     <main className="relative flex flex-1 flex-col overflow-hidden bg-sky-cloud px-6">
-      <PixelCanvas draw={draw} fill className="pointer-events-none absolute inset-0" />
+      {scene === "room" ? (
+        <KikoRoomCanvas roomState={roomState} fill className="pointer-events-none absolute inset-0" />
+      ) : (
+        <PixelCanvas draw={draw} fill className="pointer-events-none absolute inset-0" />
+      )}
       <div
         className={
           stretch
