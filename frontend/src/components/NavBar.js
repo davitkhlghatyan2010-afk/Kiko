@@ -26,7 +26,7 @@ function NavLinks({ pathname, links }) {
       <Link
         key={href}
         href={href}
-        className={`flex flex-col items-center gap-0.5 px-3 py-1 text-xs font-semibold ${
+        className={`flex flex-col items-center gap-1 px-3 py-1 font-pixel-body text-[10px] font-semibold uppercase tracking-wide ${
           active ? "text-ink" : "text-stone"
         }`}
       >
@@ -51,7 +51,7 @@ export function NavBar({ variant }) {
 
   if (variant === "top") {
     return (
-      <nav className="hidden items-center justify-center gap-6 border-b-2 border-ink bg-wall py-1 md:flex">
+      <nav className="hidden items-center justify-center gap-6 border-b-4 border-ink bg-wall py-1 md:flex">
         <NavLinks pathname={pathname} links={links} />
       </nav>
     );
@@ -60,7 +60,7 @@ export function NavBar({ variant }) {
   return (
     <>
       <div className="h-16 md:hidden" />
-      <nav className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-t-2 border-ink bg-wall py-1 md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-t-4 border-ink bg-wall py-1 md:hidden">
         <NavLinks pathname={pathname} links={links} />
       </nav>
     </>

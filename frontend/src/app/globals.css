@@ -31,6 +31,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-noto-sans-armenian);
   --font-mono: var(--font-jetbrains-mono);
+  --font-pixel-display: var(--font-pixel-display);
+  --font-pixel-body: var(--font-pixel-body);
 
   --color-sky-day: var(--color-sky-day);
   --color-sky-cloud: var(--color-sky-cloud);

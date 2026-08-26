@@ -58,20 +58,23 @@ export default function DeclarePage() {
 
   return (
     <PixelBackdrop>
-      <form onSubmit={handleSubmit} className="w-full max-w-lg rounded-2xl border-2 border-ink bg-wall p-6 text-ink">
-        <h1 className="mb-1 text-2xl font-semibold">Declare today</h1>
-        <p className="mb-6 text-sm text-stone">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-lg border-4 border-ink bg-wall/95 p-6 text-ink shadow-[8px_8px_0_0_var(--color-ink)]"
+      >
+        <h1 className="mb-2 font-pixel-display text-lg tracking-wide">Declare today</h1>
+        <p className="mb-6 font-pixel-body text-xs text-stone">
           Deadline is 23:59 tonight. All tasks must be done and proved before then, or today scores nothing.
         </p>
 
         <TaskRows tasks={tasks} setTasks={setTasks} />
 
-        {error && <p className="mb-3 text-sm text-dead">{error}</p>}
+        {error && <p className="mb-3 font-pixel-body text-xs text-dead">{error}</p>}
 
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-xl bg-red-600 px-4 py-2 font-semibold text-sky-cloud hover:bg-red-700 disabled:opacity-60"
+          className="w-full border-4 border-ink bg-fire px-4 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-ink shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-fire-hot active:translate-x-1 active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitting ? "Declaring..." : "Declare today"}
         </button>

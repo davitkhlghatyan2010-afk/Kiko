@@ -91,9 +91,15 @@ export default function Home() {
   if (day === null) {
     return (
       <PixelBackdrop tier={gardenTier}>
-        <a href="/declare" className="rounded-xl bg-red-600 px-5 py-2 font-semibold text-sky-cloud hover:bg-red-700">
-          Declare today
-        </a>
+        <div className="flex flex-col items-center gap-4 border-4 border-ink bg-wall/90 px-8 py-6 shadow-[6px_6px_0_0_var(--color-ink)]">
+          <p className="font-pixel-body text-xs uppercase tracking-wide text-stone">No day declared yet</p>
+          <a
+            href="/declare"
+            className="border-4 border-ink bg-fire px-6 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-ink shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-fire-hot active:translate-x-1 active:translate-y-1 active:shadow-none"
+          >
+            Declare today
+          </a>
+        </div>
       </PixelBackdrop>
     );
   }
