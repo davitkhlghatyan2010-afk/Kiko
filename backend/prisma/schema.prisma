@@ -50,6 +50,11 @@ model User {
   privacyAcceptedAt   DateTime?           @map("privacy_accepted_at")
   // Index into the Design System's 8 drawn portraits -- cosmetic only.
   avatar              Int                 @default(0)
+  // Nullable data: URL (client-resized before upload, size-capped in
+  // routes/users.js). When set, takes over the profile-photo display in
+  // place of the drawn portrait; `avatar` itself is left untouched so
+  // clearing the photo reverts to whichever portrait was last picked.
+  avatarPhoto         String?             @map("avatar_photo")
   // "HH:MM", 24h, local wall-clock time. Read at declare-time only (see
   // days.js defaultDeadline) -- changing it never touches a day already
   // declared, only ones declared after the change.

@@ -1,12 +1,17 @@
+import bcrypt from "bcryptjs";
 import { Router } from "express";
 import { prisma } from "../db.js";
-import { serializeUser } from "./auth.js";
+import { EMAIL_RE, serializeUser } from "./auth.js";
 import { getUserGardenTier, getUserLongestStreak, getUserStreak } from "../streak.js";
+import { isValidPassword, PASSWORD_RULES_MESSAGE } from "../validators.js";
 
 const router = Router();
 
 const CUTOFF_RE = /^([01]\d|2[0-3]):([0-5]\d)$/;
 const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
+// Client resizes to a small square before upload (see ProfileEditModal.js) --
+// this is just a defensive server-side cap, not the primary size control.
+const MAX_AVATAR_PHOTO_LENGTH = 500_000;
 
 function dateAtUtcMidnight(base, offsetDays = 0) {
   const d = new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate()));
@@ -105,6 +110,7 @@ router.get("/me/stats", async (req, res, next) => {
         median: formatDuration(median(sessionDurations)),
         longest: sessionDurations.length ? formatDuration(Math.max(...sessionDurations)) : null,
       },
+      totalFocusTime: formatDuration(sessionDurations.reduce((sum, ms) => sum + ms, 0)),
       history,
     });
   } catch (err) {
@@ -114,7 +120,7 @@ router.get("/me/stats", async (req, res, next) => {
 
 router.patch("/me", async (req, res, next) => {
   try {
-    const { username, avatar } = req.body ?? {};
+    const { username, avatar, avatarPhoto } = req.body ?? {};
     const data = {};
 
     if (username !== undefined) {
@@ -131,6 +137,19 @@ router.patch("/me", async (req, res, next) => {
       data.avatar = avatar;
     }
 
+    // null clears it (reverts the profile photo back to the drawn portrait).
+    if (avatarPhoto !== undefined) {
+      if (avatarPhoto !== null) {
+        if (typeof avatarPhoto !== "string" || !avatarPhoto.startsWith("data:image/")) {
+          return res.status(400).json({ status: "error", message: "avatarPhoto must be an image data URL" });
+        }
+        if (avatarPhoto.length > MAX_AVATAR_PHOTO_LENGTH) {
+          return res.status(400).json({ status: "error", message: "Photo is too large" });
+        }
+      }
+      data.avatarPhoto = avatarPhoto;
+    }
+
     if (Object.keys(data).length === 0) {
       return res.status(400).json({ status: "error", message: "Nothing to update" });
     }
@@ -141,6 +160,50 @@ router.patch("/me", async (req, res, next) => {
     if (err.code === "P2002") {
       return res.status(409).json({ status: "error", message: "Username already taken" });
     }
+    next(err);
+  }
+});
+
+router.patch("/me/email", async (req, res, next) => {
+  try {
+    const { email } = req.body ?? {};
+    if (typeof email !== "string" || !EMAIL_RE.test(email.trim())) {
+      return res.status(400).json({ status: "error", message: "A valid email address is required" });
+    }
+
+    const updated = await prisma.user.update({
+      where: { id: req.user.id },
+      data: { email: email.trim().toLowerCase() },
+    });
+    res.json({ user: serializeUser(updated) });
+  } catch (err) {
+    if (err.code === "P2002") {
+      return res.status(409).json({ status: "error", message: "Email already taken" });
+    }
+    next(err);
+  }
+});
+
+router.patch("/me/password", async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword, confirmNewPassword } = req.body ?? {};
+    if (typeof currentPassword !== "string" || !currentPassword) {
+      return res.status(400).json({ status: "error", message: "Current password is required" });
+    }
+    if (!(await bcrypt.compare(currentPassword, req.user.passwordHash))) {
+      return res.status(401).json({ status: "error", message: "Current password is incorrect" });
+    }
+    if (!isValidPassword(newPassword)) {
+      return res.status(400).json({ status: "error", message: PASSWORD_RULES_MESSAGE });
+    }
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({ status: "error", message: "Passwords do not match" });
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({ where: { id: req.user.id }, data: { passwordHash } });
+    res.json({ status: "ok", message: "Password updated" });
+  } catch (err) {
     next(err);
   }
 });

@@ -7,7 +7,7 @@ import { authenticate } from "../middleware/authenticate.js";
 import { isValidPassword, PASSWORD_RULES_MESSAGE } from "../validators.js";
 
 const router = Router();
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const RESET_TOKEN_TTL_MS = 60 * 60 * 1000; // 1 hour
 
 export function serializeUser(user) {
@@ -20,6 +20,7 @@ export function serializeUser(user) {
     groupId: user.groupId,
     createdAt: user.createdAt,
     avatar: user.avatar,
+    avatarPhoto: user.avatarPhoto,
     cutoffTime: user.cutoffTime,
     cutoffChangedAt: user.cutoffChangedAt,
   };

@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { getProfileStats } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
-import { PixelAvatar } from "@/components/PixelAvatar";
+import { UserAvatar } from "@/components/UserAvatar";
 import { PixelGlyph } from "@/components/PixelGlyph";
 import { ProfileEditModal } from "@/components/ProfileEditModal";
 import { CutoffTimeModal } from "@/components/CutoffTimeModal";
+import { ChangeEmailModal } from "@/components/ChangeEmailModal";
+import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 
 function StatTile({ kind, value, label, sub }) {
   return (
@@ -21,6 +23,23 @@ function StatTile({ kind, value, label, sub }) {
         <p className="text-sm text-ink">{label}</p>
         {sub && <p className="text-xs leading-snug text-stone">{sub}</p>}
       </div>
+    </div>
+  );
+}
+
+function SettingsRow({ kind, label, value, onChange }) {
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center gap-2">
+        <PixelGlyph kind={kind} />
+        <div>
+          <p className="text-sm text-ink">{label}</p>
+          <p className="font-mono text-sm text-ink">{value}</p>
+        </div>
+      </div>
+      <button type="button" onClick={onChange} className="rounded-xl border-2 border-ink px-3 py-1 text-sm">
+        Change
+      </button>
     </div>
   );
 }
@@ -38,6 +57,8 @@ export default function ProfilePage() {
   const [error, setError] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
   const [cutoffOpen, setCutoffOpen] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
 
   const refresh = useCallback(() => {
     getProfileStats()
@@ -69,7 +90,7 @@ export default function ProfilePage() {
     <PixelBackdrop tier={stats?.gardenTier ?? "bloom"} stretch>
       <div className="flex w-full max-w-md flex-1 flex-col gap-4 overflow-y-auto py-8">
         <div className="flex items-center gap-4 rounded-2xl border-2 border-ink bg-wall p-4">
-          <PixelAvatar v={user.avatar} scale={3} />
+          <UserAvatar user={user} scale={3} />
           <div className="flex-1">
             <h1 className="text-xl font-semibold text-ink">{user.username}</h1>
             <p className="text-sm text-stone">
@@ -102,6 +123,7 @@ export default function ProfilePage() {
               <StatTile kind="sprout" value={stats.lifetimeCleanDays} label="Clean days" />
               <StatTile kind="lantern" value={stats.currentStreak} label="Current streak" />
               <StatTile kind="peak" value={stats.longestStreak} label="Longest streak" />
+              <StatTile kind="check" value={stats.totalTasksCompleted} label="Tasks done, all time" />
               <StatTile
                 kind="hearth"
                 value={stats.sessions.count}
@@ -112,7 +134,7 @@ export default function ProfilePage() {
                     : null
                 }
               />
-              <StatTile kind="check" value={stats.totalTasksCompleted} label="Tasks done, all time" />
+              <StatTile kind="clock" value={stats.totalFocusTime} label="Total focus time" />
             </div>
 
             <div className="rounded-2xl border-2 border-ink bg-wall p-4">
@@ -128,34 +150,20 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border-2 border-ink bg-wall p-4">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <PixelGlyph kind="cog" />
-                  <div>
-                    <p className="text-sm text-ink">Cutoff time</p>
-                    <p className="font-mono text-lg text-ink">{user.cutoffTime}</p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setCutoffOpen(true)}
-                  className="rounded-xl border-2 border-ink px-3 py-1 text-sm"
-                >
-                  Change
-                </button>
-              </div>
+            <div className="flex flex-col gap-4 rounded-2xl border-2 border-ink bg-wall p-4">
+              <p className="text-sm font-semibold text-ink">Settings</p>
+              <SettingsRow kind="cog" label="Cutoff time" value={user.cutoffTime} onChange={() => setCutoffOpen(true)} />
+              <SettingsRow kind="globe" label="Email" value={user.email} onChange={() => setEmailOpen(true)} />
+              <SettingsRow kind="key" label="Password" value="••••••••" onChange={() => setPasswordOpen(true)} />
             </div>
           </>
         )}
       </div>
 
-      {editOpen && (
-        <ProfileEditModal user={user} onClose={() => setEditOpen(false)} onSaved={updateUser} />
-      )}
-      {cutoffOpen && (
-        <CutoffTimeModal user={user} onClose={() => setCutoffOpen(false)} onSaved={updateUser} />
-      )}
+      {editOpen && <ProfileEditModal user={user} onClose={() => setEditOpen(false)} onSaved={updateUser} />}
+      {cutoffOpen && <CutoffTimeModal user={user} onClose={() => setCutoffOpen(false)} onSaved={updateUser} />}
+      {emailOpen && <ChangeEmailModal user={user} onClose={() => setEmailOpen(false)} onSaved={updateUser} />}
+      {passwordOpen && <ChangePasswordModal onClose={() => setPasswordOpen(false)} />}
     </PixelBackdrop>
   );
 }

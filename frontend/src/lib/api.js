@@ -188,6 +188,22 @@ export function updateCutoffTime(cutoffTime) {
   });
 }
 
+export function updateEmail(email) {
+  return request("/users/me/email", {
+    method: "PATCH",
+    auth: true,
+    body: JSON.stringify({ email }),
+  });
+}
+
+export function changePassword({ currentPassword, newPassword, confirmNewPassword }) {
+  return request("/users/me/password", {
+    method: "PATCH",
+    auth: true,
+    body: JSON.stringify({ currentPassword, newPassword, confirmNewPassword }),
+  });
+}
+
 export function getGroupLeaderboard() {
   return request("/leaderboard/group", { auth: true });
 }

@@ -1,16 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { updateProfile } from "@/lib/api";
 import { PixelAvatar } from "@/components/PixelAvatar";
+import { resizeImageToDataUrl } from "@/lib/resizeImage";
 
 const AVATAR_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7];
 
 export function ProfileEditModal({ user, onClose, onSaved }) {
   const [username, setUsername] = useState(user.username);
   const [avatar, setAvatar] = useState(user.avatar);
+  const [avatarPhoto, setAvatarPhoto] = useState(user.avatarPhoto);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const fileInputRef = useRef(null);
+
+  async function handlePhotoChange(e) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setError(null);
+    try {
+      setAvatarPhoto(await resizeImageToDataUrl(file));
+    } catch (err) {
+      setError(err.message);
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -19,6 +34,7 @@ export function ProfileEditModal({ user, onClose, onSaved }) {
     const patch = {};
     if (username.trim() !== user.username) patch.username = username.trim();
     if (avatar !== user.avatar) patch.avatar = avatar;
+    if (avatarPhoto !== user.avatarPhoto) patch.avatarPhoto = avatarPhoto;
     if (Object.keys(patch).length === 0) {
       onClose();
       return;
@@ -39,7 +55,7 @@ export function ProfileEditModal({ user, onClose, onSaved }) {
   return (
     <div className="fixed inset-0 z-20 flex items-center justify-center bg-ink/50 px-6" onClick={onClose}>
       <div
-        className="w-full max-w-sm rounded-2xl border-2 border-ink bg-wall p-6 text-ink"
+        className="max-h-[80vh] w-full max-w-sm overflow-y-auto rounded-2xl border-2 border-ink bg-wall p-6 text-ink"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -62,7 +78,40 @@ export function ProfileEditModal({ user, onClose, onSaved }) {
           </label>
 
           <div>
-            <p className="mb-2 text-sm">Avatar</p>
+            <p className="mb-2 text-sm">Photo</p>
+            <div className="flex items-center gap-3">
+              {avatarPhoto ? (
+                // eslint-disable-next-line @next/next/no-img-element -- data URL, not a served asset
+                <img src={avatarPhoto} alt="" className="h-12 w-12 rounded-lg border-2 border-ink object-cover" />
+              ) : (
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-dashed border-ink text-xs text-stone">
+                  none
+                </div>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="rounded-xl border-2 border-ink px-3 py-1 text-sm"
+              >
+                Upload
+              </button>
+              {avatarPhoto && (
+                <button type="button" onClick={() => setAvatarPhoto(null)} className="text-sm underline">
+                  Remove
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <p className="mb-2 text-sm">Pixel avatar {avatarPhoto && "(used if you remove your photo)"}</p>
             <div className="grid grid-cols-4 gap-2">
               {AVATAR_OPTIONS.map((v) => (
                 <button
