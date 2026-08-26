@@ -1,8 +1,7 @@
 // Kiko pixel-art engine, ported from the "Kiko Pixel Kit" design (claude.ai/design,
 // project 9b7f8fa1-0efc-42fe-a967-19791620adc4, kiko-art.js). All art is authored on a
 // 1:1 pixel buffer and upscaled with nearest-neighbour, so every edge stays crisp at any
-// zoom. Logo/wordmark drawing from the source file is intentionally not ported here --
-// out of scope for the room/character work this was pulled in for.
+// zoom.
 
 const hx = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
 
@@ -545,4 +544,71 @@ export function drawRoom(b, state, t) {
   lamp(b);
   dog(b, !working, t);
   lampGlow(b);
+}
+
+/* -------------------------------------------------------------------- logo */
+
+const GLYPH = {
+  K: ["##.....##", "##....##.", "##...##..", "##..##...", "##.##....", "#####....", "##.##....", "##..##...", "##...##..", "##....##.", "##.....##"],
+  i: ["##", "##", "..", "##", "##", "##", "##", "##", "##", "##", "##"],
+  k: ["##.....", "##.....", "##..##.", "##.##..", "####...", "###....", "####...", "##.##..", "##..##.", "##...##", "##....#"],
+  o: [".......", ".......", ".#####.", "##...##", "##...##", "##...##", "##...##", "##...##", "##...##", "##...##", ".#####."],
+};
+
+function glyph(b, map, x, y, c) {
+  for (let j = 0; j < map.length; j++) for (let i = 0; i < map[j].length; i++) if (map[j][i] === "#") b.set(x + i, y + j, c);
+}
+
+const BALL = [
+  "..###..",
+  ".#####.",
+  "#######",
+  "#######",
+  "#######",
+  ".#####.",
+  "..###..",
+];
+
+export const LOGO = { w: 80, h: 26 };
+export const LOGO_PLAIN_W = 48;
+
+// opts: { dark, spark, rule }. `spark` (default true) draws the struck-ball
+// speed lines after the "o" -- the source design says to drop it for the
+// header lockup/favicon and keep only the letters (variant "plain").
+export function drawWordmark(b, opts = {}) {
+  const dark = !!opts.dark, ink = dark ? PAL.paper : PAL.ink, accent = dark ? PAL.goldLt : PAL.gold;
+  const y = 7;
+  glyph(b, GLYPH.K, 4, y, ink);
+  glyph(b, GLYPH.i, 16, y, ink);
+  glyph(b, GLYPH.k, 21, y, ink);
+  glyph(b, GLYPH.o, 31, y, ink);
+  if (opts.spark !== false) {
+    b.hline(41, 51, y + 4, accent);
+    b.hline(44, 54, y + 7, accent);
+    b.hline(41, 50, y + 10, accent);
+    for (let j = 0; j < 7; j++) for (let i = 0; i < 7; i++) {
+      if (BALL[j][i] !== "#") continue;
+      const near = i > 3 && j > 3;
+      b.set(58 + i, y + 4 + j, near ? accent : dark ? PAL.gold : PAL.goldLt);
+    }
+    b.set(60, y + 6, dark ? PAL.paper : PAL.goldPale);
+    b.set(61, y + 6, dark ? PAL.paper : PAL.goldPale);
+  }
+  if (opts.rule) {
+    const r = dark ? PAL.woodDk : PAL.wallTrim;
+    b.hline(4, b.w - 5, 1, r); b.hline(4, b.w - 5, b.h - 2, r);
+  }
+}
+
+export function drawMono(b, size, opts = {}) {
+  const dark = !!opts.dark, ink = dark ? PAL.paper : PAL.ink, accent = dark ? PAL.goldLt : PAL.gold;
+  if (opts.fill) b.rect(0, 0, size, size, dark ? hx("#1b1a18") : PAL.paper);
+  b.hline(0, size - 1, 0, accent); b.hline(0, size - 1, size - 1, accent);
+  b.vline(0, 0, size - 1, accent); b.vline(size - 1, 0, size - 1, accent);
+  const s = size >= 32 ? 2 : 1;
+  const x0 = Math.round((size - 9 * s) / 2) - (size >= 32 ? 2 : 0);
+  const y0 = Math.round((size - 11 * s) / 2);
+  for (let j = 0; j < 11; j++) for (let i = 0; i < 9; i++)
+    if (GLYPH.K[j][i] === "#") b.rect(x0 + i * s, y0 + j * s, s, s, ink);
+  if (size >= 32) { b.rect(24, 20, 4, 4, accent); b.hline(20, 25, 16, accent); }
 }

@@ -50,7 +50,12 @@ export function PixelBackdrop({ children, tier = "green", stretch = false, scene
   return (
     <main className="relative flex flex-1 flex-col overflow-hidden bg-sky-cloud px-6">
       {scene === "room" ? (
-        <KikoRoomCanvas roomState={roomState} fill className="pointer-events-none absolute inset-0" />
+        // Not `fill` here -- a smaller, integer-scaled room reads better than
+        // stretching it edge to edge, and matches the source kit's own "scaled
+        // up by whole numbers only" note.
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <KikoRoomCanvas roomState={roomState} scale={3} />
+        </div>
       ) : (
         <PixelCanvas draw={draw} fill className="pointer-events-none absolute inset-0" />
       )}

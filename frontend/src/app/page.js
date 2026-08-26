@@ -114,7 +114,7 @@ export default function Home() {
           <button
             type="button"
             onClick={() => setPomodoroBlocks(null)}
-            className="rounded-xl bg-alert px-8 py-2 text-base font-semibold text-sky-cloud"
+            className="rounded-xl bg-alert px-10 py-2.5 text-lg font-semibold text-sky-cloud"
           >
             Stop
           </button>
@@ -131,7 +131,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => setTasksOpen(true)}
-          className="rounded-xl border-2 border-ink bg-wall px-4 py-2 text-sm font-semibold text-ink"
+          className="rounded-xl border-2 border-ink bg-wall px-6 py-2.5 text-base font-semibold text-ink"
         >
           Tasks
         </button>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { KikoLogo } from "@/components/KikoLogo";
 
 // Brand + auth-state bar, always at the top. Screen navigation (Home /
 // Leaderboard / Profile) lives in NavBar, which renders as a row under this
@@ -11,8 +12,8 @@ export function Header() {
 
   return (
     <header className="flex items-center justify-between border-b-2 border-ink bg-sky-cloud px-6 py-4">
-      <Link href="/" className="text-xl font-semibold text-ink">
-        Kiko
+      <Link href="/" aria-label="Kiko">
+        <KikoLogo variant="plain" scale={2} />
       </Link>
 
       {!loading && (
