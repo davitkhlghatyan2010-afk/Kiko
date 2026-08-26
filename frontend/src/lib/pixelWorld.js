@@ -923,37 +923,45 @@ var PAL = {
   }
 
   /* ---------- 16x16 nav bar icons ---------- */
+  // 'profile' and the sprout half of 'home' reuse the Design System's own
+  // glyph() drawings (and its G palette) instead of a separate one-off
+  // palette, so all three tabs read as one family. Nothing here recolors by
+  // `active` -- in the source design that's carried by the surrounding tab
+  // (label color/background), not the icon itself.
   function navIcon(kind, o) {
     o = o || {};
+    if (kind === 'profile') return glyph('person');
+
     var p = new P(16, 16), ink = PAL.ink;
     if (o.bg !== null) p.rect(0, 0, 16, 16, o.bg || null);
-    var fillC = o.active ? PAL.fire : PAL.woodMid;
+
     if (kind === 'leaderboard') {
-      p.rect(2, 10, 3, 4, fillC); p.vl(2, 10, 4, ink); p.vl(5, 10, 4, ink); p.hl(2, 10, 3, ink); p.hl(2, 13, 3, ink);
-      p.rect(6, 6, 3, 8, fillC); p.vl(6, 6, 8, ink); p.vl(9, 6, 8, ink); p.hl(6, 6, 3, ink); p.hl(6, 13, 3, ink);
-      p.rect(10, 3, 3, 11, fillC); p.vl(10, 3, 11, ink); p.vl(13, 3, 11, ink); p.hl(10, 3, 3, ink); p.hl(10, 13, 3, ink);
+      var barC = G.wood;
+      p.rect(2, 10, 3, 4, barC); p.vl(2, 10, 4, ink); p.vl(5, 10, 4, ink); p.hl(2, 10, 3, ink); p.hl(2, 13, 3, ink);
+      p.rect(6, 6, 3, 8, barC); p.vl(6, 6, 8, ink); p.vl(9, 6, 8, ink); p.hl(6, 6, 3, ink); p.hl(6, 13, 3, ink);
+      p.rect(10, 3, 3, 11, barC); p.vl(10, 3, 11, ink); p.vl(13, 3, 11, ink); p.hl(10, 3, 3, ink); p.hl(10, 13, 3, ink);
     } else if (kind === 'admin') {
       // magnifying glass: ink ring with a two-tone fill, diagonal handle
       p.disc(6, 6, 4, ink);
-      p.disc(6, 6, 3, fillC);
+      p.disc(6, 6, 3, G.wood);
       p.set(9, 9, ink); p.set(10, 10, ink); p.set(11, 11, ink); p.set(12, 12, ink); p.set(13, 13, ink);
-    } else if (kind === 'profile') {
-      // head + shoulders silhouette, same flat two-tone style as the other icons
-      p.disc(8, 6, 3, fillC);
-      p.rect(3, 12, 10, 3, fillC);
-      p.set(6, 4, ink); p.set(10, 4, ink); p.set(4, 8, ink); p.set(12, 8, ink);
-      p.hl(3, 12, 10, ink); p.vl(3, 12, 3, ink); p.vl(12, 12, 3, ink);
     } else {
-      // 'home' (default): triangular roof over a walled house with a door.
-      for (var y = 2; y <= 7; y++) {
-        var half = y - 2, x0 = 8 - half, x1 = 8 + half;
-        p.hl(x0, y, x1 - x0 + 1, fillC);
+      // 'home' (default): the sprout glyph's ground/soil strip, a small
+      // house on it, and a little sprout beside the house -- "garden with a
+      // house added to it".
+      p.rect(0, 13, 16, 3, G.soil); p.hl(0, 13, 16, G.soilD);
+      for (var hy = 2; hy <= 6; hy++) {
+        var half = hy - 2, hx0 = 6 - half, hx1 = 6 + half;
+        p.hl(hx0, hy, hx1 - hx0 + 1, G.wood);
       }
-      p.set(8, 1, ink);
-      p.hl(2, 8, 12, ink);
-      p.rect(3, 8, 10, 6, fillC);
-      p.vl(3, 8, 6, ink); p.vl(12, 8, 6, ink); p.hl(3, 13, 10, ink);
-      p.rect(7, 10, 3, 4, PAL.woodDark);
+      p.set(6, 1, ink);
+      p.hl(2, 7, 9, ink);
+      p.rect(3, 7, 7, 5, G.woodL);
+      p.vl(3, 7, 5, ink); p.vl(9, 7, 5, ink); p.hl(3, 11, 7, ink);
+      p.rect(5, 9, 2, 3, G.wood);
+      p.vl(13, 8, 5, G.leafD);
+      p.rect(12, 9, 2, 1, G.leaf);
+      p.set(14, 7, G.leafL);
     }
     return p;
   }
