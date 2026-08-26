@@ -9,10 +9,12 @@ function format(seconds) {
   return `${m}:${s}`;
 }
 
-// The room-vs-garden scene now lives on the page's own fullscreen backdrop
-// (see page.js / PixelBackdrop's `scene` prop), driven by onPhaseChange --
-// this card itself is just the countdown and controls.
-export function PomodoroTimer({ blocks, onStop, onPhaseChange }) {
+// Takes over the top slot Countdown normally occupies (see page.js) while a
+// session is running -- same big/bare styling, no card. The room-vs-garden
+// scene lives on the page's own fullscreen backdrop (PixelBackdrop's `scene`
+// prop), driven by onPhaseChange; Stop/Dismiss lives in page.js's bottom
+// button slot, wired straight to the same handler that clears pomodoroBlocks.
+export function PomodoroTimer({ blocks, onPhaseChange }) {
   const [blockIndex, setBlockIndex] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(blocks[0].minutes * 60);
   const [done, setDone] = useState(false);
@@ -55,26 +57,17 @@ export function PomodoroTimer({ blocks, onStop, onPhaseChange }) {
   }, [blockIndex, blocks, done]);
 
   if (done) {
-    return (
-      <div className="flex w-full flex-col items-center gap-2 rounded-xl border-2 border-ink bg-wall p-3 text-sm">
-        <p>Focus session complete.</p>
-        <button onClick={onStop} className="text-xs underline">
-          Dismiss
-        </button>
-      </div>
-    );
+    return <p className="font-mono text-2xl font-medium text-ink">Focus session complete.</p>;
   }
 
   return (
-    <div className="flex w-full flex-col items-center gap-3 rounded-xl border-2 border-ink bg-wall p-3">
+    <div className="flex flex-col items-center gap-1">
       <p className="font-mono text-xs uppercase tracking-wide text-stone">
         {phase === "work" ? "Working" : "Resting"} — block {blockIndex + 1} of {blocks.length}
       </p>
-      <p className="font-mono text-3xl tabular-nums text-ink">{format(secondsLeft)}</p>
-
-      <button onClick={onStop} className="text-xs underline">
-        Stop
-      </button>
+      <p className="font-mono text-[56px] font-medium tabular-nums tracking-tight text-ink">
+        {format(secondsLeft)}
+      </p>
     </div>
   );
 }

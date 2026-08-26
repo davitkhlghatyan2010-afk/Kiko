@@ -97,22 +97,25 @@ export default function Home() {
 
   return (
     <PixelBackdrop tier={gardenTier} stretch scene={pomodoroPhase === "work" ? "room" : "garden"}>
-      {/* Deadline countdown, floating over the sky -- always the largest,
-          primary timer on screen, visible the moment today is declared. */}
-      <Countdown deadlineAt={day.deadlineAt} />
-
-      <div className="flex flex-col items-center gap-3">
-        {pomodoroBlocks && (
-          <PomodoroTimer
-            blocks={pomodoroBlocks}
-            onStop={() => setPomodoroBlocks(null)}
-            onPhaseChange={setPomodoroPhase}
-          />
-        )}
-      </div>
+      {/* Floating over the sky -- always the largest, primary timer on
+          screen. The deadline countdown while idle, swapped for the
+          concentration-time countdown the instant a focus session starts. */}
+      {pomodoroBlocks ? (
+        <PomodoroTimer blocks={pomodoroBlocks} onPhaseChange={setPomodoroPhase} />
+      ) : (
+        <Countdown deadlineAt={day.deadlineAt} />
+      )}
 
       <div className="flex w-full max-w-sm flex-col items-center gap-3 px-6">
-        {!pomodoroBlocks && (
+        {pomodoroBlocks ? (
+          <button
+            type="button"
+            onClick={() => setPomodoroBlocks(null)}
+            className="w-full rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud"
+          >
+            Stop
+          </button>
+        ) : (
           <button
             type="button"
             onClick={() => setStartOpen(true)}

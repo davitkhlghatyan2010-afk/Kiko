@@ -27,7 +27,12 @@ export function PixelBackdrop({ children, tier = "green", stretch = false, scene
   const draw = useCallback(
     (canvas) => {
       if (scene === "room") {
-        PixelWorld.drawRoomSlot(canvas, { W: 176, H: 120, character: true, pose: "idle", who: "boy" });
+        // A small native buffer (the old 176x120 framed-widget size) forces
+        // an extreme object-fit: cover zoom on a wide viewport, since there's
+        // so little width to cover from -- wider virtual dimensions (closer
+        // to the garden's own 380-wide world) keep the crop at roughly the
+        // same zoom level as the garden backdrop it swaps with.
+        PixelWorld.drawRoomSlot(canvas, { W: 380, H: 230, character: true, pose: "idle", who: "boy" });
         return;
       }
       PixelWorld.drawWorld(canvas, {
