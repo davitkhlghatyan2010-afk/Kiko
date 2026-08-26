@@ -95,7 +95,7 @@ export default function Home() {
           <p className="font-pixel-body text-xs uppercase tracking-wide text-stone">No day declared yet</p>
           <a
             href="/declare"
-            className="border-4 border-ink bg-fire px-6 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-ink shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-fire-hot active:translate-x-1 active:translate-y-1 active:shadow-none"
+            className="border-4 border-ink bg-wood-mid px-6 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-sky-cloud shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-wood-dark active:translate-x-1 active:translate-y-1 active:shadow-none"
           >
             Declare today
           </a>

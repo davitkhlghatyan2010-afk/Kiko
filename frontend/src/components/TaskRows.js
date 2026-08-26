@@ -35,7 +35,7 @@ export function TaskRows({ tasks, setTasks }) {
           <label className="mb-3 block font-pixel-body text-[10px] uppercase tracking-wide text-stone">
             What
             <input
-              className="mt-1 w-full border-2 border-ink bg-sky-cloud px-3 py-2 text-sm font-normal normal-case tracking-normal text-ink outline-none focus:border-fire"
+              className="mt-1 w-full border-2 border-ink bg-sky-cloud px-3 py-2 text-sm font-normal normal-case tracking-normal text-ink outline-none focus:border-wood-mid"
               value={task.text}
               onChange={(e) => updateTask(index, { text: e.target.value })}
               placeholder="Read chapter 4"
@@ -46,7 +46,7 @@ export function TaskRows({ tasks, setTasks }) {
           <label className="mb-3 block font-pixel-body text-[10px] uppercase tracking-wide text-stone">
             How much
             <input
-              className="mt-1 w-full border-2 border-ink bg-sky-cloud px-3 py-2 text-sm font-normal normal-case tracking-normal text-ink outline-none focus:border-fire"
+              className="mt-1 w-full border-2 border-ink bg-sky-cloud px-3 py-2 text-sm font-normal normal-case tracking-normal text-ink outline-none focus:border-wood-mid"
               value={task.amount}
               onChange={(e) => updateTask(index, { amount: e.target.value })}
               placeholder="20 pages"
@@ -63,7 +63,7 @@ export function TaskRows({ tasks, setTasks }) {
             />
             <span
               aria-hidden="true"
-              className={`h-5 w-5 shrink-0 border-2 border-ink ${task.repeat ? "bg-fire" : "bg-sky-cloud"}`}
+              className={`h-5 w-5 shrink-0 border-2 border-ink ${task.repeat ? "bg-wood-mid" : "bg-sky-cloud"}`}
             />
             Repeat every day
           </label>
@@ -73,7 +73,7 @@ export function TaskRows({ tasks, setTasks }) {
       <button
         type="button"
         onClick={addTask}
-        className="mb-4 font-pixel-body text-xs font-semibold uppercase tracking-wide text-wood-dark underline decoration-2 underline-offset-4 hover:text-fire"
+        className="mb-4 font-pixel-body text-xs font-semibold uppercase tracking-wide text-wood-dark underline decoration-2 underline-offset-4 hover:text-foliage-dark"
       >
         + Add another task
       </button>

@@ -23,7 +23,7 @@ export function Header() {
               <span className="font-semibold uppercase tracking-wide">{user.username}</span>
               <button
                 onClick={signOut}
-                className="border-2 border-ink bg-wall px-3 py-1.5 font-semibold uppercase tracking-wide text-ink hover:bg-fire"
+                className="border-2 border-ink bg-wall px-3 py-1.5 font-semibold uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
               >
                 Log out
               </button>
@@ -32,13 +32,13 @@ export function Header() {
             <>
               <a
                 href="/login"
-                className="border-2 border-ink bg-wall px-3 py-1.5 font-semibold uppercase tracking-wide text-ink hover:bg-fire"
+                className="border-2 border-ink bg-wall px-3 py-1.5 font-semibold uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
               >
                 Log in
               </a>
               <a
                 href="/register"
-                className="border-2 border-ink bg-fire px-3 py-1.5 font-semibold uppercase tracking-wide text-ink hover:bg-fire-hot"
+                className="border-2 border-ink bg-wood-mid px-3 py-1.5 font-semibold uppercase tracking-wide text-sky-cloud hover:bg-wood-dark"
               >
                 Create account
               </a>
