@@ -91,7 +91,7 @@ export default function Home() {
   if (day === null) {
     return (
       <PixelBackdrop tier={gardenTier}>
-        <a href="/declare" className="rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud">
+        <a href="/declare" className="rounded-xl bg-red-600 px-5 py-2 font-semibold text-sky-cloud hover:bg-red-700">
           Declare today
         </a>
       </PixelBackdrop>

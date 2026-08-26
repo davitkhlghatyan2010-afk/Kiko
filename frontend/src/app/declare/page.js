@@ -71,7 +71,7 @@ export default function DeclarePage() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-xl bg-alert px-4 py-2 font-semibold text-sky-cloud disabled:opacity-60"
+          className="w-full rounded-xl bg-red-600 px-4 py-2 font-semibold text-sky-cloud hover:bg-red-700 disabled:opacity-60"
         >
           {submitting ? "Declaring..." : "Declare today"}
         </button>
