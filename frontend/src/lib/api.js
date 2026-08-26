@@ -15,9 +15,10 @@ export function clearToken() {
 }
 
 class ApiError extends Error {
-  constructor(status, message) {
+  constructor(status, message, body) {
     super(message);
     this.status = status;
+    this.body = body;
   }
 }
 
@@ -39,7 +40,7 @@ async function request(path, { auth = false, ...options } = {}) {
 
   const body = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new ApiError(res.status, body.message || `Request failed: ${res.status}`);
+    throw new ApiError(res.status, body.message || `Request failed: ${res.status}`, body);
   }
   return body;
 }
@@ -165,6 +166,26 @@ export function answerProof(proofId, answer) {
 
 export function getStreak() {
   return request("/users/me/streak", { auth: true });
+}
+
+export function getProfileStats() {
+  return request("/users/me/stats", { auth: true });
+}
+
+export function updateProfile(patch) {
+  return request("/users/me", {
+    method: "PATCH",
+    auth: true,
+    body: JSON.stringify(patch),
+  });
+}
+
+export function updateCutoffTime(cutoffTime) {
+  return request("/users/me/cutoff", {
+    method: "PATCH",
+    auth: true,
+    body: JSON.stringify({ cutoffTime }),
+  });
 }
 
 export function getGroupLeaderboard() {

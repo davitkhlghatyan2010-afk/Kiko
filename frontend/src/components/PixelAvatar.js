@@ -5,19 +5,23 @@ import { PixelCanvas } from "@/components/PixelCanvas";
 import { PixelWorld } from "@/lib/pixelWorld";
 
 // Deterministic per-id pick from the Design System's 8 portraits -- purely
-// decorative, not tied to any real identity/character-selection feature.
+// decorative, used where there's no real chosen avatar to show (other users'
+// leaderboard rows).
 function hashIndex(id) {
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
   return h;
 }
 
-export function PixelAvatar({ id, scale = 2 }) {
+// Pass `v` (0-7) directly for a real chosen avatar (e.g. the signed-in user's
+// own); falls back to hashing `id` when `v` isn't given.
+export function PixelAvatar({ id, v, scale = 2 }) {
+  const index = v ?? hashIndex(id);
   const draw = useCallback(
     (canvas) => {
-      PixelWorld.drawAvatar(canvas, { v: hashIndex(id), scale });
+      PixelWorld.drawAvatar(canvas, { v: index, scale });
     },
-    [id, scale],
+    [index, scale],
   );
   return <PixelCanvas draw={draw} className="rounded-lg border-2 border-ink" />;
 }

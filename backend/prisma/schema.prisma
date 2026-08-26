@@ -48,6 +48,15 @@ model User {
   // Nullable: accounts created before this field existed never saw a policy to
   // accept. Every new registration sets it -- enforced in routes/auth.js, not here.
   privacyAcceptedAt   DateTime?           @map("privacy_accepted_at")
+  // Index into the Design System's 8 drawn portraits -- cosmetic only.
+  avatar              Int                 @default(0)
+  // "HH:MM", 24h, local wall-clock time. Read at declare-time only (see
+  // days.js defaultDeadline) -- changing it never touches a day already
+  // declared, only ones declared after the change.
+  cutoffTime          String              @default("23:59") @map("cutoff_time")
+  // Nullable: never changed yet. Enforces the once-per-rolling-7-days limit
+  // in routes/users.js -- checked there, not here.
+  cutoffChangedAt     DateTime?           @map("cutoff_changed_at")
   passwordResetTokens PasswordResetToken[]
   days                Day[]
   focusSessions       FocusSession[]

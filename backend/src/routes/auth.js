@@ -10,7 +10,7 @@ const router = Router();
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const RESET_TOKEN_TTL_MS = 60 * 60 * 1000; // 1 hour
 
-function serializeUser(user) {
+export function serializeUser(user) {
   return {
     id: user.id,
     username: user.username,
@@ -19,6 +19,9 @@ function serializeUser(user) {
     isAdmin: user.isAdmin,
     groupId: user.groupId,
     createdAt: user.createdAt,
+    avatar: user.avatar,
+    cutoffTime: user.cutoffTime,
+    cutoffChangedAt: user.cutoffChangedAt,
   };
 }
 
@@ -56,6 +59,9 @@ router.post("/register", async (req, res, next) => {
     const passwordHash = await bcrypt.hash(password, 10);
     const normalizedEmail = email.trim().toLowerCase();
     const privacyAcceptedAt = new Date();
+    // Cosmetic only -- just picks one of the 8 drawn portraits at random so a
+    // fresh account isn't stuck on the same default look.
+    const avatar = Math.floor(Math.random() * 8);
 
     const user = await prisma.$transaction(async (tx) => {
       if (accountType === "solo") {
@@ -66,6 +72,7 @@ router.post("/register", async (req, res, next) => {
             passwordHash,
             accountType: "solo",
             privacyAcceptedAt,
+            avatar,
           },
         });
       }
@@ -82,6 +89,7 @@ router.post("/register", async (req, res, next) => {
             accountType: "group",
             groupId: existingGroup.id,
             privacyAcceptedAt,
+            avatar,
           },
         });
       }
@@ -94,6 +102,7 @@ router.post("/register", async (req, res, next) => {
           accountType: "group",
           isAdmin: true,
           privacyAcceptedAt,
+          avatar,
         },
       });
       const group = await tx.group.create({

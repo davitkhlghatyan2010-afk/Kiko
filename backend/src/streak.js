@@ -10,6 +10,12 @@ function oneDayBefore(date) {
   return d;
 }
 
+function oneDayAfter(date) {
+  const d = new Date(date);
+  d.setUTCDate(d.getUTCDate() + 1);
+  return d;
+}
+
 // Pure. `daysDescending` is a user's finalized days (credit set), most recent
 // first. Counts the consecutive run of 'full' days starting from the most
 // recent -- a 'none' day, or a calendar-day gap (an undeclared day in
@@ -35,6 +41,38 @@ export async function getUserStreak(userId) {
     select: { date: true, credit: true },
   });
   return computeStreak(days);
+}
+
+// Pure. `daysAscending` is a user's finalized days (credit set), oldest
+// first. The longest run of consecutive 'full' days anywhere in their
+// history, not just the one ending today -- computeStreak only sees the
+// current run.
+export function computeLongestStreak(daysAscending) {
+  let longest = 0;
+  let current = 0;
+  let expectedDate = null;
+
+  for (const day of daysAscending) {
+    if (day.credit !== "full") {
+      current = 0;
+      expectedDate = null;
+      continue;
+    }
+    current = expectedDate && sameDate(day.date, expectedDate) ? current + 1 : 1;
+    longest = Math.max(longest, current);
+    expectedDate = oneDayAfter(day.date);
+  }
+
+  return longest;
+}
+
+export async function getUserLongestStreak(userId) {
+  const days = await prisma.day.findMany({
+    where: { userId, credit: { not: null } },
+    orderBy: { date: "asc" },
+    select: { date: true, credit: true },
+  });
+  return computeLongestStreak(days);
 }
 
 const GARDEN_TIERS = ["dead", "autumn", "green", "bloom"];

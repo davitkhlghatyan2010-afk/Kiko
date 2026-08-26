@@ -12,9 +12,14 @@ function startOfToday() {
   return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
 }
 
-function defaultDeadline() {
+// cutoffTime is "HH:MM" (see User.cutoffTime) -- read once, here, at declare
+// time. Changing it afterwards never touches a day already declared, only
+// ones declared after the change (enforced by cutoffTime living on the user
+// row, not being looked up again later).
+function defaultDeadline(cutoffTime) {
+  const [hours, minutes] = (cutoffTime || "23:59").split(":").map(Number);
   const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 59, 999);
 }
 
 function taskKey(text, amount) {
@@ -93,7 +98,7 @@ router.post("/", async (req, res, next) => {
       data: {
         userId: req.user.id,
         date,
-        deadlineAt: defaultDeadline(),
+        deadlineAt: defaultDeadline(req.user.cutoffTime),
         tasks: {
           create: [
             ...recurringTasks.map((task) => ({
