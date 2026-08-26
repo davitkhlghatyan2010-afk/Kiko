@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { prisma } from "../db.js";
-import { generateFollowUpQuestion } from "../llm.js";
+import { generateFollowUpQuestion, judgeAnswer } from "../llm.js";
 
 const router = Router();
 
@@ -60,6 +60,14 @@ router.post("/proofs/:id/answer", async (req, res, next) => {
     }
     if (proof.userAnswer) {
       return res.status(409).json({ status: "error", message: "This proof has already been answered" });
+    }
+
+    const judgement = await judgeAnswer(proof.summary, proof.aiQuestion, answer.trim());
+    if (!judgement.accepted) {
+      return res.status(422).json({
+        status: "error",
+        message: judgement.reason || "That answer didn't hold up -- try again with more detail.",
+      });
     }
 
     // Optimistic finalization: if every OTHER task on the day is already

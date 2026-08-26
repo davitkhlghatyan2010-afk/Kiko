@@ -63,3 +63,68 @@ export async function generateFollowUpQuestion(summary) {
     return templatedQuestion(summary);
   }
 }
+
+function judgePrompt(summary, question, answer) {
+  return (
+    "You are checking whether someone actually completed a task, or is bluffing.\n\n" +
+    `Their summary of what they did: "${summary.trim()}"\n` +
+    `A follow-up question meant to catch a fabricated summary: "${question.trim()}"\n` +
+    `Their answer: "${answer.trim()}"\n\n` +
+    "Judge whether the answer is a specific, plausible response consistent with someone who " +
+    "really did the task and wrote that summary -- not a generic, evasive, or clearly made-up " +
+    "answer. Give the benefit of the doubt on brevity or informal writing; only reject answers " +
+    "that are vague, off-topic, contradict the summary, or show no real engagement with the " +
+    'question. Respond with only this JSON, nothing else: {"accepted": boolean, "reason": ' +
+    '"one sentence, written to the person, explaining why -- especially if rejected"}.'
+  );
+}
+
+// Judges whether an answer to the follow-up question holds up. Accepts by
+// default (never blocks completion) when no key is configured or the call
+// fails for an infra reason -- only an explicit accepted:false *from Gemini*
+// rejects. See POST /proofs/:id/answer, the only caller.
+export async function judgeAnswer(summary, question, answer) {
+  const apiKey = process.env.GOOGLE_API_KEY;
+  if (!apiKey) {
+    return { accepted: true, reason: null };
+  }
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: judgePrompt(summary, question, answer) }] }],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "OBJECT",
+              properties: { accepted: { type: "BOOLEAN" }, reason: { type: "STRING" } },
+              required: ["accepted", "reason"],
+            },
+          },
+        }),
+      },
+    );
+
+    if (!res.ok) {
+      throw new Error(`Gemini API returned ${res.status}`);
+    }
+
+    const data = await res.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) {
+      throw new Error("Gemini API returned no judgement");
+    }
+    const parsed = JSON.parse(text);
+    if (typeof parsed.accepted !== "boolean") {
+      throw new Error("Malformed judgement");
+    }
+    return { accepted: parsed.accepted, reason: parsed.reason || null };
+  } catch (err) {
+    console.error("[llm] Gemini judge call failed, defaulting to accepted:", err.message);
+    return { accepted: true, reason: null };
+  }
+}
