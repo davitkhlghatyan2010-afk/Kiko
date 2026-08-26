@@ -6,6 +6,43 @@ import { getAdminProofs, setProofFlagged } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
 
+const ROOM_STATES = [
+  { value: "work", label: "Work" },
+  { value: "break", label: "Rest" },
+  { value: "done", label: "Done" },
+];
+
+// Same PixelBackdrop, same scene="room", same everything the real
+// concentration screen uses -- switching states here is switching states
+// there, not a smaller stand-in for it.
+function RoomPreview({ roomState, onSelect, onClose }) {
+  return (
+    <PixelBackdrop scene="room" roomState={roomState}>
+      <div className="fixed left-4 top-24 z-30 flex gap-2">
+        {ROOM_STATES.map(({ value, label }) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => onSelect(value)}
+            className={`rounded-xl border-2 border-ink px-3 py-1 text-xs font-semibold ${
+              roomState === value ? "bg-alert text-sky-cloud" : "bg-wall text-ink"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <button
+        type="button"
+        onClick={onClose}
+        className="fixed bottom-8 left-1/2 z-30 -translate-x-1/2 rounded-xl border-2 border-ink bg-wall px-5 py-2 text-sm font-semibold text-ink"
+      >
+        Back to admin
+      </button>
+    </PixelBackdrop>
+  );
+}
+
 function ProofRow({ proof, onToggleFlag, busy }) {
   return (
     <li className={`rounded-2xl border-2 p-4 ${proof.flagged ? "border-alert bg-alert/10" : "border-ink"}`}>
@@ -46,6 +83,7 @@ export default function AdminPage() {
   const [proofs, setProofs] = useState(undefined);
   const [error, setError] = useState(null);
   const [busyId, setBusyId] = useState(null);
+  const [previewState, setPreviewState] = useState(null);
 
   useEffect(() => {
     if (loading) return;
@@ -85,12 +123,32 @@ export default function AdminPage() {
     );
   }
 
+  if (previewState) {
+    return <RoomPreview roomState={previewState} onSelect={setPreviewState} onClose={() => setPreviewState(null)} />;
+  }
+
   return (
     <PixelBackdrop stretch>
       <div className="flex w-full max-w-md flex-1 flex-col gap-4 py-8">
         <div>
           <h1 className="text-2xl font-semibold text-ink">Review proofs</h1>
           <p className="text-sm text-stone">Your group&apos;s completed proofs, most recent first.</p>
+        </div>
+
+        <div className="flex flex-col gap-3 rounded-2xl border-2 border-ink bg-wall p-4">
+          <p className="text-sm font-semibold text-ink">Room preview</p>
+          <div className="flex gap-2">
+            {ROOM_STATES.map(({ value, label }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setPreviewState(value)}
+                className="rounded-xl border-2 border-ink bg-wall px-4 py-1.5 text-sm font-semibold text-ink"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto rounded-2xl">

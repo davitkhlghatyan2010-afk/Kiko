@@ -25,19 +25,7 @@ export default function Home() {
   // room states (see lib/kikoArt.js) -- null leaves it as the garden. Set by
   // PomodoroTimer.
   const [pomodoroPhase, setPomodoroPhase] = useState(null);
-  // Admin-only: force a room state on demand, right in the real fullscreen
-  // backdrop, instead of waiting out a real block to see rest/done (a rest
-  // block alone needs a 35+ minute session). A real running session always
-  // wins over this if both are somehow set.
-  const [previewOverride, setPreviewOverride] = useState(null);
-  const roomState = pomodoroPhase
-    ? pomodoroPhase === "rest"
-      ? "break"
-      : pomodoroPhase === "done"
-        ? "done"
-        : "work"
-    : previewOverride || "work";
-  const showingRoom = Boolean(pomodoroPhase || previewOverride);
+  const roomState = pomodoroPhase === "rest" ? "break" : pomodoroPhase === "done" ? "done" : "work";
 
   const refresh = useCallback(() => {
     getToday()
@@ -111,28 +99,7 @@ export default function Home() {
   }
 
   return (
-    <PixelBackdrop tier={gardenTier} stretch scene={showingRoom ? "room" : "garden"} roomState={roomState}>
-      {user.isAdmin && (
-        <div className="fixed left-4 top-24 z-30 flex gap-2">
-          {[
-            { value: "work", label: "Work" },
-            { value: "break", label: "Rest" },
-            { value: "done", label: "Done" },
-          ].map(({ value, label }) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setPreviewOverride((prev) => (prev === value ? null : value))}
-              className={`rounded-xl border-2 border-ink px-3 py-1 text-xs font-semibold ${
-                previewOverride === value ? "bg-alert text-sky-cloud" : "bg-wall text-ink"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      )}
-
+    <PixelBackdrop tier={gardenTier} stretch scene={pomodoroPhase ? "room" : "garden"} roomState={roomState}>
       {/* Floating over the sky -- always the largest, primary timer on
           screen. The deadline countdown while idle, swapped for the
           concentration-time countdown the instant a focus session starts. */}
