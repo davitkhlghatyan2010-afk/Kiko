@@ -190,6 +190,29 @@ var PAL = {
     p.set(x, y - 3, T.tuft); p.set(x + 1, y - 3, T.tuft);
     p.set(x - 1, y, T.gDark); p.set(x + 1, y, T.gDark);
   }
+  // x,y = front-left floor anchor (bottom of the legs); a book sits on top.
+  function roomTable(p, x, y) {
+    var w = 34, topH = 4, legH = 16, topY = y - legH - topH;
+    p.rect(x, topY, w, topH, PAL.woodMid);
+    p.hl(x, topY, w, PAL.woodLight);
+    p.hl(x, topY + topH - 1, w, PAL.woodDark);
+    p.vl(x + 3, topY + topH, legH, PAL.woodDark);
+    p.vl(x + w - 4, topY + topH, legH, PAL.woodDark);
+    p.rect(x + 12, topY - 4, 11, 4, PAL.alert);
+    p.hl(x + 12, topY - 4, 11, PAL.autumn);
+    p.vl(x + 12, topY - 4, 4, PAL.woodDark);
+  }
+  // x,y = front-left floor anchor (bottom of the legs).
+  function roomChair(p, x, y) {
+    var seatW = 14, seatH = 3, legH = 12, backH = 13, seatY = y - legH - seatH;
+    p.rect(x, seatY, seatW, seatH, PAL.woodMid);
+    p.hl(x, seatY, seatW, PAL.woodLight);
+    p.vl(x + 2, seatY + seatH, legH, PAL.woodDark);
+    p.vl(x + seatW - 3, seatY + seatH, legH, PAL.woodDark);
+    p.vl(x + 1, seatY - backH, backH, PAL.woodDark);
+    p.hl(x + 1, seatY - backH, seatW - 3, PAL.woodDark);
+    p.hl(x + 1, seatY - Math.round(backH * 0.5), seatW - 3, PAL.woodMid);
+  }
   function rock(p, x, y, r, T) {
     for (var g = -r - 2; g <= r + 2; g++) p.set(x + g, y, T.gDark);
     p.set(x - r - 1, y - 1, T.gDark); p.set(x + r + 1, y - 1, T.gDark);
@@ -818,25 +841,59 @@ var PAL = {
       for (y = 0; y < wallH; y++) p.set(cx + x, top2 + y, ((x + y) & 1) ? wa : wb);
       p.set(cx + x, top2 - 1, PAL.ink);
     }
+    // window on the left wall, mirroring the fireplace's reference-point
+    // approach below rather than following the wall's slant exactly -- a
+    // narrow feature against a slanted wall reads fine without per-pixel
+    // slant correction, same simplification the fireplace already relies on.
+    var wxr = cx - Math.round(rx * 0.42), wyr = cy - ry + Math.round(ry * 0.42) - wallH;
+    var winW = 40, winH = 28, wx3 = wxr - (winW >> 1), wy3 = wyr + Math.round(wallH * 0.15);
+    p.rect(wx3 - 3, wy3 - 3, winW + 6, winH + 6, PAL.woodDark);
+    p.rect(wx3 - 2, wy3 - 2, winW + 4, winH + 4, PAL.ink);
+    var paneH = Math.round(winH * 0.55);
+    p.rect(wx3, wy3, winW, paneH, PAL.skyDay);
+    p.rect(wx3, wy3 + paneH, winW, winH - paneH, PAL.foliageMid);
+    p.vl(wx3 + (winW >> 1), wy3, winH, PAL.woodDark);
+    p.hl(wx3, wy3 + (winH >> 1), winW, PAL.woodDark);
+
+    // fireplace: stone chimney breast, a mantel shelf, a proper dark firebox
+    // opening with logs/flame, and a hearth slab where it meets the floor.
     var fx2 = cx + Math.round(rx * 0.42), fy = cy - ry + Math.round(ry * 0.42) - wallH;
-    p.rect(fx2 - 12, fy, 24, wallH + 10, PAL.stone);
-    p.rect(fx2 - 12, fy, 24, 1, PAL.ink); p.vl(fx2 - 13, fy, wallH + 10, PAL.ink); p.vl(fx2 + 12, fy, wallH + 10, PAL.ink);
-    for (var sy = fy + 3; sy < fy + wallH + 8; sy += 4) p.hl(fx2 - 11, sy, 22, '#AFAAA3');
-    var f = (o.frame || 0) % 3, hearthY = fy + wallH + 6, fw = 7 - (dim > 0.5 ? 2 : 0);
-    p.rect(fx2 - 8, hearthY - 8, 16, 9, PAL.ink);
+    var fcw = 32;
+    p.rect(fx2 - fcw / 2, fy, fcw, wallH + 14, PAL.stone);
+    p.rect(fx2 - fcw / 2, fy, fcw, 1, PAL.ink);
+    p.vl(fx2 - fcw / 2 - 1, fy, wallH + 14, PAL.ink); p.vl(fx2 + fcw / 2, fy, wallH + 14, PAL.ink);
+    for (var sy = fy + 3; sy < fy + wallH + 10; sy += 5) p.hl(fx2 - fcw / 2 + 2, sy, fcw - 4, '#AFAAA3');
+
+    var mantelY = fy + Math.round(wallH * 0.55);
+    p.rect(fx2 - fcw / 2 - 3, mantelY, fcw + 6, 3, PAL.woodDark);
+    p.hl(fx2 - fcw / 2 - 3, mantelY, fcw + 6, PAL.woodMid);
+
+    var boxW = 22, boxH = 22, boxY = mantelY + 6;
+    p.rect(fx2 - boxW / 2 - 1, boxY - 1, boxW + 2, boxH + 2, PAL.woodDark);
+    p.rect(fx2 - boxW / 2, boxY, boxW, boxH, PAL.ink);
+
+    var f = (o.frame || 0) % 3, fw = 8 - (dim > 0.5 ? 2 : 0), flameBaseY = boxY + boxH - 3;
+    p.rect(fx2 - 7, flameBaseY, 14, 3, PAL.woodDark);
     if (fw > 0) {
-      p.rect(fx2 - fw + f % 2, hearthY - 5, fw * 2 - (f % 2), 5, PAL.fire);
-      p.rect(fx2 - fw + 2, hearthY - 7 + (f === 1 ? 1 : 0), fw * 2 - 4, 4, PAL.fireHot);
-      p.set(fx2 + (f === 2 ? 1 : -1), hearthY - 9, PAL.fireHot);
+      p.rect(fx2 - fw + f % 2, flameBaseY - 5, fw * 2 - (f % 2), 5, PAL.fire);
+      p.rect(fx2 - fw + 2, flameBaseY - 8 + (f === 1 ? 1 : 0), fw * 2 - 4, 4, PAL.fireHot);
+      p.set(fx2 + (f === 2 ? 1 : -1), flameBaseY - 10, PAL.fireHot);
     }
+
+    var hearthW = fcw + 12;
+    p.rect(fx2 - hearthW / 2, boxY + boxH + 1, hearthW, 4, PAL.stone);
+    p.hl(fx2 - hearthW / 2, boxY + boxH + 1, hearthW, '#AFAAA3');
+
+    // small table + chair on the open floor, left of center
+    roomTable(p, cx - 70, cy + 15);
+    roomChair(p, cx - 30, cy + 22);
 
     // Optional character, drawn into this same buffer (not a separate
     // overlay canvas) so a fullscreen `fill`-mode crop/stretch never
-    // desyncs the two -- centered on the floor, clear of the fireplace.
+    // desyncs the two -- centered in the middle of the floor.
     if (o.character) {
       var rpose = POSES[o.pose || 'idle'] || IDLE;
-      var rBaseY = cy + ry - 5;
-      sprite(p, rpose, cx - 8, rBaseY, CHAR[o.who || 'boy']);
+      sprite(p, rpose, cx - 8, cy, CHAR[o.who || 'boy']);
     }
 
     paint(canvas, p, scale);

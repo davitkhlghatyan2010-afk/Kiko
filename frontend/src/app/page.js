@@ -111,7 +111,7 @@ export default function Home() {
           <button
             type="button"
             onClick={() => setPomodoroBlocks(null)}
-            className="w-full rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud"
+            className="rounded-xl bg-alert px-6 py-1.5 text-sm font-semibold text-sky-cloud"
           >
             Stop
           </button>
