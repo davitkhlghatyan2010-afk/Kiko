@@ -26,7 +26,7 @@ export function serializeUser(user) {
   };
 }
 
-function hashToken(token) {
+export function hashToken(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
@@ -211,6 +211,35 @@ router.post("/reset-password", async (req, res, next) => {
 
     res.json({ status: "ok", message: "Password updated. You can log in now." });
   } catch (err) {
+    next(err);
+  }
+});
+
+// Unauthenticated on purpose -- the link is opened from the *new* address's
+// inbox, possibly on a device with no session at all. The token itself is
+// the proof of ownership, same pattern as reset-password.
+router.post("/email-change/confirm", async (req, res, next) => {
+  try {
+    const { token } = req.body ?? {};
+    if (typeof token !== "string" || !token) {
+      return res.status(400).json({ status: "error", message: "Confirmation token is required" });
+    }
+
+    const record = await prisma.emailChangeToken.findUnique({ where: { tokenHash: hashToken(token) } });
+    if (!record || record.usedAt || record.expiresAt < new Date()) {
+      return res.status(400).json({ status: "error", message: "Confirmation link is invalid or has expired" });
+    }
+
+    await prisma.$transaction([
+      prisma.user.update({ where: { id: record.userId }, data: { email: record.newEmail } }),
+      prisma.emailChangeToken.update({ where: { id: record.id }, data: { usedAt: new Date() } }),
+    ]);
+
+    res.json({ status: "ok", message: "Email updated." });
+  } catch (err) {
+    if (err.code === "P2002") {
+      return res.status(409).json({ status: "error", message: "That email was taken in the meantime" });
+    }
     next(err);
   }
 });

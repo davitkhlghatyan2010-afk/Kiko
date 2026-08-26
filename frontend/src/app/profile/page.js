@@ -162,7 +162,7 @@ export default function ProfilePage() {
 
       {editOpen && <ProfileEditModal user={user} onClose={() => setEditOpen(false)} onSaved={updateUser} />}
       {cutoffOpen && <CutoffTimeModal user={user} onClose={() => setCutoffOpen(false)} onSaved={updateUser} />}
-      {emailOpen && <ChangeEmailModal user={user} onClose={() => setEmailOpen(false)} onSaved={updateUser} />}
+      {emailOpen && <ChangeEmailModal user={user} onClose={() => setEmailOpen(false)} />}
       {passwordOpen && <ChangePasswordModal onClose={() => setPasswordOpen(false)} />}
     </PixelBackdrop>
   );

@@ -188,11 +188,21 @@ export function updateCutoffTime(cutoffTime) {
   });
 }
 
-export function updateEmail(email) {
-  return request("/users/me/email", {
-    method: "PATCH",
+// Doesn't apply the change -- sends a confirmation link to the new address.
+// See confirmEmailChange for the step that actually applies it.
+export function requestEmailChange(email) {
+  return request("/users/me/email/request", {
+    method: "POST",
     auth: true,
     body: JSON.stringify({ email }),
+  });
+}
+
+// Unauthenticated -- the token itself is the proof of ownership.
+export function confirmEmailChange(token) {
+  return request("/auth/email-change/confirm", {
+    method: "POST",
+    body: JSON.stringify({ token }),
   });
 }
 

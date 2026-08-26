@@ -1,7 +1,8 @@
+import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import { Router } from "express";
 import { prisma } from "../db.js";
-import { EMAIL_RE, serializeUser } from "./auth.js";
+import { EMAIL_RE, hashToken, serializeUser } from "./auth.js";
 import { getUserGardenTier, getUserLongestStreak, getUserStreak } from "../streak.js";
 import { isValidPassword, PASSWORD_RULES_MESSAGE } from "../validators.js";
 
@@ -9,6 +10,7 @@ const router = Router();
 
 const CUTOFF_RE = /^([01]\d|2[0-3]):([0-5]\d)$/;
 const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
+const EMAIL_CHANGE_TTL_MS = 60 * 60 * 1000; // 1 hour, matches password reset
 // Client resizes to a small square before upload (see ProfileEditModal.js) --
 // this is just a defensive server-side cap, not the primary size control.
 const MAX_AVATAR_PHOTO_LENGTH = 500_000;
@@ -164,22 +166,45 @@ router.patch("/me", async (req, res, next) => {
   }
 });
 
-router.patch("/me/email", async (req, res, next) => {
+// Doesn't touch User.email -- creates a token and "sends" it (console.log
+// stub, same as forgot-password) to the *new* address. The address only
+// takes effect once that link is opened -- see POST /auth/email-change/confirm.
+router.post("/me/email/request", async (req, res, next) => {
   try {
     const { email } = req.body ?? {};
     if (typeof email !== "string" || !EMAIL_RE.test(email.trim())) {
       return res.status(400).json({ status: "error", message: "A valid email address is required" });
     }
+    const newEmail = email.trim().toLowerCase();
+    if (newEmail === req.user.email) {
+      return res.status(400).json({ status: "error", message: "That's already your email" });
+    }
 
-    const updated = await prisma.user.update({
-      where: { id: req.user.id },
-      data: { email: email.trim().toLowerCase() },
-    });
-    res.json({ user: serializeUser(updated) });
-  } catch (err) {
-    if (err.code === "P2002") {
+    const existing = await prisma.user.findUnique({ where: { email: newEmail } });
+    if (existing) {
       return res.status(409).json({ status: "error", message: "Email already taken" });
     }
+
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    await prisma.emailChangeToken.create({
+      data: {
+        userId: req.user.id,
+        newEmail,
+        tokenHash: hashToken(rawToken),
+        expiresAt: new Date(Date.now() + EMAIL_CHANGE_TTL_MS),
+      },
+    });
+
+    const confirmUrl = `${process.env.FRONTEND_URL || "http://localhost:3000"}/verify-email?token=${rawToken}`;
+    // No email provider configured yet (pilot stub) — log it and hand it back so the flow is testable end to end.
+    console.log(`[email change] ${newEmail} -> ${confirmUrl}`);
+    res.json({
+      status: "ok",
+      message: "Check the new address for a link to confirm the change.",
+      devConfirmUrl: confirmUrl,
+      devConfirmToken: rawToken,
+    });
+  } catch (err) {
     next(err);
   }
 });
