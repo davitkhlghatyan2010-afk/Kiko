@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { logSession } from "@/lib/api";
-import { PomodoroScene } from "@/components/PomodoroScene";
 
 function format(seconds) {
   const m = String(Math.floor(seconds / 60)).padStart(2, "0");
@@ -10,11 +9,23 @@ function format(seconds) {
   return `${m}:${s}`;
 }
 
-export function PomodoroTimer({ blocks, onStop }) {
+// The room-vs-garden scene now lives on the page's own fullscreen backdrop
+// (see page.js / PixelBackdrop's `scene` prop), driven by onPhaseChange --
+// this card itself is just the countdown and controls.
+export function PomodoroTimer({ blocks, onStop, onPhaseChange }) {
   const [blockIndex, setBlockIndex] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(blocks[0].minutes * 60);
   const [done, setDone] = useState(false);
   const intervalStartRef = useRef(new Date());
+
+  const phase = blocks[blockIndex].type;
+
+  useEffect(() => {
+    onPhaseChange?.(done ? null : phase);
+    // Clears the room/garden backdrop override on unmount too (e.g. Stop),
+    // not just when a later phase change overwrites it.
+    return () => onPhaseChange?.(null);
+  }, [phase, done, onPhaseChange]);
 
   useEffect(() => {
     if (done) return;
@@ -45,7 +56,7 @@ export function PomodoroTimer({ blocks, onStop }) {
 
   if (done) {
     return (
-      <div className="flex w-full flex-col items-center gap-2 rounded border border-stone p-3 text-sm">
+      <div className="flex w-full flex-col items-center gap-2 rounded-xl border-2 border-ink bg-wall p-3 text-sm">
         <p>Focus session complete.</p>
         <button onClick={onStop} className="text-xs underline">
           Dismiss
@@ -54,19 +65,12 @@ export function PomodoroTimer({ blocks, onStop }) {
     );
   }
 
-  const phase = blocks[blockIndex].type;
-
   return (
-    <div className="flex w-full flex-col items-center gap-3 rounded border border-stone p-3">
+    <div className="flex w-full flex-col items-center gap-3 rounded-xl border-2 border-ink bg-wall p-3">
       <p className="font-mono text-xs uppercase tracking-wide text-stone">
         {phase === "work" ? "Working" : "Resting"} — block {blockIndex + 1} of {blocks.length}
       </p>
       <p className="font-mono text-3xl tabular-nums text-ink">{format(secondsLeft)}</p>
-
-      {/* Inside the house while working, out in the garden while resting -- the
-          scene switches the instant `phase` flips, driven by real Design System
-          pixel art (src/lib/pixelWorld.js), not a CSS placeholder. */}
-      <PomodoroScene phase={phase === "work" ? "work" : "rest"} />
 
       <button onClick={onStop} className="text-xs underline">
         Stop

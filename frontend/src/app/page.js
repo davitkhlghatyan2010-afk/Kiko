@@ -20,6 +20,9 @@ export default function Home() {
   const [gardenTier, setGardenTier] = useState("bloom");
   const [tasksOpen, setTasksOpen] = useState(false);
   const [startOpen, setStartOpen] = useState(false);
+  // Drives the fullscreen backdrop: "work" swaps it to the room interior,
+  // "rest"/null leaves it as the garden. Set by PomodoroTimer.
+  const [pomodoroPhase, setPomodoroPhase] = useState(null);
 
   const refresh = useCallback(() => {
     getToday()
@@ -93,13 +96,19 @@ export default function Home() {
   }
 
   return (
-    <PixelBackdrop tier={gardenTier} stretch>
+    <PixelBackdrop tier={gardenTier} stretch scene={pomodoroPhase === "work" ? "room" : "garden"}>
       {/* Deadline countdown, floating over the sky -- always the largest,
           primary timer on screen, visible the moment today is declared. */}
       <Countdown deadlineAt={day.deadlineAt} />
 
       <div className="flex flex-col items-center gap-3">
-        {pomodoroBlocks && <PomodoroTimer blocks={pomodoroBlocks} onStop={() => setPomodoroBlocks(null)} />}
+        {pomodoroBlocks && (
+          <PomodoroTimer
+            blocks={pomodoroBlocks}
+            onStop={() => setPomodoroBlocks(null)}
+            onPhaseChange={setPomodoroPhase}
+          />
+        )}
       </div>
 
       <div className="flex w-full max-w-sm flex-col items-center gap-3 px-6">

@@ -849,6 +849,17 @@ var PAL = {
       p.rect(fx2 - fw + 2, hearthY - 7 + (f === 1 ? 1 : 0), fw * 2 - 4, 4, PAL.fireHot);
       p.set(fx2 + (f === 2 ? 1 : -1), hearthY - 9, PAL.fireHot);
     }
+
+    // Optional character, drawn into this same buffer (not a separate
+    // overlay canvas) so a fullscreen `fill`-mode crop/stretch never
+    // desyncs the two -- centered on the floor, clear of the window on the
+    // left and the fireplace on the right.
+    if (o.character) {
+      var rpose = POSES[o.pose || 'idle'] || IDLE;
+      var rBaseY = cy + ry - 5;
+      sprite(p, rpose, cx - 8, rBaseY, CHAR[o.who || 'boy']);
+    }
+
     paint(canvas, p, scale);
   }
 
