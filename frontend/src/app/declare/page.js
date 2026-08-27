@@ -51,7 +51,7 @@ export default function DeclarePage() {
   if (authLoading || checkingToday) {
     return (
       <PixelBackdrop>
-        <p className="rounded-xl border-2 border-ink bg-wall px-4 py-2 text-sm text-ink">Loading...</p>
+        <p className="border-2 border-ink bg-wall px-4 py-2 font-pixel-body text-xs text-ink">Loading...</p>
       </PixelBackdrop>
     );
   }

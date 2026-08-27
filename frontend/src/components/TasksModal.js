@@ -56,12 +56,16 @@ export function TasksModal({ day, onClose, onChanged }) {
       onClick={onClose}
     >
       <div
-        className="max-h-[80vh] w-full max-w-sm overflow-y-auto rounded-2xl border-2 border-ink bg-wall p-6 text-ink"
+        className="max-h-[80vh] w-full max-w-sm overflow-y-auto rounded-none border-4 border-ink bg-wall p-6 text-ink shadow-[6px_6px_0_0_var(--color-ink)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Today&apos;s tasks</h2>
-          <button type="button" onClick={onClose} className="text-sm underline">
+          <h2 className="font-pixel-display text-sm tracking-wide">Today&apos;s tasks</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="border-2 border-ink bg-wall px-3 py-1.5 font-pixel-body text-[10px] font-semibold uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
+          >
             Close
           </button>
         </div>
@@ -75,36 +79,48 @@ export function TasksModal({ day, onClose, onChanged }) {
         {adding ? (
           <form onSubmit={handleAddSubmit} className="flex flex-col gap-2">
             <TaskRows tasks={newTasks} setTasks={setNewTasks} />
-            {error && <p className="text-sm text-dead">{error}</p>}
+            {error && <p className="font-pixel-body text-xs text-dead">{error}</p>}
             <div className="flex gap-3">
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 rounded-xl bg-alert px-4 py-2 text-sm font-semibold text-sky-cloud disabled:opacity-60"
+                className="flex-1 border-4 border-ink bg-wood-mid px-4 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-sky-cloud shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-wood-dark active:translate-x-1 active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {submitting ? "Adding..." : "Add"}
               </button>
-              <button type="button" onClick={() => setAdding(false)} className="text-sm underline">
+              <button
+                type="button"
+                onClick={() => setAdding(false)}
+                className="border-2 border-ink bg-wall px-4 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
+              >
                 Cancel
               </button>
             </div>
           </form>
         ) : (
-          <button type="button" onClick={() => setAdding(true)} className="text-sm underline">
+          <button
+            type="button"
+            onClick={() => setAdding(true)}
+            className="font-pixel-body text-[10px] uppercase tracking-wide text-wood-dark underline decoration-2 underline-offset-4 hover:text-foliage-dark"
+          >
             + Add a task
           </button>
         )}
 
         {recurringTasks.length > 0 && (
           <div className="mt-6 border-t-2 border-ink pt-4">
-            <p className="mb-2 font-mono text-xs uppercase tracking-wide text-stone">Repeating every day</p>
+            <p className="mb-2 font-pixel-body text-[10px] uppercase tracking-wide text-stone">Repeating every day</p>
             <ul className="flex flex-col gap-2">
               {recurringTasks.map((task) => (
                 <li key={task.id} className="flex items-center justify-between gap-2 text-sm">
                   <span>
                     {task.text} — {task.amount}
                   </span>
-                  <button type="button" onClick={() => handleStopRepeating(task.id)} className="text-xs underline">
+                  <button
+                    type="button"
+                    onClick={() => handleStopRepeating(task.id)}
+                    className="font-pixel-body text-[10px] uppercase tracking-wide text-alert underline underline-offset-2"
+                  >
                     Stop repeating
                   </button>
                 </li>

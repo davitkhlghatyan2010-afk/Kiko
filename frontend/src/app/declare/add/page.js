@@ -51,28 +51,31 @@ export default function AddTasksPage() {
   if (authLoading || checkingToday) {
     return (
       <PixelBackdrop>
-        <p className="rounded-xl border-2 border-ink bg-wall px-4 py-2 text-sm text-ink">Loading...</p>
+        <p className="border-2 border-ink bg-wall px-4 py-2 font-pixel-body text-xs text-ink">Loading...</p>
       </PixelBackdrop>
     );
   }
 
   return (
     <PixelBackdrop>
-      <form onSubmit={handleSubmit} className="w-full max-w-lg rounded-2xl border-2 border-ink bg-wall p-6 text-ink">
-        <h1 className="mb-1 text-2xl font-semibold">Add to today</h1>
-        <p className="mb-6 text-sm text-stone">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-lg border-4 border-ink bg-wall/95 p-6 text-ink shadow-[8px_8px_0_0_var(--color-ink)]"
+      >
+        <h1 className="mb-2 font-pixel-display text-lg tracking-wide">Add to today</h1>
+        <p className="mb-6 font-pixel-body text-xs text-stone">
           Tasks already declared today can&apos;t be edited or removed — this only adds more on top, before
           tonight&apos;s deadline.
         </p>
 
         <TaskRows tasks={tasks} setTasks={setTasks} />
 
-        {error && <p className="mb-3 text-sm text-dead">{error}</p>}
+        {error && <p className="mb-3 font-pixel-body text-xs text-dead">{error}</p>}
 
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-xl bg-alert px-4 py-2 font-semibold text-sky-cloud disabled:opacity-60"
+          className="w-full border-4 border-ink bg-wood-mid px-4 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-sky-cloud shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-wood-dark active:translate-x-1 active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitting ? "Adding..." : "Add tasks"}
         </button>

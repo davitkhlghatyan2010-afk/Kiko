@@ -35,7 +35,7 @@ function VerifyEmailStatus() {
   return (
     <p className="text-sm">
       {message} You can close this tab, or{" "}
-      <a href="/login" className="underline">
+      <a href="/login" className="font-pixel-body underline">
         log in
       </a>{" "}
       if you weren&apos;t already.
@@ -46,8 +46,8 @@ function VerifyEmailStatus() {
 export default function VerifyEmailPage() {
   return (
     <PixelBackdrop>
-      <div className="w-full max-w-sm rounded-2xl border-2 border-ink bg-wall p-6 text-ink">
-        <h1 className="mb-6 text-2xl font-semibold">Confirm your email</h1>
+      <div className="w-full max-w-sm border-4 border-ink bg-wall p-6 text-ink shadow-[6px_6px_0_0_var(--color-ink)]">
+        <h1 className="mb-6 font-pixel-display text-lg tracking-wide">Confirm your email</h1>
         <Suspense fallback={<p className="text-sm">Loading...</p>}>
           <VerifyEmailStatus />
         </Suspense>

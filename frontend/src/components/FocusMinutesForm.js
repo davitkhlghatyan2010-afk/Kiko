@@ -28,22 +28,22 @@ export function FocusMinutesForm({ onStart, buttonLabel, busyLabel }) {
 
   return (
     <div className="flex w-full flex-col gap-2">
-      <label className="block text-sm">
+      <label className="block font-pixel-body text-[10px] uppercase tracking-wide text-stone">
         Focus minutes ({MIN_TOTAL_MINUTES}-{MAX_TOTAL_MINUTES})
         <input
           type="number"
           min={MIN_TOTAL_MINUTES}
           max={MAX_TOTAL_MINUTES}
-          className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-xl text-ink outline-none"
+          className="mt-1 w-full border-2 border-ink bg-sky-cloud px-3 py-2 text-xl font-normal normal-case tracking-normal text-ink outline-none focus:border-wood-mid"
           value={minutes}
           onChange={(e) => setMinutes(e.target.value)}
         />
       </label>
-      {error && <p className="text-xs text-dead">{error}</p>}
+      {error && <p className="font-pixel-body text-xs text-dead">{error}</p>}
       <button
         onClick={handleClick}
         disabled={busy}
-        className="w-full rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud disabled:opacity-60"
+        className="w-full border-4 border-ink bg-wood-mid px-5 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-sky-cloud shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-wood-dark active:translate-x-1 active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
       >
         {busy ? busyLabel : buttonLabel}
       </button>

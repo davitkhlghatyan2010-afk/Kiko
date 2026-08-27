@@ -26,15 +26,15 @@ export default function ForgotPasswordPage() {
 
   return (
     <PixelBackdrop>
-      <div className="w-full max-w-sm rounded-2xl border-2 border-ink bg-wall p-6 text-ink">
-        <h1 className="mb-6 text-2xl font-semibold">Reset your password</h1>
+      <div className="w-full max-w-sm border-4 border-ink bg-wall p-6 text-ink shadow-[6px_6px_0_0_var(--color-ink)]">
+        <h1 className="mb-6 font-pixel-display text-lg tracking-wide">Reset your password</h1>
 
         {result ? (
           <div className="text-sm">
             <p className="mb-3">{result.message}</p>
             {result.devResetUrl && (
-              <div className="rounded-xl border-2 border-ink px-3 py-2">
-                <p className="mb-1 font-mono text-xs uppercase tracking-wide text-stone">
+              <div className="border-2 border-ink bg-sky-cloud/60 px-3 py-2">
+                <p className="mb-1 font-pixel-body text-[10px] uppercase tracking-wide text-stone">
                   No email service is wired up yet — dev link:
                 </p>
                 <a href={result.devResetUrl} className="break-all underline">
@@ -45,23 +45,23 @@ export default function ForgotPasswordPage() {
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
-            <label className="mb-3 block text-sm">
+            <label className="mb-3 block font-pixel-body text-[10px] uppercase tracking-wide text-stone">
               Email
               <input
                 type="email"
-                className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
+                className="mt-1 w-full border-2 border-ink bg-sky-cloud px-3 py-2 text-sm font-normal normal-case tracking-normal text-ink outline-none focus:border-wood-mid"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </label>
 
-            {error && <p className="mb-3 text-sm text-dead">{error}</p>}
+            {error && <p className="mb-3 font-pixel-body text-xs text-dead">{error}</p>}
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-xl bg-alert px-4 py-2 font-semibold text-sky-cloud disabled:opacity-60"
+              className="w-full border-4 border-ink bg-wood-mid px-4 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-sky-cloud shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-wood-dark active:translate-x-1 active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting ? "Sending..." : "Send reset link"}
             </button>
@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
         )}
 
         <p className="mt-4 text-center text-sm">
-          <a href="/login" className="underline">
+          <a href="/login" className="font-pixel-body underline">
             Back to log in
           </a>
         </p>

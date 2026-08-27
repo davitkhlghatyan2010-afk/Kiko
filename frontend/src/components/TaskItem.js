@@ -55,11 +55,18 @@ export function TaskItem({ task, onProved, onSkipped }) {
         </span>
         <span className="flex items-center gap-3">
           {task.recurring && (
-            <button onClick={handleSkip} disabled={skipping} className="text-xs underline disabled:opacity-60">
+            <button
+              onClick={handleSkip}
+              disabled={skipping}
+              className="font-pixel-body text-[10px] uppercase tracking-wide underline underline-offset-2 disabled:opacity-60"
+            >
               {skipping ? "Skipping..." : "Skip today"}
             </button>
           )}
-          <button onClick={() => setPhase("summary")} className="text-xs underline">
+          <button
+            onClick={() => setPhase("summary")}
+            className="font-pixel-body text-[10px] uppercase tracking-wide underline underline-offset-2"
+          >
             Mark done
           </button>
         </span>
@@ -99,27 +106,27 @@ export function TaskItem({ task, onProved, onSkipped }) {
 
   if (phase === "summary") {
     return (
-      <li className="flex flex-col gap-2 rounded-2xl border-2 border-ink p-3">
+      <li className="flex flex-col gap-2 border-4 border-ink bg-wall/70 p-4 shadow-[4px_4px_0_0_var(--color-ink)]">
         <p className="flex items-center gap-2 text-sm">
           <TaskBullet done={false} />
           {task.text} — {task.amount}
         </p>
         <form onSubmit={handleSummarySubmit} className="flex flex-col gap-2">
-          <label className="text-sm">
+          <label className="block font-pixel-body text-[10px] uppercase tracking-wide text-stone">
             What did you do / learn?
             <textarea
-              className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
+              className="mt-1 w-full border-2 border-ink bg-sky-cloud px-3 py-2 text-sm font-normal normal-case tracking-normal text-ink outline-none focus:border-wood-mid"
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
               rows={3}
               required
             />
           </label>
-          {error && <p className="text-sm text-dead">{error}</p>}
+          {error && <p className="font-pixel-body text-xs text-dead">{error}</p>}
           <button
             type="submit"
             disabled={submitting}
-            className="rounded-xl bg-alert px-4 py-2 text-sm font-semibold text-sky-cloud disabled:opacity-60"
+            className="border-4 border-ink bg-wood-mid px-4 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-sky-cloud shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-wood-dark active:translate-x-1 active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting ? "Submitting..." : "Submit"}
           </button>
@@ -129,7 +136,7 @@ export function TaskItem({ task, onProved, onSkipped }) {
   }
 
   return (
-    <li className="flex flex-col gap-2 rounded-2xl border-2 border-ink p-3">
+    <li className="flex flex-col gap-2 border-4 border-ink bg-wall/70 p-4 shadow-[4px_4px_0_0_var(--color-ink)]">
       <p className="flex items-center gap-2 text-sm">
         <TaskBullet done={false} />
         {task.text} — {task.amount}
@@ -137,17 +144,17 @@ export function TaskItem({ task, onProved, onSkipped }) {
       <p className="text-sm font-semibold">{aiQuestion}</p>
       <form onSubmit={handleAnswerSubmit} className="flex flex-col gap-2">
         <textarea
-          className="w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
+          className="w-full border-2 border-ink bg-sky-cloud px-3 py-2 text-sm text-ink outline-none focus:border-wood-mid"
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
           rows={2}
           required
         />
-        {error && <p className="text-sm text-dead">{error}</p>}
+        {error && <p className="font-pixel-body text-xs text-dead">{error}</p>}
         <button
           type="submit"
           disabled={submitting}
-          className="rounded-xl bg-alert px-4 py-2 text-sm font-semibold text-sky-cloud disabled:opacity-60"
+          className="border-4 border-ink bg-wood-mid px-4 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-sky-cloud shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-wood-dark active:translate-x-1 active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitting ? "Submitting..." : "Answer"}
         </button>

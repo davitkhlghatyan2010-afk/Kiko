@@ -28,12 +28,16 @@ export function ChangePasswordModal({ onClose }) {
   return (
     <div className="fixed inset-0 z-20 flex items-center justify-center bg-ink/50 px-6" onClick={onClose}>
       <div
-        className="w-full max-w-sm rounded-2xl border-2 border-ink bg-wall p-6 text-ink"
+        className="w-full max-w-sm rounded-none border-4 border-ink bg-wall p-6 text-ink shadow-[6px_6px_0_0_var(--color-ink)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Password</h2>
-          <button type="button" onClick={onClose} className="text-sm underline">
+          <h2 className="font-pixel-display text-sm tracking-wide">Password</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="border-2 border-ink bg-wall px-3 py-1.5 font-pixel-body text-[10px] font-semibold uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
+          >
             Close
           </button>
         </div>
@@ -42,43 +46,43 @@ export function ChangePasswordModal({ onClose }) {
           <p className="text-sm text-ink">Password updated.</p>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <label className="text-sm">
+            <label className="block font-pixel-body text-[10px] uppercase tracking-wide text-stone">
               Current password
               <input
                 type="password"
-                className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
+                className="mt-1 w-full border-2 border-ink bg-sky-cloud px-3 py-2 text-sm font-normal normal-case tracking-normal text-ink outline-none focus:border-wood-mid"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 required
               />
             </label>
-            <label className="text-sm">
+            <label className="block font-pixel-body text-[10px] uppercase tracking-wide text-stone">
               New password
               <input
                 type="password"
-                className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
+                className="mt-1 w-full border-2 border-ink bg-sky-cloud px-3 py-2 text-sm font-normal normal-case tracking-normal text-ink outline-none focus:border-wood-mid"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
               />
             </label>
-            <label className="text-sm">
+            <label className="block font-pixel-body text-[10px] uppercase tracking-wide text-stone">
               Confirm new password
               <input
                 type="password"
-                className="mt-1 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-ink outline-none"
+                className="mt-1 w-full border-2 border-ink bg-sky-cloud px-3 py-2 text-sm font-normal normal-case tracking-normal text-ink outline-none focus:border-wood-mid"
                 value={confirmNewPassword}
                 onChange={(e) => setConfirmNewPassword(e.target.value)}
                 required
               />
             </label>
 
-            {error && <p className="text-sm text-dead">{error}</p>}
+            {error && <p className="font-pixel-body text-xs text-dead">{error}</p>}
 
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-xl bg-alert px-4 py-2 text-sm font-semibold text-sky-cloud disabled:opacity-60"
+              className="border-4 border-ink bg-wood-mid px-4 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-sky-cloud shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-wood-dark active:translate-x-1 active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting ? "Saving..." : "Save"}
             </button>

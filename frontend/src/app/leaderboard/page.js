@@ -83,7 +83,7 @@ export default function LeaderboardPage() {
   if (loading || !user) {
     return (
       <PixelBackdrop>
-        <p className="rounded-xl border-2 border-ink bg-wall px-4 py-2 text-sm text-ink">Loading...</p>
+        <p className="border-2 border-ink bg-wall px-4 py-2 font-pixel-body text-xs text-ink">Loading...</p>
       </PixelBackdrop>
     );
   }
@@ -105,16 +105,16 @@ export default function LeaderboardPage() {
       <div className="flex w-full max-w-md flex-1 flex-col gap-4 py-8">
         <div className="flex flex-col gap-3 px-2">
           <div>
-            <h1 className="text-2xl font-semibold text-ink">{title}</h1>
-            {subtitle && <p className="text-sm text-stone">{subtitle}</p>}
+            <h1 className="font-pixel-display text-lg tracking-wide text-ink">{title}</h1>
+            {subtitle && <p className="mt-2 text-sm text-stone">{subtitle}</p>}
           </div>
 
           {isGroup && (
-            <div className="flex overflow-hidden rounded-xl border-2 border-ink">
+            <div className="flex overflow-hidden border-2 border-ink">
               <button
                 type="button"
                 onClick={() => selectView("group")}
-                className={`flex-1 py-2 text-sm ${
+                className={`flex-1 py-2 font-pixel-body text-[10px] uppercase tracking-wide ${
                   effectiveView === "group" ? "bg-ink text-wall" : "bg-wall text-ink"
                 }`}
               >
@@ -123,7 +123,7 @@ export default function LeaderboardPage() {
               <button
                 type="button"
                 onClick={() => selectView("global")}
-                className={`flex-1 border-l-2 border-ink py-2 text-sm ${
+                className={`flex-1 border-l-2 border-ink py-2 font-pixel-body text-[10px] uppercase tracking-wide ${
                   effectiveView === "global" ? "bg-ink text-wall" : "bg-wall text-ink"
                 }`}
               >
@@ -133,13 +133,13 @@ export default function LeaderboardPage() {
           )}
         </div>
 
-        <div className="flex-1 overflow-y-auto rounded-2xl border-2 border-ink bg-wall">
-          {error && <p className="p-4 text-sm text-dead">{error}</p>}
+        <div className="flex-1 overflow-y-auto border-4 border-ink bg-wall shadow-[6px_6px_0_0_var(--color-ink)]">
+          {error && <p className="p-4 font-pixel-body text-xs text-dead">{error}</p>}
 
-          {!error && data === undefined && <p className="p-4 text-sm text-stone">Loading rankings...</p>}
+          {!error && data === undefined && <p className="p-4 font-pixel-body text-xs text-stone">Loading rankings...</p>}
 
           {!error && data?.leaderboard.length === 0 && (
-            <p className="p-4 text-sm text-stone">
+            <p className="p-4 font-pixel-body text-xs text-stone">
               {effectiveView === "group" ? "You're not on a group account." : "No one's declared a day yet."}
             </p>
           )}

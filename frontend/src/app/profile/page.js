@@ -14,7 +14,7 @@ import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 
 function StatTile({ kind, value, label, sub }) {
   return (
-    <div className="flex flex-col gap-2 rounded-xl border-2 border-ink bg-sky-cloud p-3">
+    <div className="flex flex-col gap-2 border-2 border-ink bg-sky-cloud p-3 shadow-[3px_3px_0_0_var(--color-ink)]">
       <div className="flex items-center gap-2">
         <PixelGlyph kind={kind} />
         <span className="font-mono text-2xl leading-none text-ink">{value}</span>
@@ -37,7 +37,11 @@ function SettingsRow({ kind, label, value, onChange }) {
           <p className="font-mono text-sm text-ink">{value}</p>
         </div>
       </div>
-      <button type="button" onClick={onChange} className="rounded-xl border-2 border-ink px-3 py-1 text-sm">
+      <button
+        type="button"
+        onClick={onChange}
+        className="border-2 border-ink bg-wall px-3 py-1.5 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
+      >
         Change
       </button>
     </div>
@@ -81,7 +85,7 @@ export default function ProfilePage() {
   if (loading || !user) {
     return (
       <PixelBackdrop>
-        <p className="rounded-xl border-2 border-ink bg-wall px-4 py-2 text-sm text-ink">Loading...</p>
+        <p className="border-2 border-ink bg-wall px-4 py-2 font-pixel-body text-xs text-ink">Loading...</p>
       </PixelBackdrop>
     );
   }
@@ -89,7 +93,7 @@ export default function ProfilePage() {
   return (
     <PixelBackdrop tier={stats?.gardenTier ?? "bloom"} stretch>
       <div className="flex w-full max-w-md flex-1 flex-col gap-4 overflow-y-auto py-8">
-        <div className="flex items-center gap-4 rounded-2xl border-2 border-ink bg-wall p-4">
+        <div className="flex items-center gap-4 border-4 border-ink bg-wall p-4 shadow-[6px_6px_0_0_var(--color-ink)]">
           <UserAvatar user={user} scale={3} />
           <div className="flex-1">
             <h1 className="text-xl font-semibold text-ink">{user.username}</h1>
@@ -98,20 +102,24 @@ export default function ProfilePage() {
               {user.isAdmin ? ", admin" : ""}
             </p>
           </div>
-          <button type="button" onClick={() => setEditOpen(true)} className="text-sm underline">
+          <button
+            type="button"
+            onClick={() => setEditOpen(true)}
+            className="font-pixel-body text-[10px] uppercase tracking-wide underline underline-offset-2"
+          >
             Edit
           </button>
         </div>
 
-        {error && <p className="rounded-xl border-2 border-ink bg-wall p-4 text-sm text-dead">{error}</p>}
+        {error && <p className="border-2 border-ink bg-wall p-4 font-pixel-body text-xs text-dead">{error}</p>}
 
         {!error && stats === undefined && (
-          <p className="rounded-xl border-2 border-ink bg-wall p-4 text-sm text-stone">Loading stats...</p>
+          <p className="border-2 border-ink bg-wall p-4 font-pixel-body text-xs text-stone">Loading stats...</p>
         )}
 
         {!error && stats && (
           <>
-            <div className="rounded-2xl border-2 border-ink bg-wall p-4">
+            <div className="border-4 border-ink bg-wall p-4 shadow-[6px_6px_0_0_var(--color-ink)]">
               <p className="font-mono text-4xl font-medium leading-none text-ink">
                 {stats.medianTimeLeftWhenStarted ?? "—"}
               </p>
@@ -137,21 +145,21 @@ export default function ProfilePage() {
               <StatTile kind="clock" value={stats.totalFocusTime} label="Total focus time" />
             </div>
 
-            <div className="rounded-2xl border-2 border-ink bg-wall p-4">
-              <p className="mb-2 text-sm text-stone">Last thirty days</p>
+            <div className="border-4 border-ink bg-wall p-4 shadow-[6px_6px_0_0_var(--color-ink)]">
+              <p className="mb-2 font-pixel-body text-[10px] uppercase tracking-wide text-stone">Last thirty days</p>
               <div className="grid grid-cols-10 gap-1">
                 {stats.history.map((day) => (
                   <div
                     key={day.date}
                     title={`${new Date(day.date).toLocaleDateString()}: ${day.status}`}
-                    className={`aspect-square rounded-sm ${HISTORY_COLOR[day.status]}`}
+                    className={`aspect-square ${HISTORY_COLOR[day.status]}`}
                   />
                 ))}
               </div>
             </div>
 
-            <div className="flex flex-col gap-4 rounded-2xl border-2 border-ink bg-wall p-4">
-              <p className="text-sm font-semibold text-ink">Settings</p>
+            <div className="flex flex-col gap-4 border-4 border-ink bg-wall p-4 shadow-[6px_6px_0_0_var(--color-ink)]">
+              <p className="font-pixel-display text-xs tracking-wide text-ink">Settings</p>
               <SettingsRow kind="cog" label="Cutoff time" value={user.cutoffTime} onChange={() => setCutoffOpen(true)} />
               <SettingsRow kind="globe" label="Email" value={user.email} onChange={() => setEmailOpen(true)} />
               <SettingsRow kind="key" label="Password" value="••••••••" onChange={() => setPasswordOpen(true)} />

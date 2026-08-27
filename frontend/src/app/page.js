@@ -62,7 +62,7 @@ export default function Home() {
     refresh();
   }
 
-  const centeredPill = "rounded-xl border-2 border-ink bg-wall px-4 py-2 text-sm text-ink";
+  const centeredPill = "border-2 border-ink bg-wall px-4 py-2 font-pixel-body text-xs text-ink";
 
   if (loading) {
     return (
@@ -120,7 +120,7 @@ export default function Home() {
           <button
             type="button"
             onClick={() => setPomodoroBlocks(null)}
-            className="rounded-xl bg-alert px-10 py-2.5 text-lg font-semibold text-sky-cloud"
+            className="border-4 border-ink bg-wood-mid px-10 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-sky-cloud shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-wood-dark active:translate-x-1 active:translate-y-1 active:shadow-none"
           >
             Stop
           </button>
@@ -128,7 +128,7 @@ export default function Home() {
           <button
             type="button"
             onClick={() => setStartOpen(true)}
-            className="w-full rounded-xl bg-alert px-5 py-2 font-semibold text-sky-cloud"
+            className="w-full border-4 border-ink bg-wood-mid px-5 py-3 font-pixel-display text-[10px] uppercase tracking-wide text-sky-cloud shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-wood-dark active:translate-x-1 active:translate-y-1 active:shadow-none"
           >
             {day.startedAt ? "Start a focus session" : "Start"}
           </button>
@@ -137,7 +137,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => setTasksOpen(true)}
-          className="rounded-xl border-2 border-ink bg-wall px-6 py-2.5 text-base font-semibold text-ink"
+          className="border-2 border-ink bg-wall px-6 py-2.5 font-pixel-body text-xs font-semibold uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
         >
           Tasks
         </button>
