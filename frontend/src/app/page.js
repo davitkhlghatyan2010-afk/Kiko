@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { getStreak, getToday, startDay } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { Countdown } from "@/components/Countdown";
@@ -12,6 +13,7 @@ import { splitSession } from "@/lib/pomodoro";
 
 export default function Home() {
   const { user, loading } = useAuth();
+  const router = useRouter();
   const [day, setDay] = useState(undefined);
   const [pomodoroBlocks, setPomodoroBlocks] = useState(null);
   // A brand new user with no day history yet should see the garden at its
@@ -42,6 +44,11 @@ export default function Home() {
     window.addEventListener("focus", refresh);
     return () => window.removeEventListener("focus", refresh);
   }, [user, refresh]);
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user) router.push("/login");
+  }, [loading, user, router]);
 
   // Fires once per day: the real startDay() call scoring/deadline logic
   // cares about, plus the first Pomodoro on top of it.
@@ -75,7 +82,7 @@ export default function Home() {
   if (!user) {
     return (
       <PixelBackdrop>
-        <p className={centeredPill}>Log in or create an account to get started.</p>
+        <p className={centeredPill}>Loading...</p>
       </PixelBackdrop>
     );
   }
