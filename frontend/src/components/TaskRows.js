@@ -1,3 +1,5 @@
+import { PixelGlyph } from "@/components/PixelGlyph";
+
 export function emptyTask() {
   return { text: "", amount: "", repeat: false };
 }
@@ -63,8 +65,10 @@ export function TaskRows({ tasks, setTasks }) {
             />
             <span
               aria-hidden="true"
-              className={`h-5 w-5 shrink-0 border-2 border-ink ${task.repeat ? "bg-wood-mid" : "bg-sky-cloud"}`}
-            />
+              className="flex h-5 w-5 shrink-0 items-center justify-center border-2 border-ink bg-sky-cloud"
+            >
+              {task.repeat && <PixelGlyph kind="check" scale={1} />}
+            </span>
             Repeat every day
           </label>
         </div>
