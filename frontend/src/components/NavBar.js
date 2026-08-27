@@ -26,8 +26,10 @@ export function NavLinks({ pathname, links }) {
       <Link
         key={href}
         href={href}
-        className={`flex flex-col items-center gap-1 px-3 py-1 font-pixel-body text-[10px] font-semibold uppercase tracking-wide ${
-          active ? "text-ink" : "text-stone"
+        className={`flex flex-col items-center gap-1 border-2 px-3 py-1 font-pixel-body text-[10px] font-bold uppercase tracking-wide transition-colors ${
+          active
+            ? "border-ink bg-sky-cloud text-ink"
+            : "border-transparent text-stone hover:border-ink hover:bg-sky-cloud/70 hover:text-ink"
         }`}
       >
         <NavIcon kind={kind} active={active} />
