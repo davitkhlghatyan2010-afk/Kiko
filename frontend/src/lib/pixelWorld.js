@@ -831,18 +831,16 @@ var PAL = {
     if (o.bg !== null) p.rect(0, 0, 16, 16, o.bg || null);
 
     if (kind === 'leaderboard') {
-      // gold trophy: goblet-shaped cup (narrow rim, wide bowl, narrow neck)
-      // with bracket handles held apart from the body, wood stem and base
-      p.hl(7, 2, 3, G.fire);
-      p.hl(5, 3, 7, G.fire); p.hl(5, 4, 7, G.fire);
-      p.hl(6, 5, 5, G.fire);
-      p.hl(7, 6, 3, G.fire);
-      p.rect(6, 3, 2, 2, G.hot);
-      p.vl(2, 3, 3, ink); p.set(3, 2, ink); p.set(3, 6, ink);
-      p.vl(14, 3, 3, ink); p.set(13, 2, ink); p.set(13, 6, ink);
-      p.rect(7, 7, 3, 2, G.wood);
-      p.hl(7, 9, 3, G.wood); p.hl(5, 10, 7, G.wood); p.hl(4, 11, 9, G.wood);
-      p.hl(3, 12, 11, ink);
+      // gold medal: a red ribbon triangle converging into a two-tone gold
+      // disc (ink outline ring, hot rim, fire inner face, ink center rivet)
+      for (var ry = 0; ry <= 5; ry++) {
+        var rhalf = 5 - ry, rx0 = 8 - rhalf, rx1 = 8 + rhalf;
+        p.hl(rx0, ry, rx1 - rx0 + 1, G.alert);
+      }
+      p.disc(8, 10, 5, ink);
+      p.disc(8, 10, 4, G.hot);
+      p.disc(8, 10, 2, G.fire);
+      p.set(8, 10, ink);
     } else if (kind === 'admin') {
       // wizard hat: black cone with a bent, gold-tipped point, a gold
       // ribbon band with a buckle, and a wide flat brim

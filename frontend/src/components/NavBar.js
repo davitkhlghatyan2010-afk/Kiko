@@ -30,15 +30,17 @@ export function NavLinks({ pathname, links }) {
       <Link
         key={href}
         href={href}
-        // Every tab gets the exact same footprint (h-full, min-w-0 flex-1 on
-        // mobile so 4 tabs always split the dock evenly without overflowing
-        // a narrow phone; a fixed min-w on desktop where there's room to
-        // spare) so switching the active tab only recolors its border/fill --
-        // it never resizes and never shifts its neighbors.
-        className={`flex h-full min-w-0 flex-1 flex-col items-center justify-center gap-1 border-x-2 font-pixel-body text-[10px] font-bold uppercase tracking-wide transition-colors md:min-w-[90px] md:flex-none ${
+        // Every tab gets the exact same box (my-1.5 keeps it off the bar's
+        // own top/bottom border, border-2 + px-3 py-1 the same on both
+        // states) so switching the active tab only recolors border/fill --
+        // it never touches the bar's edges and never resizes. min-w-0 +
+        // flex-1 on mobile so 4 tabs always split the dock evenly without
+        // overflowing a narrow phone; a fixed min-w on desktop instead,
+        // where there's width to spare.
+        className={`my-1.5 flex min-w-0 flex-1 flex-col items-center justify-center gap-1 border-2 px-3 py-1 font-pixel-body text-[10px] font-bold uppercase tracking-wide transition-colors md:min-w-[90px] md:flex-none ${
           active
-            ? "border-ink bg-sky-cloud text-ink"
-            : "border-transparent text-stone hover:border-ink hover:bg-sky-cloud/70 hover:text-ink"
+            ? "border-ink bg-sky-cloud/50 text-ink"
+            : "border-transparent text-stone hover:border-ink hover:bg-sky-cloud/50 hover:text-ink"
         }`}
       >
         <NavIcon kind={kind} active={active} />
