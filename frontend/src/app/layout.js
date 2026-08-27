@@ -44,9 +44,8 @@ export default function RootLayout({ children }) {
       <body className="min-h-full flex flex-col font-sans">
         <AuthProvider>
           <Header />
-          <NavBar variant="top" />
           {children}
-          <NavBar variant="bottom" />
+          <NavBar />
         </AuthProvider>
       </body>
     </html>
