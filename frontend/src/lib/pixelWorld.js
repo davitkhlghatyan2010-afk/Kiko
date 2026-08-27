@@ -563,7 +563,7 @@ var PAL = {
     opts = opts || {};
     var skyAdd = opts.skyAdd || 0, groundAdd = opts.groundAdd || 0;
     var T = TIERS[tier] || TIERS.green, W = WORLD_W, H = WORLD_H + skyAdd + groundAdd, p = new P(W, H);
-    var GY = 108 + skyAdd, MY = 146 + skyAdd, CHAR_BASE = 178 + skyAdd;
+    var GY = 108 + skyAdd, MY = 146 + skyAdd, CHAR_BASE = 165 + skyAdd;
 
     p.rect(0, 0, W, GY, T.sky);
     p.rect(0, GY - 40, W, 40, T.skyLow);
