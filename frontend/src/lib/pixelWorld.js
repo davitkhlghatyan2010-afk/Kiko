@@ -831,25 +831,29 @@ var PAL = {
     if (o.bg !== null) p.rect(0, 0, 16, 16, o.bg || null);
 
     if (kind === 'leaderboard') {
-      // gold trophy: two-tone cup with side handles, wood stem and base
-      p.rect(4, 2, 8, 4, G.fire); p.rect(5, 3, 2, 2, G.hot);
-      p.vl(4, 2, 4, ink); p.vl(11, 2, 4, ink); p.hl(4, 2, 8, ink); p.hl(4, 5, 8, ink);
-      p.rect(2, 3, 2, 3, G.fire); p.vl(2, 3, 3, ink); p.hl(2, 3, 2, ink); p.hl(2, 5, 2, ink);
-      p.rect(12, 3, 2, 3, G.fire); p.vl(13, 3, 3, ink); p.hl(12, 3, 2, ink); p.hl(12, 5, 2, ink);
-      p.rect(7, 6, 2, 3, G.wood); p.vl(7, 6, 3, ink); p.vl(8, 6, 3, ink); p.hl(7, 6, 2, ink); p.hl(7, 8, 2, ink);
-      p.rect(5, 9, 6, 2, G.wood); p.vl(5, 9, 2, ink); p.vl(10, 9, 2, ink); p.hl(5, 9, 6, ink); p.hl(5, 10, 6, ink);
-      p.hl(4, 11, 8, ink);
+      // gold trophy: goblet-shaped cup (narrow rim, wide bowl, narrow neck)
+      // with bracket handles held apart from the body, wood stem and base
+      p.hl(7, 2, 3, G.fire);
+      p.hl(5, 3, 7, G.fire); p.hl(5, 4, 7, G.fire);
+      p.hl(6, 5, 5, G.fire);
+      p.hl(7, 6, 3, G.fire);
+      p.rect(6, 3, 2, 2, G.hot);
+      p.vl(2, 3, 3, ink); p.set(3, 2, ink); p.set(3, 6, ink);
+      p.vl(14, 3, 3, ink); p.set(13, 2, ink); p.set(13, 6, ink);
+      p.rect(7, 7, 3, 2, G.wood);
+      p.hl(7, 9, 3, G.wood); p.hl(5, 10, 7, G.wood); p.hl(4, 11, 9, G.wood);
+      p.hl(3, 12, 11, ink);
     } else if (kind === 'admin') {
-      // wizard hat: dark teal cone with a gold band/tip, wide brim
-      for (var wy = 1; wy <= 11; wy++) {
-        var wh = Math.floor((wy - 1) / 2), wx0 = 8 - wh, wx1 = 8 + wh;
-        p.hl(wx0, wy, wx1 - wx0 + 1, G.tealD);
+      // wizard hat: black cone with a bent, gold-tipped point, a gold
+      // ribbon band with a buckle, and a wide flat brim
+      for (var wy = 2; wy <= 7; wy++) {
+        var wh = Math.floor((wy - 2) / 2), wx0 = 8 - wh, wx1 = 8 + wh;
+        p.hl(wx0, wy, wx1 - wx0 + 1, ink);
       }
-      p.set(8, 1, G.hot);
-      p.hl(4, 9, 9, G.hot);
-      p.hl(3, 11, 11, ink);
-      p.rect(2, 12, 12, 2, G.tealD);
-      p.vl(2, 12, 2, ink); p.vl(13, 12, 2, ink); p.hl(2, 12, 12, ink); p.hl(2, 13, 12, ink);
+      p.set(8, 0, G.hot); p.set(6, 1, ink); p.set(7, 1, ink); p.set(7, 2, ink);
+      p.hl(5, 8, 7, G.hot); p.hl(5, 9, 7, G.hot); p.set(8, 8, ink);
+      p.hl(4, 10, 9, ink);
+      p.rect(1, 11, 14, 2, ink);
     } else {
       // 'home' (default): the sprout glyph's ground/soil strip, a small
       // house on it, and a little sprout beside the house -- "garden with a

@@ -58,7 +58,7 @@ export function Header() {
         </Link>
 
         {showNav && (
-          <nav className="flex items-center gap-6">
+          <nav className="flex h-16 items-center gap-4">
             <NavLinks pathname={pathname} links={links} />
           </nav>
         )}

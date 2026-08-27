@@ -14,8 +14,12 @@ export const NAV_LINKS = [
 
 export const ADMIN_LINK = { href: "/admin", label: "Admin", kind: "admin" };
 
+// 16x16 native art at scale 1.5 renders at a fixed 24x24 CSS px for every
+// icon -- paint() (lib/pixelWorld.js) sets that size (and image-rendering:
+// pixelated) directly on the canvas element, so it's enforced regardless of
+// surrounding layout.
 export function NavIcon({ kind, active }) {
-  const draw = (canvas) => PixelWorld.drawNavIcon(canvas, { kind, active, bg: null, scale: 2 });
+  const draw = (canvas) => PixelWorld.drawNavIcon(canvas, { kind, active, bg: null, scale: 1.5 });
   return <PixelCanvas draw={draw} />;
 }
 
@@ -26,7 +30,12 @@ export function NavLinks({ pathname, links }) {
       <Link
         key={href}
         href={href}
-        className={`flex flex-col items-center gap-1 border-2 px-3 py-1 font-pixel-body text-[10px] font-bold uppercase tracking-wide transition-colors ${
+        // Every tab gets the exact same footprint (h-full, min-w-0 flex-1 on
+        // mobile so 4 tabs always split the dock evenly without overflowing
+        // a narrow phone; a fixed min-w on desktop where there's room to
+        // spare) so switching the active tab only recolors its border/fill --
+        // it never resizes and never shifts its neighbors.
+        className={`flex h-full min-w-0 flex-1 flex-col items-center justify-center gap-1 border-x-2 font-pixel-body text-[10px] font-bold uppercase tracking-wide transition-colors md:min-w-[90px] md:flex-none ${
           active
             ? "border-ink bg-sky-cloud text-ink"
             : "border-transparent text-stone hover:border-ink hover:bg-sky-cloud/70 hover:text-ink"
@@ -55,7 +64,7 @@ export function NavBar() {
   return (
     <>
       <div className="h-16 md:hidden" />
-      <nav className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-t-4 border-ink bg-wall py-1 md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 flex h-16 items-center border-t-4 border-ink bg-wall md:hidden">
         <NavLinks pathname={pathname} links={links} />
       </nav>
     </>
