@@ -12,6 +12,16 @@ const ROOM_STATES = [
   { value: "done", label: "Done" },
 ];
 
+// Same order as GARDEN_TIERS in backend/src/streak.js (dead < autumn < green
+// < bloom), listed healthiest-first here since that's the tier a fresh
+// account starts at.
+const GARDEN_TIERS = [
+  { value: "bloom", label: "Bloom" },
+  { value: "green", label: "Green" },
+  { value: "autumn", label: "Autumn" },
+  { value: "dead", label: "Dead" },
+];
+
 // Same PixelBackdrop, same scene="room", same everything the real
 // concentration screen uses -- switching states here is switching states
 // there, not a smaller stand-in for it.
@@ -26,6 +36,36 @@ function RoomPreview({ roomState, onSelect, onClose }) {
             onClick={() => onSelect(value)}
             className={`border-2 border-ink px-3 py-1 font-pixel-body text-[10px] uppercase tracking-wide ${
               roomState === value ? "bg-wood-mid text-sky-cloud" : "bg-wall text-ink"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <button
+        type="button"
+        onClick={onClose}
+        className="fixed bottom-8 left-1/2 z-30 -translate-x-1/2 border-2 border-ink bg-wall px-5 py-2 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
+      >
+        Back to admin
+      </button>
+    </PixelBackdrop>
+  );
+}
+
+// Same PixelBackdrop, default scene="garden" -- the exact garden the home
+// screen shows, just with the tier pinned instead of driven by streak state.
+function GardenPreview({ tier, onSelect, onClose }) {
+  return (
+    <PixelBackdrop tier={tier}>
+      <div className="fixed left-4 top-24 z-30 flex gap-2">
+        {GARDEN_TIERS.map(({ value, label }) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => onSelect(value)}
+            className={`border-2 border-ink px-3 py-1 font-pixel-body text-[10px] uppercase tracking-wide ${
+              tier === value ? "bg-wood-mid text-sky-cloud" : "bg-wall text-ink"
             }`}
           >
             {label}
@@ -86,6 +126,7 @@ export default function AdminPage() {
   const [error, setError] = useState(null);
   const [busyId, setBusyId] = useState(null);
   const [previewState, setPreviewState] = useState(null);
+  const [previewGarden, setPreviewGarden] = useState(null);
 
   useEffect(() => {
     if (loading) return;
@@ -129,6 +170,10 @@ export default function AdminPage() {
     return <RoomPreview roomState={previewState} onSelect={setPreviewState} onClose={() => setPreviewState(null)} />;
   }
 
+  if (previewGarden) {
+    return <GardenPreview tier={previewGarden} onSelect={setPreviewGarden} onClose={() => setPreviewGarden(null)} />;
+  }
+
   return (
     <PixelBackdrop stretch>
       <div className="flex w-full max-w-md flex-1 flex-col gap-4 py-8">
@@ -145,6 +190,22 @@ export default function AdminPage() {
                 key={value}
                 type="button"
                 onClick={() => setPreviewState(value)}
+                className="border-2 border-ink bg-wall px-4 py-1.5 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3 border-4 border-ink bg-wall p-4 shadow-[6px_6px_0_0_var(--color-ink)]">
+          <p className="font-pixel-display text-xs tracking-wide text-ink">Garden preview</p>
+          <div className="flex flex-wrap gap-2">
+            {GARDEN_TIERS.map(({ value, label }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setPreviewGarden(value)}
                 className="border-2 border-ink bg-wall px-4 py-1.5 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
               >
                 {label}
