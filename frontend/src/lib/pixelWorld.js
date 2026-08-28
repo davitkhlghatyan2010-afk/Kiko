@@ -1,6 +1,8 @@
 // Design System pixel-art renderer, ported to an ES module. All drawing logic
 // below is unchanged from Design/pixel.js -- only the export mechanism at the
 // bottom of this file differs (ES `export const` instead of `window.PixelWorld`).
+import { POSES as KIKO_POSES, drawChar as kikoDrawChar } from './kikoArt.js';
+
 var PAL = {
     skyDay: '#CBDFD6', skyCloud: '#EDEFE4', water: '#93B5B0', waterDeep: '#6E9691',
     foliageLight: '#A8C0AC', foliageMid: '#7C9A8A', foliageDark: '#5A7A6C',
@@ -555,6 +557,83 @@ var PAL = {
     }
   }
 
+  /* ---------- garden character (Kiko Pixel Kit) ----------
+   * Draws kiko-art.js's richer character (also used for the logo and the
+   * Pomodoro room) instead of the plain sprite above -- via a thin Buf-like
+   * adapter whose .set() writes straight into this file's own flat pixel
+   * buffer (hex-string colors, not kiko-art's [r,g,b] arrays), since the two
+   * files use different buffer formats. Walking left mirrors the whole
+   * sprite around its own vertical centerline, per the source kit's own
+   * note on walk-side: "flip horizontally for the other direction" -- that
+   * can't be done by negating individual limb angles, since drawChar's
+   * near/far arm-and-leg draw order also encodes which side faces the
+   * viewer.
+   */
+  var KIKO_WALK_SPEED = 16; // px/sec
+  function rgbToHex(c) {
+    return '#' + c.map(function (v) { return (v < 16 ? '0' : '') + v.toString(16); }).join('');
+  }
+  function drawKikoChar(p, drawX, footY, pose, flip) {
+    var ox = Math.round(drawX) - 15, oy = footY - 36, cx = ox + 15;
+    function mirrorX(x) { return flip ? 2 * cx - x : x; }
+    var adapter = {
+      set: function (x, y, c) { p.set(mirrorX(x), y, rgbToHex(c)); },
+      rect: function (x, y, w, h, c) { for (var j = 0; j < h; j++) for (var i = 0; i < w; i++) adapter.set(x + i, y + j, c); },
+      hline: function (x0, x1, y, c) { for (var x = x0; x <= x1; x++) adapter.set(x, y, c); },
+      vline: function (x, y0, y1, c) { for (var y = y0; y <= y1; y++) adapter.set(x, y, c); },
+      tint: function () {},
+      ellipse: function () {},
+      blit: function (map, bx, by, pal, blitFlip) {
+        for (var y = 0; y < map.length; y++) {
+          var row = map[y];
+          for (var x = 0; x < row.length; x++) {
+            var ch = row[x];
+            if (ch === '.' || ch === ' ') continue;
+            var c = pal[ch];
+            if (!c) continue;
+            adapter.set(bx + (blitFlip ? row.length - 1 - x : x), by + y, c);
+          }
+        }
+      },
+    };
+    kikoDrawChar(adapter, ox, oy, pose);
+  }
+
+  // A fixed schedule of stand/walk phases, their durations randomized once
+  // at module load -- not per-frame, since world() runs on every animation
+  // frame and a fresh Math.random() there would make him twitch instead of
+  // walk -- then replayed on a loop via `elapsed % schedule.total`.
+  var KIKO_SCHEDULE = (function () {
+    var phases = [], total = 0, dir = 1, i;
+    for (i = 0; i < 8; i++) {
+      var standMs = 2200 + Math.random() * 2600;
+      phases.push({ type: 'stand', start: total, dur: standMs });
+      total += standMs;
+      var walkMs = 1600 + Math.random() * 1800;
+      phases.push({ type: 'walk', start: total, dur: walkMs, dir: dir });
+      total += walkMs;
+      dir = -dir;
+    }
+    return { phases: phases, total: total };
+  })();
+
+  function kikoStateAt(t) {
+    var tm = ((t % KIKO_SCHEDULE.total) + KIKO_SCHEDULE.total) % KIKO_SCHEDULE.total;
+    var offset = 0, phase = KIKO_SCHEDULE.phases[0], i;
+    for (i = 0; i < KIKO_SCHEDULE.phases.length; i++) {
+      var ph = KIKO_SCHEDULE.phases[i];
+      if (tm >= ph.start && tm < ph.start + ph.dur) { phase = ph; break; }
+      if (ph.type === 'walk') offset += ph.dir * (ph.dur / 1000) * KIKO_WALK_SPEED;
+    }
+    if (phase.type === 'stand') {
+      return { pose: KIKO_POSES.stand.frames[0], dx: offset, flip: false };
+    }
+    var into = tm - phase.start, walkPose = KIKO_POSES['walk-side'];
+    var frameIndex = Math.floor(into / walkPose.ms) % walkPose.frames.length;
+    var progressed = (into / 1000) * KIKO_WALK_SPEED * phase.dir;
+    return { pose: walkPose.frames[frameIndex], dx: offset + progressed, flip: phase.dir < 0 };
+  }
+
   /* ---------- the world ---------- */
   var WORLD_W = 380, WORLD_H = 210;
   var GY = 108, MY = 146, CHAR_BASE = 178;
@@ -718,10 +797,11 @@ var PAL = {
     }
 
     if (opts.character !== false) {
-      var pose = POSES[opts.pose || 'idle'] || IDLE;
       var cxx = Math.round(opts.charX == null ? 60 : opts.charX);
-      for (var sh = 0; sh < 12; sh++) p.set(cxx + 2 + sh, CHAR_BASE, T.gDark);
-      sprite(p, pose, cxx, CHAR_BASE, CHAR[opts.who || 'boy']);
+      var kikoState = kikoStateAt(opts.t || 0);
+      var drawX = cxx + kikoState.dx;
+      for (var sh = 0; sh < 20; sh++) p.set(Math.round(drawX) - 10 + sh, CHAR_BASE, T.gDark);
+      drawKikoChar(p, drawX, CHAR_BASE, kikoState.pose, kikoState.flip);
       if (opts.dog === true) {
         var dgx = cxx + (opts.dogX == null ? 20 : opts.dogX);
         for (var ds = 0; ds < 13; ds++) p.set(dgx + ds, CHAR_BASE, T.gDark);

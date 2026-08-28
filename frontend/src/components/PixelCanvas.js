@@ -14,18 +14,41 @@ import { useEffect, useRef } from "react";
 // stretches to its container via object-fit: cover, cropping instead of
 // scaling by an integer factor. image-rendering: pixelated (already set by
 // paint()) keeps the crop looking like pixel art rather than blurring.
-export function PixelCanvas({ draw, className, style, fill = false }) {
+//
+// `animate`: off by default (a single draw() call) since most callers here
+// are static UI art (icons, avatars, the logo) redrawn only when their props
+// change. When set, draw() instead runs in its own requestAnimationFrame
+// loop and receives the live timestamp as a second argument -- for anything
+// with its own motion (the garden's walking character), matching how
+// KikoRoomCanvas already drives the room's animation.
+export function PixelCanvas({ draw, className, style, fill = false, animate = false }) {
   const ref = useRef(null);
 
   useEffect(() => {
     if (!ref.current) return;
-    draw(ref.current);
-    if (fill) {
+
+    function applyFill() {
+      if (!fill) return;
       ref.current.style.width = "100%";
       ref.current.style.height = "100%";
       ref.current.style.objectFit = "cover";
     }
-  }, [draw, fill]);
+
+    if (!animate) {
+      draw(ref.current);
+      applyFill();
+      return;
+    }
+
+    let raf;
+    function frame(t) {
+      draw(ref.current, t);
+      applyFill();
+      raf = requestAnimationFrame(frame);
+    }
+    raf = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(raf);
+  }, [draw, fill, animate]);
 
   return <canvas ref={ref} className={className} style={style} />;
 }

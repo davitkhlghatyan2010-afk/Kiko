@@ -26,13 +26,15 @@ import { PixelWorld } from "@/lib/pixelWorld";
 // plays; it maps directly onto the Pomodoro work/rest/complete phases.
 export function PixelBackdrop({ children, tier = "green", stretch = false, scene = "garden", roomState = "work" }) {
   const draw = useCallback(
-    (canvas) => {
+    (canvas, t) => {
       PixelWorld.drawWorld(canvas, {
         tier,
         viewW: PixelWorld.WORLD_W,
         character: true,
-        pose: "idle",
-        who: "boy",
+        // Live rAF timestamp -- drives the character's stand/walk/stand
+        // loop (see kikoStateAt in pixelWorld.js). 0 for the very first
+        // paint, before PixelCanvas's animation loop has handed one in.
+        t: t || 0,
         dog: true,
         fauna: true,
         // `fill` mode crops this 380px-wide world via object-fit: cover,
@@ -59,7 +61,7 @@ export function PixelBackdrop({ children, tier = "green", stretch = false, scene
           <KikoRoomCanvas roomState={roomState} />
         </div>
       ) : (
-        <PixelCanvas draw={draw} fill className="pointer-events-none absolute inset-0" />
+        <PixelCanvas draw={draw} fill animate className="pointer-events-none absolute inset-0" />
       )}
       <div
         className={
