@@ -799,7 +799,12 @@ var PAL = {
     if (opts.character !== false) {
       var cxx = Math.round(opts.charX == null ? 60 : opts.charX);
       var kikoState = kikoStateAt(opts.t || 0);
-      var drawX = cxx + kikoState.dx;
+      // The woodpile (drawn later in this function, so it never covers him)
+      // sits at world-x 276-292 with its top crates around y=162-174 --
+      // right at CHAR_BASE's height, not up in the treetops -- so without a
+      // clamp, walking far enough right paints his legs straight through
+      // the stacked crates instead of stopping short of them.
+      var drawX = Math.min(cxx + kikoState.dx, 258);
       for (var sh = 0; sh < 20; sh++) p.set(Math.round(drawX) - 10 + sh, CHAR_BASE, T.gDark);
       drawKikoChar(p, drawX, CHAR_BASE, kikoState.pose, kikoState.flip);
       if (opts.dog === true) {
