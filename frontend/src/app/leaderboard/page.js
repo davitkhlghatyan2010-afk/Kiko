@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getGlobalLeaderboard, getGroupLeaderboard } from "@/lib/api";
+import { getGlobalLeaderboard, getGroupLeaderboard, getGroupLeaderboardByCode } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { PixelBackdrop } from "@/components/PixelBackdrop";
 import { PixelAvatar } from "@/components/PixelAvatar";
@@ -47,7 +47,12 @@ export default function LeaderboardPage() {
   const router = useRouter();
   // null = "no explicit choice yet" -- falls back to group for group
   // accounts, global otherwise. Set once a toggle button is clicked.
+  // "code" is a third mode: a read-only peek at any group's board by invite
+  // code, whether or not the viewer belongs to it -- lookupCode carries
+  // which code that is.
   const [view, setView] = useState(null);
+  const [codeInput, setCodeInput] = useState("");
+  const [lookupCode, setLookupCode] = useState(null);
   const [data, setData] = useState(undefined);
   const [error, setError] = useState(null);
 
@@ -59,8 +64,9 @@ export default function LeaderboardPage() {
     if (!user) router.push("/login");
   }, [loading, user, router]);
 
-  const refresh = useCallback((which) => {
-    const fetcher = which === "group" ? getGroupLeaderboard : getGlobalLeaderboard;
+  const refresh = useCallback((which, code) => {
+    const fetcher =
+      which === "group" ? getGroupLeaderboard : which === "code" ? () => getGroupLeaderboardByCode(code) : getGlobalLeaderboard;
     fetcher()
       .then((res) => {
         setData(res);
@@ -71,11 +77,22 @@ export default function LeaderboardPage() {
 
   useEffect(() => {
     if (!user) return;
-    refresh(effectiveView);
-  }, [user, effectiveView, refresh]);
+    refresh(effectiveView, lookupCode);
+  }, [user, effectiveView, lookupCode, refresh]);
 
   function selectView(next) {
     setView(next);
+    setLookupCode(null);
+    setData(undefined);
+    setError(null);
+  }
+
+  function handleLookup(e) {
+    e.preventDefault();
+    const code = codeInput.trim();
+    if (!code) return;
+    setView("code");
+    setLookupCode(code);
     setData(undefined);
     setError(null);
   }
@@ -88,26 +105,53 @@ export default function LeaderboardPage() {
     );
   }
 
-  const title = effectiveView === "group" ? "Your group" : "Everyone";
+  const isGroupShaped = effectiveView === "group" || effectiveView === "code";
+  const title =
+    effectiveView === "group" ? "Your group" : effectiveView === "code" ? (data?.groupName ?? "Group") : "Everyone";
   const subtitle =
     data === undefined
       ? ""
-      : effectiveView === "group"
+      : isGroupShaped
         ? `${data.totalCount} ${data.totalCount === 1 ? "person" : "people"}. One plant per clean day.`
         : `The top ten of ${data.totalCount} ${data.totalCount === 1 ? "person" : "people"}.`;
-  const footer =
-    effectiveView === "group"
-      ? "A bed fills at fourteen plants. Equal counts share a place, so a tie shows the same number twice."
-      : "The top ten, then your own row with the place you hold out of everyone.";
+  const footer = isGroupShaped
+    ? "A bed fills at fourteen plants. Equal counts share a place, so a tie shows the same number twice."
+    : "The top ten, then your own row with the place you hold out of everyone.";
 
   return (
     <PixelBackdrop stretch>
       <div className="flex w-full max-w-md flex-1 flex-col gap-4 py-8">
         <div className="flex flex-col gap-3 px-2">
-          <div>
-            <h1 className="font-pixel-display text-lg tracking-wide text-ink">{title}</h1>
-            {subtitle && <p className="mt-2 text-sm text-stone">{subtitle}</p>}
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h1 className="font-pixel-display text-lg tracking-wide text-ink">{title}</h1>
+              {subtitle && <p className="mt-2 text-sm text-stone">{subtitle}</p>}
+            </div>
+            {effectiveView === "code" && (
+              <button
+                type="button"
+                onClick={() => selectView(null)}
+                className="shrink-0 font-pixel-body text-[10px] uppercase tracking-wide underline underline-offset-2"
+              >
+                ← Back
+              </button>
+            )}
           </div>
+
+          <form onSubmit={handleLookup} className="flex gap-2">
+            <input
+              className="min-w-0 flex-1 border-2 border-ink bg-sky-cloud px-3 py-2 text-sm text-ink outline-none focus:border-wood-mid"
+              value={codeInput}
+              onChange={(e) => setCodeInput(e.target.value)}
+              placeholder="Look up a group by code"
+            />
+            <button
+              type="submit"
+              className="shrink-0 border-2 border-ink bg-wall px-4 py-2 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
+            >
+              View
+            </button>
+          </form>
 
           {isGroup && (
             <div className="flex overflow-hidden border-2 border-ink">

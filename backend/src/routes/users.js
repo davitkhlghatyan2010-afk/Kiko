@@ -262,4 +262,48 @@ router.patch("/me/cutoff", async (req, res, next) => {
   }
 });
 
+// Join an existing group by its invite code, or -- if no group has that
+// code yet -- create one and become its admin. Same join-or-create logic
+// as the group branch of POST /auth/register, just reachable after the
+// fact instead of only at signup. Only offered to accounts not already in
+// a group -- moving an existing member/admin to a different group would
+// mean deciding what happens to the group they're leaving, which isn't
+// needed for the "solo account picks up a group later" case this serves.
+router.post("/me/group", async (req, res, next) => {
+  try {
+    if (req.user.groupId) {
+      return res.status(409).json({ status: "error", message: "You're already in a group" });
+    }
+
+    const { inviteCode, groupName } = req.body ?? {};
+    if (typeof inviteCode !== "string" || inviteCode.trim().length < 3) {
+      return res.status(400).json({ status: "error", message: "Invite code must be at least 3 characters" });
+    }
+    const code = inviteCode.trim();
+
+    const user = await prisma.$transaction(async (tx) => {
+      const existingGroup = await tx.group.findUnique({ where: { inviteCode: code } });
+
+      if (existingGroup) {
+        return tx.user.update({
+          where: { id: req.user.id },
+          data: { groupId: existingGroup.id, accountType: "group" },
+        });
+      }
+
+      const group = await tx.group.create({
+        data: { name: groupName?.trim() || code, inviteCode: code, adminUserId: req.user.id },
+      });
+      return tx.user.update({
+        where: { id: req.user.id },
+        data: { groupId: group.id, accountType: "group", isAdmin: true },
+      });
+    });
+
+    res.json({ user: serializeUser(user) });
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default router;

@@ -11,6 +11,7 @@ import { ProfileEditModal } from "@/components/ProfileEditModal";
 import { CutoffTimeModal } from "@/components/CutoffTimeModal";
 import { ChangeEmailModal } from "@/components/ChangeEmailModal";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
+import { GroupModal } from "@/components/GroupModal";
 
 function StatTile({ kind, value, label, sub }) {
   return (
@@ -65,6 +66,7 @@ export default function ProfilePage() {
   const [cutoffOpen, setCutoffOpen] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
   const [passwordOpen, setPasswordOpen] = useState(false);
+  const [groupOpen, setGroupOpen] = useState(false);
 
   const refresh = useCallback(() => {
     getProfileStats()
@@ -165,6 +167,9 @@ export default function ProfilePage() {
               <SettingsRow kind="cog" label="Cutoff time" value={user.cutoffTime} onChange={() => setCutoffOpen(true)} />
               <SettingsRow kind="globe" label="Email" value={user.email} onChange={() => setEmailOpen(true)} />
               <SettingsRow kind="key" label="Password" value="••••••••" onChange={() => setPasswordOpen(true)} />
+              {!user.groupId && (
+                <SettingsRow kind="people" label="Group" value="No group yet" onChange={() => setGroupOpen(true)} />
+              )}
             </div>
           </>
         )}
@@ -174,6 +179,7 @@ export default function ProfilePage() {
       {cutoffOpen && <CutoffTimeModal user={user} onClose={() => setCutoffOpen(false)} onSaved={updateUser} />}
       {emailOpen && <ChangeEmailModal user={user} onClose={() => setEmailOpen(false)} />}
       {passwordOpen && <ChangePasswordModal onClose={() => setPasswordOpen(false)} />}
+      {groupOpen && <GroupModal onClose={() => setGroupOpen(false)} onSaved={updateUser} />}
     </PixelBackdrop>
   );
 }

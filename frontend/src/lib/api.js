@@ -218,6 +218,23 @@ export function getGroupLeaderboard() {
   return request("/leaderboard/group", { auth: true });
 }
 
+// Joins the group with this invite code, or -- if no group has that code
+// yet -- creates one and makes the caller its admin. Only valid for an
+// account not already in a group.
+export function joinOrCreateGroup(inviteCode, groupName) {
+  return request("/users/me/group", {
+    method: "POST",
+    auth: true,
+    body: JSON.stringify({ inviteCode, groupName }),
+  });
+}
+
+// Read-only: any group's board by its invite code, whether or not the
+// caller is a member.
+export function getGroupLeaderboardByCode(code) {
+  return request(`/leaderboard/group/${encodeURIComponent(code)}`, { auth: true });
+}
+
 export function getGlobalLeaderboard() {
   return request("/leaderboard/global", { auth: true });
 }

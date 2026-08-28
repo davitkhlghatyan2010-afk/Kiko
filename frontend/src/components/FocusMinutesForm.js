@@ -34,7 +34,7 @@ export function FocusMinutesForm({ onStart, buttonLabel, busyLabel }) {
           type="number"
           min={MIN_TOTAL_MINUTES}
           max={MAX_TOTAL_MINUTES}
-          className="mt-1 w-full border-2 border-ink bg-sky-cloud px-3 py-2 text-xl font-normal normal-case tracking-normal text-ink outline-none focus:border-wood-mid"
+          className="mt-1 w-full border-2 border-ink bg-sky-cloud px-3 py-2 font-pixel-display text-xl tracking-normal text-ink outline-none focus:border-wood-mid"
           value={minutes}
           onChange={(e) => setMinutes(e.target.value)}
         />

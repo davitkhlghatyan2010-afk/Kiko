@@ -48,6 +48,25 @@ router.get("/group", async (req, res, next) => {
   }
 });
 
+// A read-only peek at any group's board by its invite code, whether or not
+// the caller is a member -- the code already doubles as the "key" you'd use
+// to join and see this same board, so this doesn't expose anything a join
+// wouldn't. Lets someone browse a group before committing to it, or check a
+// group they're not actually in.
+router.get("/group/:code", async (req, res, next) => {
+  try {
+    const group = await prisma.group.findUnique({ where: { inviteCode: req.params.code.trim() } });
+    if (!group) {
+      return res.status(404).json({ status: "error", message: "No group found with that code" });
+    }
+    const members = await prisma.user.findMany({ where: { groupId: group.id } });
+    const ranked = await rankedRows(members, req.user.id);
+    res.json({ leaderboard: ranked, pinnedSelf: null, totalCount: ranked.length, groupName: group.name });
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get("/global", async (req, res, next) => {
   try {
     const users = await prisma.user.findMany();
