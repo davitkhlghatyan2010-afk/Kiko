@@ -30,17 +30,19 @@ function StatTile({ kind, value, label, sub }) {
 function SettingsRow({ kind, label, value, onChange }) {
   return (
     <div className="flex items-center justify-between gap-2">
-      <div className="flex items-center gap-2">
+      <div className="flex min-w-0 items-center gap-2">
         <PixelGlyph kind={kind} />
-        <div>
+        <div className="min-w-0">
           <p className="text-sm text-ink">{label}</p>
-          <p className="font-mono text-sm text-ink">{value}</p>
+          <p className="truncate font-mono text-sm text-ink" title={value}>
+            {value}
+          </p>
         </div>
       </div>
       <button
         type="button"
         onClick={onChange}
-        className="border-2 border-ink bg-wall px-3 py-1.5 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
+        className="shrink-0 border-2 border-ink bg-wall px-3 py-1.5 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
       >
         Change
       </button>
