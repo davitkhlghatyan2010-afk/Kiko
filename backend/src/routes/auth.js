@@ -18,6 +18,10 @@ export function serializeUser(user) {
     accountType: user.accountType,
     isAdmin: user.isAdmin,
     groupId: user.groupId,
+    // Only present when the query that fetched `user` included the group
+    // relation (authenticate.js does, so this is reliable from req.user;
+    // a couple of direct create/update calls opt in explicitly too).
+    groupInviteCode: user.group?.inviteCode ?? null,
     createdAt: user.createdAt,
     avatar: user.avatar,
     avatarPhoto: user.avatarPhoto,
@@ -92,6 +96,7 @@ router.post("/register", async (req, res, next) => {
             privacyAcceptedAt,
             avatar,
           },
+          include: { group: true },
         });
       }
 
@@ -109,7 +114,7 @@ router.post("/register", async (req, res, next) => {
       const group = await tx.group.create({
         data: { name: groupName?.trim() || code, inviteCode: code, adminUserId: admin.id },
       });
-      return tx.user.update({ where: { id: admin.id }, data: { groupId: group.id } });
+      return tx.user.update({ where: { id: admin.id }, data: { groupId: group.id }, include: { group: true } });
     });
 
     const token = signToken(user);
@@ -133,6 +138,7 @@ router.post("/login", async (req, res, next) => {
     const normalized = identifier.trim();
     const user = await prisma.user.findFirst({
       where: { OR: [{ username: normalized }, { email: normalized.toLowerCase() }] },
+      include: { group: true },
     });
     const valid = user && (await bcrypt.compare(password, user.passwordHash));
     if (!valid) {

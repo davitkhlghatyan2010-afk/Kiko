@@ -10,7 +10,7 @@ export async function authenticate(req, res, next) {
 
   try {
     const payload = verifyToken(token);
-    const user = await prisma.user.findUnique({ where: { id: payload.sub } });
+    const user = await prisma.user.findUnique({ where: { id: payload.sub }, include: { group: true } });
     if (!user) {
       return res.status(401).json({ status: "error", message: "User no longer exists" });
     }

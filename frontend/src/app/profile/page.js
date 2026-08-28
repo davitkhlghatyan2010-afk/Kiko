@@ -40,13 +40,16 @@ function SettingsRow({ kind, label, value, onChange }) {
           </p>
         </div>
       </div>
-      <button
-        type="button"
-        onClick={onChange}
-        className="shrink-0 border-2 border-ink bg-wall px-3 py-1.5 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
-      >
-        Change
-      </button>
+      {/* No onChange (e.g. an already-grouped account's invite code) -- read-only, nothing to change here. */}
+      {onChange && (
+        <button
+          type="button"
+          onClick={onChange}
+          className="shrink-0 border-2 border-ink bg-wall px-3 py-1.5 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
+        >
+          Change
+        </button>
+      )}
     </div>
   );
 }
@@ -167,9 +170,12 @@ export default function ProfilePage() {
               <SettingsRow kind="cog" label="Cutoff time" value={user.cutoffTime} onChange={() => setCutoffOpen(true)} />
               <SettingsRow kind="globe" label="Email" value={user.email} onChange={() => setEmailOpen(true)} />
               <SettingsRow kind="key" label="Password" value="••••••••" onChange={() => setPasswordOpen(true)} />
-              {!user.groupId && (
-                <SettingsRow kind="people" label="Group" value="No group yet" onChange={() => setGroupOpen(true)} />
-              )}
+              <SettingsRow
+                kind="people"
+                label="Group"
+                value={user.groupId ? user.groupInviteCode : "No group yet"}
+                onChange={user.groupId ? undefined : () => setGroupOpen(true)}
+              />
             </div>
           </>
         )}

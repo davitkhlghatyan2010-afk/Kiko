@@ -156,7 +156,7 @@ router.patch("/me", async (req, res, next) => {
       return res.status(400).json({ status: "error", message: "Nothing to update" });
     }
 
-    const updated = await prisma.user.update({ where: { id: req.user.id }, data });
+    const updated = await prisma.user.update({ where: { id: req.user.id }, data, include: { group: true } });
     res.json({ user: serializeUser(updated) });
   } catch (err) {
     if (err.code === "P2002") {
@@ -255,6 +255,7 @@ router.patch("/me/cutoff", async (req, res, next) => {
     const updated = await prisma.user.update({
       where: { id: req.user.id },
       data: { cutoffTime, cutoffChangedAt: now },
+      include: { group: true },
     });
     res.json({ user: serializeUser(updated) });
   } catch (err) {
@@ -288,6 +289,7 @@ router.post("/me/group", async (req, res, next) => {
         return tx.user.update({
           where: { id: req.user.id },
           data: { groupId: existingGroup.id, accountType: "group" },
+          include: { group: true },
         });
       }
 
@@ -297,6 +299,7 @@ router.post("/me/group", async (req, res, next) => {
       return tx.user.update({
         where: { id: req.user.id },
         data: { groupId: group.id, accountType: "group", isAdmin: true },
+        include: { group: true },
       });
     });
 
