@@ -59,17 +59,15 @@ export function PomodoroTimer({ blocks, onPhaseChange }) {
   }, [blockIndex, blocks, done]);
 
   if (done) {
-    return <p className="font-mono text-2xl font-medium text-ink">Focus session complete.</p>;
+    return <p className="font-pixel-body text-lg font-semibold text-ink">Focus session complete.</p>;
   }
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <p className="font-mono text-xs uppercase tracking-wide text-stone">
+      <p className="font-pixel-body text-[10px] uppercase tracking-wide text-stone">
         {phase === "work" ? "Working" : "Resting"} — block {blockIndex + 1} of {blocks.length}
       </p>
-      <p className="font-mono text-[56px] font-medium tabular-nums tracking-tight text-ink">
-        {format(secondsLeft)}
-      </p>
+      <p className="font-pixel-display text-4xl tracking-tight text-ink">{format(secondsLeft)}</p>
     </div>
   );
 }

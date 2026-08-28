@@ -569,7 +569,7 @@ var PAL = {
    * near/far arm-and-leg draw order also encodes which side faces the
    * viewer.
    */
-  var KIKO_WALK_SPEED = 16; // px/sec
+  var KIKO_WALK_SPEED = 24; // px/sec
   function rgbToHex(c) {
     return '#' + c.map(function (v) { return (v < 16 ? '0' : '') + v.toString(16); }).join('');
   }

@@ -144,7 +144,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => setTasksOpen(true)}
-          className="border-2 border-ink bg-wall px-6 py-2.5 font-pixel-body text-xs font-semibold uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
+          className="border-4 border-ink bg-wall px-6 py-2.5 font-pixel-display text-[10px] uppercase tracking-wide text-ink shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:bg-wood-mid hover:text-sky-cloud active:translate-x-1 active:translate-y-1 active:shadow-none"
         >
           Tasks
         </button>

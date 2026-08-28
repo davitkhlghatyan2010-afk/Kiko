@@ -27,7 +27,7 @@ export function Countdown({ deadlineAt }) {
 
   return (
     <p
-      className={`font-mono text-[56px] font-medium tabular-nums tracking-tight ${expired ? "text-alert" : "text-ink"}`}
+      className={`font-pixel-display text-4xl tracking-tight ${expired ? "text-alert" : "text-ink"}`}
       aria-label={expired ? "Deadline passed" : "Time remaining until deadline"}
     >
       {format(ms)}

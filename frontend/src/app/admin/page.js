@@ -182,35 +182,37 @@ export default function AdminPage() {
           <p className="mt-2 text-sm text-stone">Your group&apos;s completed proofs, most recent first.</p>
         </div>
 
-        <div className="flex flex-col gap-3 border-4 border-ink bg-wall p-4 shadow-[6px_6px_0_0_var(--color-ink)]">
-          <p className="font-pixel-display text-xs tracking-wide text-ink">Room preview</p>
-          <div className="flex gap-2">
-            {ROOM_STATES.map(({ value, label }) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setPreviewState(value)}
-                className="border-2 border-ink bg-wall px-4 py-1.5 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
-              >
-                {label}
-              </button>
-            ))}
+        <div className="flex flex-col gap-4 border-4 border-ink bg-wall p-4 shadow-[6px_6px_0_0_var(--color-ink)]">
+          <div className="flex flex-col gap-3">
+            <p className="font-pixel-display text-xs tracking-wide text-ink">Room preview</p>
+            <div className="flex gap-2">
+              {ROOM_STATES.map(({ value, label }) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setPreviewState(value)}
+                  className="border-2 border-ink bg-wall px-4 py-1.5 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="flex flex-col gap-3 border-4 border-ink bg-wall p-4 shadow-[6px_6px_0_0_var(--color-ink)]">
-          <p className="font-pixel-display text-xs tracking-wide text-ink">Garden preview</p>
-          <div className="flex flex-wrap gap-2">
-            {GARDEN_TIERS.map(({ value, label }) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setPreviewGarden(value)}
-                className="border-2 border-ink bg-wall px-4 py-1.5 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
-              >
-                {label}
-              </button>
-            ))}
+          <div className="flex flex-col gap-3 border-t-2 border-ink pt-4">
+            <p className="font-pixel-display text-xs tracking-wide text-ink">Garden preview</p>
+            <div className="flex flex-wrap gap-2">
+              {GARDEN_TIERS.map(({ value, label }) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setPreviewGarden(value)}
+                  className="border-2 border-ink bg-wall px-4 py-1.5 font-pixel-body text-[10px] uppercase tracking-wide text-ink hover:bg-wood-mid hover:text-sky-cloud"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
