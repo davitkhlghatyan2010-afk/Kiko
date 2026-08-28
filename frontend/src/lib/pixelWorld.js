@@ -599,20 +599,32 @@ var PAL = {
     kikoDrawChar(adapter, ox, oy, pose);
   }
 
-  // A fixed schedule of stand/walk phases, their durations randomized once
-  // at module load -- not per-frame, since world() runs on every animation
-  // frame and a fresh Math.random() there would make him twitch instead of
-  // walk -- then replayed on a loop via `elapsed % schedule.total`.
+  // A fixed schedule of stand/walk phases, randomized once at module load
+  // (not per-frame -- world() runs on every animation frame, and a fresh
+  // Math.random() there would make him twitch instead of walk) then
+  // replayed on a loop via `elapsed % schedule.total`. Each walk-right is
+  // paired with a walk-left of the *same* duration, so every round trip
+  // returns him to exactly where he started -- independently-randomized
+  // left/right durations would leave a net drift at the end of the cycle,
+  // and looping back to t=0 would then snap him back to the anchor instead
+  // of walking there.
   var KIKO_SCHEDULE = (function () {
-    var phases = [], total = 0, dir = 1, i;
-    for (i = 0; i < 8; i++) {
-      var standMs = 2200 + Math.random() * 2600;
-      phases.push({ type: 'stand', start: total, dur: standMs });
-      total += standMs;
-      var walkMs = 1600 + Math.random() * 1800;
-      phases.push({ type: 'walk', start: total, dur: walkMs, dir: dir });
+    var phases = [], total = 0, i;
+    for (i = 0; i < 4; i++) {
+      var stand1 = 2200 + Math.random() * 2600;
+      phases.push({ type: 'stand', start: total, dur: stand1 });
+      total += stand1;
+
+      var walkMs = 1200 + Math.random() * 700;
+      phases.push({ type: 'walk', start: total, dur: walkMs, dir: 1 });
       total += walkMs;
-      dir = -dir;
+
+      var stand2 = 2200 + Math.random() * 2600;
+      phases.push({ type: 'stand', start: total, dur: stand2 });
+      total += stand2;
+
+      phases.push({ type: 'walk', start: total, dur: walkMs, dir: -1 });
+      total += walkMs;
     }
     return { phases: phases, total: total };
   })();
