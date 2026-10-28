@@ -8,7 +8,7 @@ See `docs/` for the product brief and build plan (rebuilt as needed — the docs
 
 ---
 
-## 🎥 Preview
+##  Preview
 
 > *[Drop your demo GIF here]*
 > `![Kiko Demo](./path-to-your-demo.gif)`
