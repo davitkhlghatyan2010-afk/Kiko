@@ -9,9 +9,9 @@ See `docs/` for the product brief and build plan (rebuilt as needed — the docs
 
 ##  Key Features
 
-* ** Leaderboard:** Compete with friends and peers, keeping accountability high through public visibility and social ranking.
-* ** Visualisation:** Track streaks, completion rates, and historical accountability metrics with clean visual charts.
-* ** Mascot-Led Learning:** Stay engaged, motivated, and guided by your interactive app mascot as you build daily habits.
+* **Leaderboard:** Compete with friends and peers, keeping accountability high through public visibility and social ranking.
+* **Visualisation:** Track streaks, completion rates, and historical accountability metrics with clean visual charts.
+* **Mascot-Led Learning:** Stay engaged, motivated, and guided by your interactive app mascot as you build daily habits.
 
 ---
 
